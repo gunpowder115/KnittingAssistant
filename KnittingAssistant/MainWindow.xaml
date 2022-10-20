@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KnittingAssistant"
         mc:Ignorable="d"
-        Title="MainWindow" Height="768" Width="1024">
+        Title="MainWindow" Height="768" Width="1366">
     <Window.Resources>
         <Style TargetType="TextBox">
             <Setter Property="Margin" Value="5 5 5 5"/>
@@ -41,26 +41,28 @@
                 </Grid.RowDefinitions>
                 <StackPanel Margin ="15 15 15 0" DockPanel.Dock="Bottom" Orientation="Horizontal" FlowDirection="RightToLeft" Height="45">
                     <Button ToolTip="Показать сетку">
-                        <Image Source="grid_off_icon_1.png"></Image>
+                        <Image Source="resources/grid_off_icon_1.png"></Image>
                     </Button>
                     <Button IsEnabled="False">
                         <Button.ToolTip>
                             <ToolTip Content="Сохранить изображение" ToolTipService.ShowOnDisabled="True"/>
                         </Button.ToolTip>
-                        <Image Source="save_image_icon_1.jpg"></Image>
+                        <Image Source="resources/save_image_icon_1.jpg"></Image>
                     </Button>
-                    <Button ToolTip="Загрузить изображение">
-                        <Image Source="load_image_icon_2.jpg"></Image>
+                    <Button ToolTip="Загрузить изображение" Click="click_LoadImageOnForm">
+                        <Image Source="resources/load_image_icon_2.jpg"></Image>
                     </Button>
                     <Button ToolTip="Палитра цветов">
-                        <Image Source="palette_icon_1.png"></Image>
+                        <Image Source="resources/palette_icon_1.png"></Image>
                     </Button>
                 </StackPanel>
-                <Image Source="default_image.png" Margin="15 0 15 15" Grid.Row="1" Cursor="Hand">
-                    <Image.ToolTip>
-                        <ToolTip Content="Загрузить изображение"/>
-                    </Image.ToolTip>
-                </Image>
+                <Button Grid.Row="1" Margin="15 0 15 15" Cursor="Hand" Click="click_LoadImageOnForm" MaxWidth="1366" MaxHeight="768">
+                    <Image x:Name="mainImage" Source="resources/default_image.png" MaxWidth="1366" MaxHeight="768">
+                        <Image.ToolTip>
+                            <ToolTip Content="Загрузить изображение"/>
+                        </Image.ToolTip>
+                    </Image>
+                </Button>
             </Grid>
         </Grid>
     </Grid>

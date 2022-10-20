@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using Microsoft.Win32;
+
 namespace KnittingAssistant
 {
     /// <summary>
@@ -20,9 +22,26 @@ namespace KnittingAssistant
     /// </summary>
     public partial class MainWindow : Window
     {
+        static bool imageLoaded;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            imageLoaded = false;
+        }
+
+        private void click_LoadImageOnForm(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog fileDialogPicture = new OpenFileDialog();
+            fileDialogPicture.Filter = "Изображения|*.bmp;*.jpg;*.gif;*.png;*.tif";
+            fileDialogPicture.FilterIndex = 1;
+
+            if (fileDialogPicture.ShowDialog() == true)
+            {
+                mainImage.Source = new BitmapImage(new Uri(fileDialogPicture.FileName));
+                imageLoaded = false;
+            }
         }
     }
 }
