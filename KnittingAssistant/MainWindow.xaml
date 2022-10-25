@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KnittingAssistant"
         mc:Ignorable="d"
-        Title="MainWindow" Height="768" Width="1366">
+        Title="MainWindow" Height="768" Width="1024">
     <Window.Resources>
         <Style TargetType="TextBox">
             <Setter Property="Margin" Value="5 5 5 5"/>
@@ -37,7 +37,7 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <StackPanel Margin ="15 15 15 0" DockPanel.Dock="Bottom" Orientation="Horizontal" FlowDirection="RightToLeft" Height="45">
                     <Button ToolTip="Показать сетку">
@@ -56,13 +56,12 @@
                         <Image Source="resources/palette_icon_1.png"></Image>
                     </Button>
                 </StackPanel>
-                <Button Grid.Row="1" Margin="15 0 15 15" Cursor="Hand" Click="click_LoadImageOnForm" MaxWidth="1366" MaxHeight="768">
-                    <Image x:Name="mainImage" Source="resources/default_image.png" MaxWidth="1366" MaxHeight="768">
-                        <Image.ToolTip>
-                            <ToolTip Content="Загрузить изображение"/>
-                        </Image.ToolTip>
-                    </Image>
-                </Button>
+                <Image x:Name="mainImage" Grid.Row="1" Margin="15 0 15 15" Source="resources/default_image.png" Cursor="Hand"
+                           PreviewMouseLeftButtonDown="click_LoadImageOnForm" Stretch="Uniform">
+                    <Image.ToolTip>
+                        <ToolTip Content="Загрузить изображение"/>
+                    </Image.ToolTip>
+                </Image>
             </Grid>
         </Grid>
     </Grid>
