@@ -22,11 +22,15 @@ namespace KnittingAssistant
     /// </summary>
     public partial class MainWindow : Window
     {
+        PartitionSettings partitionSettings;
         static bool imageLoaded;
+        private double mainImageWidth, mainImageHeight;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            partitionSettings = new PartitionSettings();
 
             imageLoaded = false;
         }
@@ -40,8 +44,30 @@ namespace KnittingAssistant
             if (fileDialogPicture.ShowDialog() == true)
             {
                 mainImage.Source = new BitmapImage(new Uri(fileDialogPicture.FileName));
-                imageLoaded = false;
+                imageLoaded = true;
+                partitionSettings.SettingsIsEnabled = true;
             }
         }
+
+        private void propertyTextBox_textInput(object sender, TextCompositionEventArgs e)
+        {
+            int val;
+            if (!Int32.TryParse(e.Text, out val))
+                e.Handled = true;
+        }
+
+        private void propertyTextBox_keyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+                e.Handled = true;
+        }
+
+        private void getMainlImageSize()
+        {
+            mainImageWidth = mainImage.Source.Width;
+            mainImageHeight = mainImage.Source.Height;
+        }
+
+
     }
 }

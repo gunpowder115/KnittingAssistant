@@ -9,6 +9,14 @@
     <Window.Resources>
         <Style TargetType="TextBox">
             <Setter Property="Margin" Value="5 5 5 5"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0 5 0 5"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
         </Style>
     </Window.Resources>
     <Grid>
@@ -17,18 +25,18 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel  IsEnabled="False" Grid.Column="0" Margin="5 10 5 0">
-            <TextBlock HorizontalAlignment="Center">Ширина изображения, см</TextBlock>
-            <TextBox>50</TextBox>
-            <TextBlock HorizontalAlignment="Center">Высота изображения, см</TextBlock>
-            <TextBox>30</TextBox>
-            <CheckBox HorizontalAlignment="Center" IsChecked="True" Content="Сохранить пропорции" Margin="0 5 0 5"/>
+        <StackPanel  IsEnabled="{Binding partitionSettings, FallbackValue=True}" Grid.Column="0" Margin="5 10 5 0">
+            <TextBlock>Ширина изображения, см</TextBlock>
+            <TextBox PreviewTextInput="propertyTextBox_textInput" PreviewKeyDown="propertyTextBox_keyDown">50</TextBox>
+            <TextBlock>Высота изображения, см</TextBlock>
+            <TextBox PreviewTextInput="propertyTextBox_textInput" PreviewKeyDown="propertyTextBox_keyDown">30</TextBox>
+            <CheckBox IsChecked="True" Content="Сохранить пропорции"/>
             <Button Content="Применить" Width="80" Margin="0 15 0 15" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
-            <TextBlock HorizontalAlignment="Center">Ширина фрагмента, см</TextBlock>
-            <TextBox IsEnabled="False">1</TextBox>
-            <TextBlock HorizontalAlignment="Center">Высота фрагмента, см</TextBlock>
-            <TextBox IsEnabled="False">1</TextBox>
-            <CheckBox HorizontalAlignment="Center" IsChecked="True" Content="Квадратный фрагмент" Margin="0 5 0 0"/>
+            <TextBlock>Ширина фрагмента, см</TextBlock>
+            <TextBox PreviewTextInput="propertyTextBox_textInput" PreviewKeyDown="propertyTextBox_keyDown">1</TextBox>
+            <TextBlock>Высота фрагмента, см</TextBlock>
+            <TextBox PreviewTextInput="propertyTextBox_textInput" PreviewKeyDown="propertyTextBox_keyDown">1</TextBox>
+            <CheckBox IsChecked="True" Content="Квадратный фрагмент"/>
             <Button Content="Разбить" Width="80" Margin="0 15 0 0" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
         </StackPanel>
         <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3"
