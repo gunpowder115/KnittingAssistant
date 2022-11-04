@@ -15,24 +15,31 @@ using System.Windows.Shapes;
 
 using Microsoft.Win32;
 
-namespace KnittingAssistant
+using KnittingAssistant.ViewModel;
+
+namespace KnittingAssistant.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        PartitionSettings partitionSettings;
         static bool imageLoaded;
         private double mainImageWidth, mainImageHeight;
+        private double mainImageRatio;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            partitionSettings = new PartitionSettings();
+            this.Loaded += MainWindow_Loaded;
 
             imageLoaded = false;
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            DataContext = new MainViewModel();
         }
 
         private void click_LoadImageOnForm(object sender, RoutedEventArgs e)
@@ -45,7 +52,8 @@ namespace KnittingAssistant
             {
                 mainImage.Source = new BitmapImage(new Uri(fileDialogPicture.FileName));
                 imageLoaded = true;
-                partitionSettings.SettingsIsEnabled = true;
+                (DataContext as MainViewModel).SetSettingsIsEnabled(imageLoaded);
+                getMainlImageSize();
             }
         }
 
@@ -67,7 +75,5 @@ namespace KnittingAssistant
             mainImageWidth = mainImage.Source.Width;
             mainImageHeight = mainImage.Source.Height;
         }
-
-
     }
 }

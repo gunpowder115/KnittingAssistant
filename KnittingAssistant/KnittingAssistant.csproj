@@ -17,13 +17,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="resources\default_image.png" />
-    <Resource Include="resources\grid_off_icon_1.png" />
-    <Resource Include="resources\grid_on_icon_1.png" />
-    <Resource Include="resources\load_image_icon_1.jpg" />
-    <Resource Include="resources\load_image_icon_2.jpg" />
-    <Resource Include="resources\palette_icon_1.png" />
-    <Resource Include="resources\save_image_icon_1.jpg" />
+    <Resource Include="View\resources\default_image.png" />
+    <Resource Include="View\resources\grid_off_icon_1.png" />
+    <Resource Include="View\resources\grid_on_icon_1.png" />
+    <Resource Include="View\resources\load_image_icon_1.jpg" />
+    <Resource Include="View\resources\load_image_icon_2.jpg" />
+    <Resource Include="View\resources\palette_icon_1.png" />
+    <Resource Include="View\resources\save_image_icon_1.jpg" />
   </ItemGroup>
 
 </Project>
