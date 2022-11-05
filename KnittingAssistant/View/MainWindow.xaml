@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KnittingAssistant.View"
+        xmlns:converters="clr-namespace:KnittingAssistant.View.Converters"
         mc:Ignorable="d"
         Title="KnittingAsstistant" Height="768" Width="1024">
     <Window.Resources>
@@ -18,6 +19,7 @@
         <Style TargetType="TextBlock">
             <Setter Property="HorizontalAlignment" Value="Center"/>
         </Style>
+        <converters:StringToPropertyValue x:Key="stringToPropertyValue"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -27,9 +29,11 @@
         </Grid.ColumnDefinitions>
         <StackPanel IsEnabled="{Binding SettingsIsEnabled}" Grid.Column="0" Margin="5 10 5 0">
             <TextBlock>Ширина изображения, см</TextBlock>
-            <TextBox PreviewTextInput="propertyTextBox_textInput" PreviewKeyDown="propertyTextBox_keyDown">50</TextBox>
+            <TextBox PreviewTextInput="propertyTextBox_textInput" PreviewKeyDown="propertyTextBox_keyDown"
+                     Text="{Binding DisplayImageWidth, Converter={StaticResource stringToPropertyValue}, FallbackValue=50}"></TextBox>
             <TextBlock>Высота изображения, см</TextBlock>
-            <TextBox PreviewTextInput="propertyTextBox_textInput" PreviewKeyDown="propertyTextBox_keyDown">30</TextBox>
+            <TextBox PreviewTextInput="propertyTextBox_textInput" PreviewKeyDown="propertyTextBox_keyDown"
+                     Text="{Binding DisplayImageHeight, Converter={StaticResource stringToPropertyValue}, FallbackValue=30}"></TextBox>
             <CheckBox IsChecked="True" Content="Сохранить пропорции"/>
             <Button Content="Применить" Width="80" Margin="0 15 0 15" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
             <TextBlock>Ширина фрагмента, см</TextBlock>
@@ -65,7 +69,7 @@
                     </Button>
                 </StackPanel>
                 <Image x:Name="mainImage" Grid.Row="1" Margin="15 0 15 15" Source="resources/default_image.png" Cursor="Hand"
-                           PreviewMouseLeftButtonDown="click_LoadImageOnForm" Stretch="Uniform">
+                           PreviewMouseLeftButtonDown="click_LoadImageOnForm" AllowDrop="True" Drop="drop_LoadImageOnForm" Stretch="Uniform">
                     <Image.ToolTip>
                         <ToolTip Content="Загрузить изображение"/>
                     </Image.ToolTip>

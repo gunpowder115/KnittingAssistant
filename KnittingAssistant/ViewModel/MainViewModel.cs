@@ -35,6 +35,30 @@ namespace KnittingAssistant.ViewModel
         public static readonly DependencyProperty MainImageHeightProperty =
             DependencyProperty.Register("MainImageHeight", typeof(double), typeof(MainViewModel));
 
+        public double MainImageRatio
+        {
+            get { return (double)GetValue(MainImageRatioProperty); }
+            set { SetValue(MainImageRatioProperty, value); }
+        }
+        public static readonly DependencyProperty MainImageRatioProperty =
+            DependencyProperty.Register("MainImageRatio", typeof(double), typeof(MainViewModel));
+
+        public double DisplayImageWidth
+        {
+            get { return (double)GetValue(DisplayImageWidthProperty); }
+            set { SetValue(DisplayImageWidthProperty, value); }
+        }
+        public static readonly DependencyProperty DisplayImageWidthProperty =
+            DependencyProperty.Register("DisplayImageWidth", typeof(double), typeof(MainViewModel));
+
+        public double DisplayImageHeight
+        {
+            get { return (double)GetValue(DisplayImageHeightProperty); }
+            set { SetValue(DisplayImageHeightProperty, value); }
+        }
+        public static readonly DependencyProperty DisplayImageHeightProperty =
+            DependencyProperty.Register("DisplayImageHeight", typeof(double), typeof(MainViewModel));
+
         #endregion
 
         public void SetSettingsIsEnabled(bool imageIsLoaded)
@@ -42,14 +66,25 @@ namespace KnittingAssistant.ViewModel
             SettingsIsEnabled = imageIsLoaded;
         }
 
-        public void SetMainImageWidth()
+        public void SetMainImageWidth(double newMainImageWidth)
         {
-
+            MainImageWidth = newMainImageWidth;
         }
 
-        public void SetMainImageHeight()
+        public void SetMainImageHeight(double newMainImageHeight)
         {
+            MainImageHeight = newMainImageHeight;
+        }
 
+        public void SetMainImageRatio(double mainImageRatio)
+        {
+            MainImageRatio = mainImageRatio;
+        }
+
+        public void SetDisplayImageSize(double displayImageWidth, double displayImageHeight)
+        {
+            DisplayImageWidth = displayImageWidth;
+            DisplayImageHeight = displayImageHeight;
         }
     }
 }

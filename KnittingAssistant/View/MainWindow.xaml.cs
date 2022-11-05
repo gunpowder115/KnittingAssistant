@@ -50,11 +50,30 @@ namespace KnittingAssistant.View
 
             if (fileDialogPicture.ShowDialog() == true)
             {
-                mainImage.Source = new BitmapImage(new Uri(fileDialogPicture.FileName));
-                imageLoaded = true;
-                (DataContext as MainViewModel).SetSettingsIsEnabled(imageLoaded);
-                getMainlImageSize();
+                string imageFilename = fileDialogPicture.FileName;
+                loadImageOnForm(imageFilename);
             }
+        }
+
+        private void drop_LoadImageOnForm(object sender, DragEventArgs e)
+        {
+            string imageFilename = ((string[])e.Data.GetData(DataFormats.FileDrop))[0];
+            if (imageFilename.Contains(".bmp") || imageFilename.Contains(".jpg") ||
+                imageFilename.Contains(".gif") || imageFilename.Contains(".png") ||
+                imageFilename.Contains(".tif"))
+            {
+                loadImageOnForm(imageFilename);
+            }
+
+        }
+
+        private void loadImageOnForm(string imageFilename)
+        {
+            mainImage.Source = new BitmapImage(new Uri(imageFilename));
+            imageLoaded = true;
+            (DataContext as MainViewModel).SetSettingsIsEnabled(imageLoaded);
+            getMainlImageSize();
+            setDisplayImageSize();
         }
 
         private void propertyTextBox_textInput(object sender, TextCompositionEventArgs e)
@@ -74,6 +93,15 @@ namespace KnittingAssistant.View
         {
             mainImageWidth = mainImage.Source.Width;
             mainImageHeight = mainImage.Source.Height;
+            mainImageRatio = mainImageWidth / mainImageHeight;
+            (DataContext as MainViewModel).SetMainImageWidth(mainImageWidth);
+            (DataContext as MainViewModel).SetMainImageHeight(mainImageHeight);
+            (DataContext as MainViewModel).SetMainImageRatio(mainImageRatio);
+        }
+
+        private void setDisplayImageSize()
+        {
+            (DataContext as MainViewModel).SetDisplayImageSize(100.0, 100.0 / mainImageRatio);
         }
     }
 }
