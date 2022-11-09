@@ -16,39 +16,15 @@ namespace KnittingAssistant.ViewModel
             get { return (bool)GetValue(SettingsIsEnabledProperty); }
             set { SetValue(SettingsIsEnabledProperty, value); }
         }
-        public static readonly DependencyProperty SettingsIsEnabledProperty =
+        private static readonly DependencyProperty SettingsIsEnabledProperty =
             DependencyProperty.Register("SettingsIsEnabled", typeof(bool), typeof(MainViewModel));
-
-        public double MainImageWidth
-        {
-            get { return (double)GetValue(MainImageWidthProperty); }
-            set { SetValue(MainImageWidthProperty, value); }
-        }
-        public static readonly DependencyProperty MainImageWidthProperty =
-            DependencyProperty.Register("MainImageWidth", typeof(double), typeof(MainViewModel));
-
-        public double MainImageHeight
-        {
-            get { return (double)GetValue(MainImageHeightProperty); }
-            set { SetValue(MainImageHeightProperty, value); }
-        }
-        public static readonly DependencyProperty MainImageHeightProperty =
-            DependencyProperty.Register("MainImageHeight", typeof(double), typeof(MainViewModel));
-
-        public double MainImageRatio
-        {
-            get { return (double)GetValue(MainImageRatioProperty); }
-            set { SetValue(MainImageRatioProperty, value); }
-        }
-        public static readonly DependencyProperty MainImageRatioProperty =
-            DependencyProperty.Register("MainImageRatio", typeof(double), typeof(MainViewModel));
 
         public double DisplayImageWidth
         {
             get { return (double)GetValue(DisplayImageWidthProperty); }
             set { SetValue(DisplayImageWidthProperty, value); }
         }
-        public static readonly DependencyProperty DisplayImageWidthProperty =
+        private static readonly DependencyProperty DisplayImageWidthProperty =
             DependencyProperty.Register("DisplayImageWidth", typeof(double), typeof(MainViewModel));
 
         public double DisplayImageHeight
@@ -56,35 +32,79 @@ namespace KnittingAssistant.ViewModel
             get { return (double)GetValue(DisplayImageHeightProperty); }
             set { SetValue(DisplayImageHeightProperty, value); }
         }
-        public static readonly DependencyProperty DisplayImageHeightProperty =
+        private static readonly DependencyProperty DisplayImageHeightProperty =
             DependencyProperty.Register("DisplayImageHeight", typeof(double), typeof(MainViewModel));
 
+        public double DisplayImageFragmentWidth
+        {
+            get { return (double)GetValue(DisplayImageFragmentWidthProperty); }
+            set { SetValue(DisplayImageFragmentWidthProperty, value); }
+        }
+        private static readonly DependencyProperty DisplayImageFragmentWidthProperty =
+            DependencyProperty.Register("DisplayImageFragmentWidth", typeof(double), typeof(MainViewModel));
+
+        public double DisplayImageFragmentHeight
+        {
+            get { return (double)GetValue(DisplayImageFragmentHeightProperty); }
+            set { SetValue(DisplayImageFragmentHeightProperty, value); }
+        }
+        private static readonly DependencyProperty DisplayImageFragmentHeightProperty =
+            DependencyProperty.Register("DisplayImageFragmentHeight", typeof(double), typeof(MainViewModel));
+
         #endregion
+
+        public double MainImageRatio { get; set; }
+        public double ImageFragmentRatio { get; set; }
+
+        private double lastDisplayImageWidth, lastDisplayImageHeight;
+        private double lastDisplayImageFragmentWidth, lastDisplayImageFragmentHeight;
+
+        public MainViewModel()
+        {
+            SettingsIsEnabled = false;
+            DisplayImageWidth = lastDisplayImageWidth = 100.0;
+            DisplayImageHeight = lastDisplayImageHeight = 100.0;
+        }
 
         public void SetSettingsIsEnabled(bool imageIsLoaded)
         {
             SettingsIsEnabled = imageIsLoaded;
         }
 
-        public void SetMainImageWidth(double newMainImageWidth)
-        {
-            MainImageWidth = newMainImageWidth;
-        }
-
-        public void SetMainImageHeight(double newMainImageHeight)
-        {
-            MainImageHeight = newMainImageHeight;
-        }
-
-        public void SetMainImageRatio(double mainImageRatio)
-        {
-            MainImageRatio = mainImageRatio;
-        }
-
         public void SetDisplayImageSize(double displayImageWidth, double displayImageHeight)
         {
-            DisplayImageWidth = displayImageWidth;
-            DisplayImageHeight = displayImageHeight;
+            bool widthChanged = displayImageWidth != lastDisplayImageWidth;
+            bool heightChanged = displayImageHeight != lastDisplayImageHeight;
+
+            if (widthChanged && heightChanged)
+                heightChanged = false;
+
+            if (widthChanged)
+            {
+                DisplayImageHeight = lastDisplayImageHeight = displayImageWidth / MainImageRatio;
+            }
+            if (heightChanged)
+            {
+                DisplayImageWidth = lastDisplayImageWidth = displayImageHeight * MainImageRatio;
+            }
+        }
+
+        public void SetDisplayImageFragmentSize(double displayImageFragmentWidth, double displayImageFragmentHeight)
+        {
+            bool widthChanged = displayImageFragmentWidth != lastDisplayImageFragmentWidth;
+            bool heightChanged = displayImageFragmentHeight != lastDisplayImageFragmentHeight;
+
+            if (widthChanged && heightChanged)
+                heightChanged = false;
+
+            if (widthChanged)
+            {
+                DisplayImageFragmentHeight = lastDisplayImageFragmentHeight = displayImageFragmentWidth / ImageFragmentRatio;
+            }
+            if (heightChanged)
+            {
+                DisplayImageFragmentWidth = lastDisplayImageFragmentWidth = displayImageFragmentHeight * ImageFragmentRatio;
+            }
         }
     }
 }

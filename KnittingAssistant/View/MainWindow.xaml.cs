@@ -78,9 +78,11 @@ namespace KnittingAssistant.View
 
         private void propertyTextBox_textInput(object sender, TextCompositionEventArgs e)
         {
-            int val;
-            if (!Int32.TryParse(e.Text, out val))
+            double val;
+            if (!double.TryParse(e.Text, out val))
                 e.Handled = true;
+            if (e.Text[e.Text.Length - 1] == '.' || e.Text[e.Text.Length - 1] == ',')
+                e.Handled = false;
         }
 
         private void propertyTextBox_keyDown(object sender, KeyEventArgs e)
@@ -89,14 +91,22 @@ namespace KnittingAssistant.View
                 e.Handled = true;
         }
 
+        private void clickButton_ApplyProperty(object sender, RoutedEventArgs e)
+        {
+            (DataContext as MainViewModel).SetDisplayImageSize(double.Parse(MainImageWidthTextBlock.Text), double.Parse(MainImageHeightTextBlock.Text));
+        }
+
         private void getMainlImageSize()
         {
             mainImageWidth = mainImage.Source.Width;
             mainImageHeight = mainImage.Source.Height;
             mainImageRatio = mainImageWidth / mainImageHeight;
-            (DataContext as MainViewModel).SetMainImageWidth(mainImageWidth);
-            (DataContext as MainViewModel).SetMainImageHeight(mainImageHeight);
-            (DataContext as MainViewModel).SetMainImageRatio(mainImageRatio);
+            (DataContext as MainViewModel).MainImageRatio = mainImageRatio;
+        }
+
+        private void MainImageWidthTextBlock_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
         }
 
         private void setDisplayImageSize()

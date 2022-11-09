@@ -29,19 +29,20 @@
         </Grid.ColumnDefinitions>
         <StackPanel IsEnabled="{Binding SettingsIsEnabled}" Grid.Column="0" Margin="5 10 5 0">
             <TextBlock>Ширина изображения, см</TextBlock>
-            <TextBox PreviewTextInput="propertyTextBox_textInput" PreviewKeyDown="propertyTextBox_keyDown"
+            <TextBox x:Name="MainImageWidthTextBlock" PreviewTextInput="propertyTextBox_textInput" PreviewKeyDown="propertyTextBox_keyDown"
                      Text="{Binding DisplayImageWidth, Converter={StaticResource stringToPropertyValue}, FallbackValue=50}"></TextBox>
             <TextBlock>Высота изображения, см</TextBlock>
-            <TextBox PreviewTextInput="propertyTextBox_textInput" PreviewKeyDown="propertyTextBox_keyDown"
+            <TextBox x:Name="MainImageHeightTextBlock" PreviewTextInput="propertyTextBox_textInput" PreviewKeyDown="propertyTextBox_keyDown"
                      Text="{Binding DisplayImageHeight, Converter={StaticResource stringToPropertyValue}, FallbackValue=30}"></TextBox>
-            <CheckBox IsChecked="True" Content="Сохранить пропорции"/>
-            <Button Content="Применить" Width="80" Margin="0 15 0 15" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+            <CheckBox IsChecked="True" Content="Сохранить пропорции" Margin="0 5 0 15"/>
             <TextBlock>Ширина фрагмента, см</TextBlock>
             <TextBox PreviewTextInput="propertyTextBox_textInput" PreviewKeyDown="propertyTextBox_keyDown">1</TextBox>
             <TextBlock>Высота фрагмента, см</TextBlock>
             <TextBox PreviewTextInput="propertyTextBox_textInput" PreviewKeyDown="propertyTextBox_keyDown">1</TextBox>
             <CheckBox IsChecked="True" Content="Квадратный фрагмент"/>
-            <Button Content="Разбить" Width="80" Margin="0 15 0 0" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+            <Button Content="Применить" Width="80" Margin="0 15 0 15" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                    Click="clickButton_ApplyProperty"/>
+            <Button Content="Разбить" Width="80" Margin="0 5 0 0" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
         </StackPanel>
         <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3"
                       HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
