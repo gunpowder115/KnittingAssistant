@@ -76,22 +76,12 @@ namespace KnittingAssistant.View
             setDisplayImageSize();
         }
 
-        private void clickButton_ApplyProperty(object sender, RoutedEventArgs e)
-        {
-            (DataContext as MainViewModel).SetDisplayImageSize(double.Parse(MainImageWidthTextBlock.Text), double.Parse(MainImageHeightTextBlock.Text));
-        }
-
         private void getMainlImageSize()
         {
             mainImageWidth = mainImage.Source.Width;
             mainImageHeight = mainImage.Source.Height;
             mainImageRatio = mainImageWidth / mainImageHeight;
             (DataContext as MainViewModel).MainImageRatio = mainImageRatio;
-        }
-
-        private void MainImageWidthTextBlock_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-
         }
 
         private void setDisplayImageSize()

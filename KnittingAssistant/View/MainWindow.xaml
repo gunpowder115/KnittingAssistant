@@ -60,9 +60,7 @@
                 </TextBox.Text>
             </TextBox>
             <CheckBox IsChecked="True" Content="Квадратный фрагмент"/>
-            <Button Content="Применить" Width="80" Margin="0 15 0 15" HorizontalAlignment="Center" VerticalAlignment="Bottom"
-                    Click="clickButton_ApplyProperty"/>
-            <Button Content="Разбить" Width="80" Margin="0 5 0 0" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+            <Button Content="Разбить" Width="80" Margin="0 15 0 15" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
         </StackPanel>
         <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3"
                       HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
@@ -90,7 +88,7 @@
                     </Button>
                 </StackPanel>
                 <Image x:Name="mainImage" Grid.Row="1" Margin="15 0 15 15" Source="resources/default_image.png" Cursor="Hand"
-                           PreviewMouseLeftButtonDown="click_LoadImageOnForm" AllowDrop="True" Drop="drop_LoadImageOnForm" Stretch="Uniform">
+                               PreviewMouseLeftButtonDown="click_LoadImageOnForm" AllowDrop="True" Drop="drop_LoadImageOnForm" Stretch="Uniform">
                     <Image.ToolTip>
                         <ToolTip Content="Загрузить изображение"/>
                     </Image.ToolTip>
