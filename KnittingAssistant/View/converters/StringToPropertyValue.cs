@@ -5,16 +5,36 @@ using System.Windows;
 
 namespace KnittingAssistant.View.Converters
 {
-    class StringToPropertyValue : IValueConverter
+    class StringToPropertyValue : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((int)(double)value).ToString();
+            double source = (double)value[0];
+            string text = (string)value[1];
+
+            object result;
+            if (double.TryParse(text, NumberStyles.AllowDecimalPoint, culture, out double target))
+                result = Binding.DoNothing;
+            else
+                result = source.ToString(culture);
+
+            return result;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetType, object parameter, CultureInfo culture)
         {
-            return DependencyProperty.UnsetValue;
+            object result = null;
+            string text = (string)value;
+
+            if (string.IsNullOrWhiteSpace(text))
+                result = 0.0;
+            else if (double.TryParse(text, NumberStyles.AllowDecimalPoint, culture, out double target))
+                result = target;
+
+            if (result == null)
+                return null;
+
+            return new object[] { result };
         }
     }
 }

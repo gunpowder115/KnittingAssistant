@@ -7,49 +7,64 @@ using System.Windows;
 
 namespace KnittingAssistant.ViewModel
 {
-    public class MainViewModel : DependencyObject
+    public class MainViewModel : ViewModelBase
     {
         #region Dependency Properties
 
+        private bool m_SettingsIsEnabled;
         public bool SettingsIsEnabled
         {
-            get { return (bool)GetValue(SettingsIsEnabledProperty); }
-            set { SetValue(SettingsIsEnabledProperty, value); }
+            get { return m_SettingsIsEnabled; }
+            set 
+            {
+                m_SettingsIsEnabled = value;
+                OnPropertyChanged("SettingsIsEnabled");
+            }
         }
-        private static readonly DependencyProperty SettingsIsEnabledProperty =
-            DependencyProperty.Register("SettingsIsEnabled", typeof(bool), typeof(MainViewModel));
 
+        private double m_DisplayImageWidth;
         public double DisplayImageWidth
         {
-            get { return (double)GetValue(DisplayImageWidthProperty); }
-            set { SetValue(DisplayImageWidthProperty, value); }
+            get { return m_DisplayImageWidth; }
+            set 
+            {
+                m_DisplayImageWidth = value;
+                OnPropertyChanged("DisplayImageWidth");
+            }
         }
-        private static readonly DependencyProperty DisplayImageWidthProperty =
-            DependencyProperty.Register("DisplayImageWidth", typeof(double), typeof(MainViewModel));
 
+        private double m_DisplayImageHeight;
         public double DisplayImageHeight
         {
-            get { return (double)GetValue(DisplayImageHeightProperty); }
-            set { SetValue(DisplayImageHeightProperty, value); }
+            get { return m_DisplayImageHeight; }
+            set 
+            {
+                m_DisplayImageHeight = value;
+                OnPropertyChanged("DisplayImageHeight");
+            }
         }
-        private static readonly DependencyProperty DisplayImageHeightProperty =
-            DependencyProperty.Register("DisplayImageHeight", typeof(double), typeof(MainViewModel));
 
+        private double m_DisplayImageFragmentWidth;
         public double DisplayImageFragmentWidth
         {
-            get { return (double)GetValue(DisplayImageFragmentWidthProperty); }
-            set { SetValue(DisplayImageFragmentWidthProperty, value); }
+            get { return m_DisplayImageFragmentWidth; }
+            set
+            {
+                m_DisplayImageFragmentWidth = value;
+                OnPropertyChanged("DisplayImageFragmentWidth");
+            }
         }
-        private static readonly DependencyProperty DisplayImageFragmentWidthProperty =
-            DependencyProperty.Register("DisplayImageFragmentWidth", typeof(double), typeof(MainViewModel));
 
+        private double m_DisplayImageFragmentHeight;
         public double DisplayImageFragmentHeight
         {
-            get { return (double)GetValue(DisplayImageFragmentHeightProperty); }
-            set { SetValue(DisplayImageFragmentHeightProperty, value); }
+            get { return m_DisplayImageFragmentHeight; }
+            set
+            {
+                m_DisplayImageFragmentHeight = value;
+                OnPropertyChanged("DisplayImageFragmentHeight");
+            }
         }
-        private static readonly DependencyProperty DisplayImageFragmentHeightProperty =
-            DependencyProperty.Register("DisplayImageFragmentHeight", typeof(double), typeof(MainViewModel));
 
         #endregion
 

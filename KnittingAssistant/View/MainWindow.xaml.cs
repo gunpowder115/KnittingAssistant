@@ -76,21 +76,6 @@ namespace KnittingAssistant.View
             setDisplayImageSize();
         }
 
-        private void propertyTextBox_textInput(object sender, TextCompositionEventArgs e)
-        {
-            double val;
-            if (!double.TryParse(e.Text, out val))
-                e.Handled = true;
-            if (e.Text[e.Text.Length - 1] == '.' || e.Text[e.Text.Length - 1] == ',')
-                e.Handled = false;
-        }
-
-        private void propertyTextBox_keyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Space)
-                e.Handled = true;
-        }
-
         private void clickButton_ApplyProperty(object sender, RoutedEventArgs e)
         {
             (DataContext as MainViewModel).SetDisplayImageSize(double.Parse(MainImageWidthTextBlock.Text), double.Parse(MainImageHeightTextBlock.Text));

@@ -29,16 +29,36 @@
         </Grid.ColumnDefinitions>
         <StackPanel IsEnabled="{Binding SettingsIsEnabled}" Grid.Column="0" Margin="5 10 5 0">
             <TextBlock>Ширина изображения, см</TextBlock>
-            <TextBox x:Name="MainImageWidthTextBlock" PreviewTextInput="propertyTextBox_textInput" PreviewKeyDown="propertyTextBox_keyDown"
-                     Text="{Binding DisplayImageWidth, Converter={StaticResource stringToPropertyValue}, FallbackValue=50}"></TextBox>
+            <TextBox x:Name="MainImageWidthTextBlock">
+                <TextBox.Text>
+                    <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged">
+                        <Binding Path="DisplayImageWidth"/>
+                        <Binding Path="Text" ElementName="MainImageWidthTextBlock"/>
+                    </MultiBinding>
+                </TextBox.Text>
+            </TextBox>
             <TextBlock>Высота изображения, см</TextBlock>
-            <TextBox x:Name="MainImageHeightTextBlock" PreviewTextInput="propertyTextBox_textInput" PreviewKeyDown="propertyTextBox_keyDown"
-                     Text="{Binding DisplayImageHeight, Converter={StaticResource stringToPropertyValue}, FallbackValue=30}"></TextBox>
+            <TextBox x:Name="MainImageHeightTextBlock">
+                <TextBox.Text>
+                    <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged">
+                        <Binding Path="DisplayImageHeight"/>
+                        <Binding Path="Text" ElementName="MainImageHeightTextBlock"/>
+                    </MultiBinding>
+                </TextBox.Text>
+            </TextBox>
             <CheckBox IsChecked="True" Content="Сохранить пропорции" Margin="0 5 0 15"/>
             <TextBlock>Ширина фрагмента, см</TextBlock>
-            <TextBox PreviewTextInput="propertyTextBox_textInput" PreviewKeyDown="propertyTextBox_keyDown">1</TextBox>
+            <TextBox x:Name="FragmentImageWidthTextBlock">
+                <TextBox.Text>
+                    <Binding Path="DisplayImageWidth"/>
+                </TextBox.Text>
+            </TextBox>
             <TextBlock>Высота фрагмента, см</TextBlock>
-            <TextBox PreviewTextInput="propertyTextBox_textInput" PreviewKeyDown="propertyTextBox_keyDown">1</TextBox>
+            <TextBox x:Name="FragmentImageHeightTextBlock">
+                <TextBox.Text>
+                    <Binding Path="DisplayImageHeight"/>
+                </TextBox.Text>
+            </TextBox>
             <CheckBox IsChecked="True" Content="Квадратный фрагмент"/>
             <Button Content="Применить" Width="80" Margin="0 15 0 15" HorizontalAlignment="Center" VerticalAlignment="Bottom"
                     Click="clickButton_ApplyProperty"/>
