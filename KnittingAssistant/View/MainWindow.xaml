@@ -5,21 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KnittingAssistant.View"
         xmlns:converters="clr-namespace:KnittingAssistant.View.Converters"
+        xmlns:usercontrols="clr-namespace:KnittingAssistant.View.userControls"
         mc:Ignorable="d"
         Title="KnittingAsstistant" Height="768" Width="1024">
     <Window.Resources>
-        <Style TargetType="TextBox">
-            <Setter Property="Margin" Value="5 5 5 5"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        </Style>
-        <Style TargetType="CheckBox">
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="0 5 0 5"/>
-        </Style>
-        <Style TargetType="TextBlock">
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-        </Style>
-        <converters:StringToPropertyValue x:Key="stringToPropertyValue"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -27,41 +16,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel IsEnabled="{Binding SettingsIsEnabled}" Grid.Column="0" Margin="5 10 5 0">
-            <TextBlock>Ширина изображения, см</TextBlock>
-            <TextBox x:Name="MainImageWidthTextBlock">
-                <TextBox.Text>
-                    <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged">
-                        <Binding Path="DisplayImageWidth"/>
-                        <Binding Path="Text" ElementName="MainImageWidthTextBlock"/>
-                    </MultiBinding>
-                </TextBox.Text>
-            </TextBox>
-            <TextBlock>Высота изображения, см</TextBlock>
-            <TextBox x:Name="MainImageHeightTextBlock">
-                <TextBox.Text>
-                    <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged">
-                        <Binding Path="DisplayImageHeight"/>
-                        <Binding Path="Text" ElementName="MainImageHeightTextBlock"/>
-                    </MultiBinding>
-                </TextBox.Text>
-            </TextBox>
-            <CheckBox IsChecked="True" Content="Сохранить пропорции" Margin="0 5 0 15"/>
-            <TextBlock>Ширина фрагмента, см</TextBlock>
-            <TextBox x:Name="FragmentImageWidthTextBlock">
-                <TextBox.Text>
-                    <Binding Path="DisplayImageWidth"/>
-                </TextBox.Text>
-            </TextBox>
-            <TextBlock>Высота фрагмента, см</TextBlock>
-            <TextBox x:Name="FragmentImageHeightTextBlock">
-                <TextBox.Text>
-                    <Binding Path="DisplayImageHeight"/>
-                </TextBox.Text>
-            </TextBox>
-            <CheckBox IsChecked="True" Content="Квадратный фрагмент"/>
-            <Button Content="Разбить" Width="80" Margin="0 15 0 15" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
-        </StackPanel>
+        <usercontrols:PropertyArea Grid.Column="0" Margin="5 10 5 0"/>
         <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3"
                       HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
         <Grid Grid.Column="2">
@@ -70,29 +25,8 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <StackPanel Margin ="15 15 15 0" DockPanel.Dock="Bottom" Orientation="Horizontal" FlowDirection="RightToLeft" Height="45">
-                    <Button ToolTip="Показать сетку">
-                        <Image Source="resources/grid_off_icon_1.png"></Image>
-                    </Button>
-                    <Button IsEnabled="False">
-                        <Button.ToolTip>
-                            <ToolTip Content="Сохранить изображение" ToolTipService.ShowOnDisabled="True"/>
-                        </Button.ToolTip>
-                        <Image Source="resources/save_image_icon_1.jpg"></Image>
-                    </Button>
-                    <Button ToolTip="Загрузить изображение" Click="click_LoadImageOnForm">
-                        <Image Source="resources/load_image_icon_2.jpg"></Image>
-                    </Button>
-                    <Button ToolTip="Палитра цветов">
-                        <Image Source="resources/palette_icon_1.png"></Image>
-                    </Button>
-                </StackPanel>
-                <Image x:Name="mainImage" Grid.Row="1" Margin="15 0 15 15" Source="resources/default_image.png" Cursor="Hand"
-                               PreviewMouseLeftButtonDown="click_LoadImageOnForm" AllowDrop="True" Drop="drop_LoadImageOnForm" Stretch="Uniform">
-                    <Image.ToolTip>
-                        <ToolTip Content="Загрузить изображение"/>
-                    </Image.ToolTip>
-                </Image>
+                <usercontrols:ToolbarArea Grid.Row="0" Margin ="15 15 15 0"/>
+                <usercontrols:ImageArea Grid.Row="1" Margin="15 0 15 15"/>
             </Grid>
         </Grid>
     </Grid>

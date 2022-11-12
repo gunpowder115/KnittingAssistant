@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="KnittingAssistant.View.userControls.ToolbarArea"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:KnittingAssistant.View.userControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="1024">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" FlowDirection="RightToLeft" Height="45">
+        <Button ToolTip="Показать сетку">
+            <Image Source="../resources/grid_off_icon_1.png"></Image>
+        </Button>
+        <Button IsEnabled="False">
+            <Button.ToolTip>
+                <ToolTip Content="Сохранить изображение" ToolTipService.ShowOnDisabled="True"/>
+            </Button.ToolTip>
+            <Image Source="../resources/save_image_icon_1.jpg"></Image>
+        </Button>
+        <Button ToolTip="Загрузить изображение">
+            <Image Source="../resources/load_image_icon_2.jpg"></Image>
+        </Button>
+        <Button ToolTip="Палитра цветов">
+            <Image Source="../resources/palette_icon_1.png"></Image>
+        </Button>
+    </StackPanel>
+</UserControl>
