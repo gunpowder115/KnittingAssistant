@@ -40,20 +40,28 @@
                 </MultiBinding>
             </TextBox.Text>
         </TextBox>
-        <CheckBox IsChecked="True" Content="Сохранить пропорции" Margin="0 5 0 15"/>
+        <CheckBox IsChecked="{Binding KeepRatioOfMainImage}" Content="Сохранить пропорции" Margin="0 5 0 15"/>
         <TextBlock>Ширина фрагмента, см</TextBlock>
         <TextBox x:Name="FragmentImageWidthTextBlock">
             <TextBox.Text>
-                <Binding Path="DisplayImageWidth"/>
+                <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged">
+                    <Binding Path="DisplayImageFragmentWidth"/>
+                    <!--<Binding Path="DisplayImageWidth"/>-->
+                    <Binding Path="Text" ElementName="FragmentImageWidthTextBlock"/>
+                </MultiBinding>
             </TextBox.Text>
         </TextBox>
         <TextBlock>Высота фрагмента, см</TextBlock>
         <TextBox x:Name="FragmentImageHeightTextBlock">
             <TextBox.Text>
-                <Binding Path="DisplayImageHeight"/>
+                <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged">
+                    <Binding Path="DisplayImageFragmentHeight"/>
+                    <!--<Binding Path="DisplayImageHeight"/>-->
+                    <Binding Path="Text" ElementName="FragmentImageHeightTextBlock"/>
+                </MultiBinding>
             </TextBox.Text>
         </TextBox>
-        <CheckBox IsChecked="True" Content="Квадратный фрагмент"/>
+        <CheckBox IsChecked="{Binding IsSquareFragment}" Content="Квадратный фрагмент"/>
         <Button Content="Разбить" Width="80" Margin="0 15 0 15" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
     </StackPanel>
 </UserControl>

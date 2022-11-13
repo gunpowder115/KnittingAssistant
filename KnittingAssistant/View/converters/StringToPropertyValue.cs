@@ -9,11 +9,11 @@ namespace KnittingAssistant.View.Converters
     {
         public object Convert(object[] value, Type targetType, object parameter, CultureInfo culture)
         {
-            double source = (double)value[0];
+            double source = Math.Round((double)value[0], 2);
             string text = (string)value[1];
 
             object result;
-            if (double.TryParse(text, NumberStyles.AllowDecimalPoint, culture, out double target))
+            if (double.TryParse(text, NumberStyles.AllowDecimalPoint, culture, out double target) && target == source)
                 result = Binding.DoNothing;
             else
                 result = source.ToString(culture);
@@ -34,6 +34,7 @@ namespace KnittingAssistant.View.Converters
             if (result == null)
                 return null;
 
+            result = Math.Round((double)result, 2);
             return new object[] { result };
         }
     }

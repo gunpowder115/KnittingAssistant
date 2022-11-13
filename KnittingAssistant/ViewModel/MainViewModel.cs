@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Runtime;
 
 namespace KnittingAssistant.ViewModel
 {
@@ -28,8 +29,13 @@ namespace KnittingAssistant.ViewModel
             get { return m_DisplayImageWidth; }
             set 
             {
-                m_DisplayImageWidth = value;
+                m_DisplayImageWidth = SetDisplayFirstImageDimension(value, DisplayImageFragmentWidth);
                 OnPropertyChanged("DisplayImageWidth");
+
+                double newDisplayHeight = SetDisplaySecondImageDimension(value, DisplayImageFragmentHeight, 1 / MainImageRatio);
+                if (m_DisplayImageHeight != newDisplayHeight)
+                    m_DisplayImageHeight = newDisplayHeight;
+                OnPropertyChanged("DisplayImageHeight");
             }
         }
 
@@ -39,8 +45,13 @@ namespace KnittingAssistant.ViewModel
             get { return m_DisplayImageHeight; }
             set 
             {
-                m_DisplayImageHeight = value;
+                m_DisplayImageHeight = SetDisplayFirstImageDimension(value, DisplayImageFragmentHeight);
                 OnPropertyChanged("DisplayImageHeight");
+
+                double newDisplayWidth = SetDisplaySecondImageDimension(value, DisplayImageFragmentWidth, MainImageRatio);
+                if (m_DisplayImageWidth != newDisplayWidth)
+                    m_DisplayImageWidth = newDisplayWidth;
+                OnPropertyChanged("DisplayImageWidth");
             }
         }
 
@@ -52,6 +63,9 @@ namespace KnittingAssistant.ViewModel
             {
                 m_DisplayImageFragmentWidth = value;
                 OnPropertyChanged("DisplayImageFragmentWidth");
+
+                m_DisplayImageFragmentHeight = m_DisplayImageFragmentWidth;
+                OnPropertyChanged("DisplayImageFragmentHeight");
             }
         }
 
@@ -63,12 +77,37 @@ namespace KnittingAssistant.ViewModel
             {
                 m_DisplayImageFragmentHeight = value;
                 OnPropertyChanged("DisplayImageFragmentHeight");
+
+                m_DisplayImageFragmentWidth = m_DisplayImageFragmentHeight;
+                OnPropertyChanged("DisplayImageFragmentWidth");
+            }
+        }
+
+        private bool m_KeepRatioOfMainImage;
+        public bool KeepRatioOfMainImage
+        {
+            get { return m_KeepRatioOfMainImage; }
+            set
+            {
+                m_KeepRatioOfMainImage = value;
+                OnPropertyChanged("KeepRatioOfMainImage");
+            }
+        }
+
+        private bool m_IsSquareFragment;
+        public bool IsSquareFragment
+        {
+            get { return m_IsSquareFragment; }
+            set
+            {
+                m_IsSquareFragment = value;
+                OnPropertyChanged("IsSquareFragment");
             }
         }
 
         #endregion
 
-        public double MainImageRatio { get; set; }
+        public double MainImageRatio { get; set; } = 1.0;
         public double ImageFragmentRatio { get; set; }
 
         private double lastDisplayImageWidth, lastDisplayImageHeight;
@@ -77,8 +116,25 @@ namespace KnittingAssistant.ViewModel
         public MainViewModel()
         {
             SettingsIsEnabled = false;
+            DisplayImageFragmentWidth = 1.0;
+            DisplayImageFragmentHeight = 1.0;
             DisplayImageWidth = lastDisplayImageWidth = 100.0;
             DisplayImageHeight = lastDisplayImageHeight = 100.0;
+
+            KeepRatioOfMainImage = true;
+            IsSquareFragment = true;
+        }
+
+        public double SetDisplayFirstImageDimension(double firstImageDimensionInput, double fragmentDimension)
+        {
+            int newFragmentCountDimension = (int)Math.Round(firstImageDimensionInput / fragmentDimension);
+            return newFragmentCountDimension * fragmentDimension;
+        }
+
+        public double SetDisplaySecondImageDimension(double firstImageDimensionInput, double fragmentDimension, double ratio)
+        {
+            int newFragmentCountDimension = (int)Math.Round(firstImageDimensionInput * ratio / fragmentDimension);
+            return newFragmentCountDimension * fragmentDimension;
         }
 
         public void SetSettingsIsEnabled(bool imageIsLoaded)
