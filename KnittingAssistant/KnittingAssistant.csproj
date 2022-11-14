@@ -26,8 +26,4 @@
     <Resource Include="View\resources\save_image_icon_1.jpg" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Model\" />
-  </ItemGroup>
-
 </Project>

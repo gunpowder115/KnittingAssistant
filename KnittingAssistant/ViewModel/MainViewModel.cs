@@ -108,18 +108,15 @@ namespace KnittingAssistant.ViewModel
         #endregion
 
         public double MainImageRatio { get; set; } = 1.0;
-        public double ImageFragmentRatio { get; set; }
-
-        private double lastDisplayImageWidth, lastDisplayImageHeight;
-        private double lastDisplayImageFragmentWidth, lastDisplayImageFragmentHeight;
+        public double FragmentRatio { get; set; } = 1.0;
 
         public MainViewModel()
         {
             SettingsIsEnabled = false;
             DisplayImageFragmentWidth = 1.0;
             DisplayImageFragmentHeight = 1.0;
-            DisplayImageWidth = lastDisplayImageWidth = 100.0;
-            DisplayImageHeight = lastDisplayImageHeight = 100.0;
+            DisplayImageWidth = 100.0;
+            DisplayImageHeight = 100.0;
 
             KeepRatioOfMainImage = true;
             IsSquareFragment = true;
@@ -140,42 +137,6 @@ namespace KnittingAssistant.ViewModel
         public void SetSettingsIsEnabled(bool imageIsLoaded)
         {
             SettingsIsEnabled = imageIsLoaded;
-        }
-
-        public void SetDisplayImageSize(double displayImageWidth, double displayImageHeight)
-        {
-            bool widthChanged = displayImageWidth != lastDisplayImageWidth;
-            bool heightChanged = displayImageHeight != lastDisplayImageHeight;
-
-            if (widthChanged && heightChanged)
-                heightChanged = false;
-
-            if (widthChanged)
-            {
-                DisplayImageHeight = lastDisplayImageHeight = displayImageWidth / MainImageRatio;
-            }
-            if (heightChanged)
-            {
-                DisplayImageWidth = lastDisplayImageWidth = displayImageHeight * MainImageRatio;
-            }
-        }
-
-        public void SetDisplayImageFragmentSize(double displayImageFragmentWidth, double displayImageFragmentHeight)
-        {
-            bool widthChanged = displayImageFragmentWidth != lastDisplayImageFragmentWidth;
-            bool heightChanged = displayImageFragmentHeight != lastDisplayImageFragmentHeight;
-
-            if (widthChanged && heightChanged)
-                heightChanged = false;
-
-            if (widthChanged)
-            {
-                DisplayImageFragmentHeight = lastDisplayImageFragmentHeight = displayImageFragmentWidth / ImageFragmentRatio;
-            }
-            if (heightChanged)
-            {
-                DisplayImageFragmentWidth = lastDisplayImageFragmentWidth = displayImageFragmentHeight * ImageFragmentRatio;
-            }
         }
     }
 }
