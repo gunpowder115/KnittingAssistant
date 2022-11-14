@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="1024">
     <Image x:Name="mainImage" Source="../resources/default_image.png" Cursor="Hand"
-                               PreviewMouseLeftButtonDown="click_LoadImageOnForm" AllowDrop="True" Drop="drop_LoadImageOnForm" Stretch="Uniform">
+                                   PreviewMouseLeftButtonDown="click_LoadImageOnForm" AllowDrop="True" Drop="drop_LoadImageOnForm" Stretch="Uniform">
         <Image.ToolTip>
             <ToolTip Content="Загрузить изображение"/>
         </Image.ToolTip>

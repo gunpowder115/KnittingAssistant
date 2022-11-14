@@ -24,17 +24,11 @@ namespace KnittingAssistant.View
     /// </summary>
     public partial class MainWindow : Window
     {
-        static bool imageLoaded;
-        private double mainImageWidth, mainImageHeight;
-        private double mainImageRatio;
-
         public MainWindow()
         {
             InitializeComponent();
 
             this.Loaded += MainWindow_Loaded;
-
-            imageLoaded = false;
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
