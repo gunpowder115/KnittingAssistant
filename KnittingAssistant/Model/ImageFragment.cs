@@ -1,18 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Windows.Controls;
 
 namespace KnittingAssistant.Model
 {
     public class ImageFragment
     {
         Color averageColor; //среднее значение цвета фрагмента по 3 каналам R, G, B
+        Image mainImage; //полное исходное изображение
         BitmapImage imageFragment; //кусок исходного изображения, представленный в фрагменте
         BitmapImage resultFragment; //результирующий фрагмент, закрашенный средний цветом
+        int fragmentWidth, fragmentHeight; //ширина, высота фрагмента в пикселях
+        int mainImageDeltaX, mainImageDeltaY; //смещение исходного изображения относительно фрагмента в пикселях
 
         public ImageFragment(BitmapImage imageFragment)
         {

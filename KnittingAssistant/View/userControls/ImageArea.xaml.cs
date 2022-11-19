@@ -41,7 +41,6 @@ namespace KnittingAssistant.View.userControls
             {
                 loadImageOnForm(imageFilename);
             }
-
         }
 
         private void loadImageOnForm(string imageFilename)
