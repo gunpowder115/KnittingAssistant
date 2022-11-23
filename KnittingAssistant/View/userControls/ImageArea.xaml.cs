@@ -48,7 +48,8 @@ namespace KnittingAssistant.View.userControls
             mainImage.Source = new BitmapImage(new Uri(imageFilename));
             imageLoaded = true;
             (DataContext as MainViewModel).SetSettingsIsEnabled(imageLoaded);
-            (DataContext as MainViewModel).MainImageRatio = mainImage.Source.Width / mainImage.Source.Height;
+            (DataContext as MainViewModel).MainImageWidth = mainImage.Source.Width;
+            (DataContext as MainViewModel).MainImageHeight = mainImage.Source.Height;
 
             (DataContext as MainViewModel).DisplayImageWidth = 100 * (DataContext as MainViewModel).DisplayImageFragmentWidth;
         }

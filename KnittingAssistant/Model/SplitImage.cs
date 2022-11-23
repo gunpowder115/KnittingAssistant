@@ -6,7 +6,7 @@ namespace KnittingAssistant.Model
     public class SplitImage
     {
         ImageFragment[,] imageFragments;
-        int fragmentWidth, fragmentHeight;
+        int fragmentWidthPx, fragmentHeightPx;
 
         public SplitImage(Image mainImage, int numFragmentsInWidth, int numFragmentsInHeight)
         {
