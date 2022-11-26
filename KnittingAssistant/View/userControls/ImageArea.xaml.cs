@@ -51,8 +51,9 @@ namespace KnittingAssistant.View.userControls
             (DataContext as MainViewModel).SetSettingsIsEnabled(imageLoaded);
             (DataContext as MainViewModel).MainImageWidth = mainImage.Source.Width;
             (DataContext as MainViewModel).MainImageHeight = mainImage.Source.Height;
-
             (DataContext as MainViewModel).DisplayImageWidth = 100 * (DataContext as MainViewModel).DisplayImageFragmentWidth;
+
+            (DataContext as MainViewModel).mainImage = mainImage;
         }
     }
 }

@@ -2,6 +2,8 @@
 using Microsoft.Win32;
 using System.Windows.Media.Imaging;
 using KnittingAssistant.View.userControls;
+using KnittingAssistant.Model;
+using System.Windows.Controls;
 
 namespace KnittingAssistant.ViewModel
 {
@@ -108,6 +110,25 @@ namespace KnittingAssistant.ViewModel
 
         #endregion
 
+        #region Relay Commands
+
+        private RelayCommand breakImageCommand;
+        public RelayCommand BreakImageCommand
+        {
+            get
+            {
+                return breakImageCommand ??
+                    (breakImageCommand = new RelayCommand(obj =>
+                    {
+                        splitImage = new SplitImage(mainImage, FragmentCountWidth, FragmentCountHeight,
+                            (int)FragmentWidthInPixels, (int)FragmentHeightInPixels);
+                        resultImageFragments = splitImage.imageFragments;
+                    }));
+            }
+        }
+
+        #endregion
+
         public double MainImageWidth = 1.0;
         public double MainImageHeight = 1.0;
         public double MainImageRatio => MainImageWidth / MainImageHeight;
@@ -117,6 +138,10 @@ namespace KnittingAssistant.ViewModel
         public int FragmentCountHeight;
         public double FragmentWidthInPixels => MainImageWidth * DisplayImageFragmentWidth / DisplayImageWidth;
         public double FragmentHeightInPixels => MainImageHeight * DisplayImageFragmentHeight / DisplayImageHeight;
+
+        public Image mainImage;
+        private SplitImage splitImage;
+        private ImageFragment[,] resultImageFragments;
 
         public MainViewModel()
         {
@@ -143,6 +168,39 @@ namespace KnittingAssistant.ViewModel
         public void SetSettingsIsEnabled(bool imageIsLoaded)
         {
             SettingsIsEnabled = imageIsLoaded;
+        }
+
+        public void CreateGridForFragments()
+        {
+            Grid fragmentsGrid = new Grid();
+            fragmentsGrid.ShowGridLines = true;
+            ColumnDefinition[] colDef = new ColumnDefinition[FragmentCountWidth];
+            RowDefinition[] rowDef = new RowDefinition[FragmentCountHeight];
+
+            for (int i = 0; i < FragmentCountWidth; i++)
+            {
+                colDef[i] = new ColumnDefinition();
+                fragmentsGrid.ColumnDefinitions.Add(colDef[i]);
+            }
+            for (int j = 0; j < FragmentCountHeight; j++)
+            {
+                rowDef[j] = new RowDefinition();
+                fragmentsGrid.RowDefinitions.Add(rowDef[j]);
+            }
+
+            for (int i = 0; i < FragmentCountWidth; i++)
+            {
+                for (int j = 0; j < FragmentCountHeight; j++)
+                {
+                    Image fragment = new Image();
+                    fragment.Source = resultImageFragments[i, j].GetResultFragment();
+
+                    Grid.SetColumn(fragment, i);
+                    Grid.SetRow(fragment, j);
+
+                    fragmentsGrid.Children.Add(fragment);
+                }
+            }
         }
     }
 }
