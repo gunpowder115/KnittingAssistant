@@ -55,8 +55,9 @@ namespace KnittingAssistant.View.userControls
             (DataContext as MainViewModel).DisplayImageWidth = 100 * (DataContext as MainViewModel).DisplayImageFragmentWidth;
 
             (DataContext as MainViewModel).mainImage = mainImage;
+            (DataContext as MainViewModel).PropertyArea = PropertyAreaUC;
 
-            AddImageContent(imageFilename);
+            //AddImageContent(imageFilename);
         }
 
         private void AddImageContent(string imageFilename)

@@ -109,6 +109,17 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private UserControl m_PropertyArea;
+        public UserControl PropertyArea
+        {
+            get { return m_PropertyArea; }
+            set
+            {
+                m_PropertyArea = value;
+                OnPropertyChanged("PropertyArea");
+            }
+        }
+
         #endregion
 
         #region Relay Commands
@@ -125,9 +136,9 @@ namespace KnittingAssistant.ViewModel
                             (int)FragmentWidthInPixels, (int)FragmentHeightInPixels);
                         resultImageFragments = splitImage.imageFragments;
 
-                        MainWindow window = obj as MainWindow;
+                        //MainWindow window = obj as MainWindow;
                         Grid fragments = CreateGridForFragments();
-                        window.propertyArea.Content = fragments;
+                        PropertyArea.Content = fragments;
                     }));
             }
         }

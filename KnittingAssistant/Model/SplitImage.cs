@@ -8,13 +8,10 @@ namespace KnittingAssistant.Model
     public class SplitImage
     {
         public ImageFragment[,] imageFragments { get; }
-        int fragmentWidthInPixels, fragmentHeightInPixels;
 
         public SplitImage(Image mainImage, int fragmentCountWidth, int fragmentCountHeight, 
             int fragmentWidthInPixels, int fragmentHeightInPixels)
         {
-            //this.fragmentWidthInPixels = fragmentWidthInPixels;
-            //this.fragmentHeightInPixels = fragmentHeightInPixels;
             imageFragments = new ImageFragment[fragmentCountWidth, fragmentCountHeight]; //массив фрагментов изображения
             BitmapImage mainBitmapImage = (BitmapImage)mainImage.Source; //главный bitmap
 
@@ -23,8 +20,9 @@ namespace KnittingAssistant.Model
                 for (int j = 0; j < fragmentCountHeight; j++)
                 {
                     //временный bitmap для фрагмента
-                    WriteableBitmap tempBitmapFragment = new WriteableBitmap(fragmentWidthInPixels, fragmentHeightInPixels, 96, 96,
-                        PixelFormats.Bgra32, null);
+                    WriteableBitmap tempBitmapFragment = new WriteableBitmap(fragmentWidthInPixels, fragmentHeightInPixels, 
+                        (mainImage.Source as BitmapSource).DpiX, (mainImage.Source as BitmapSource).DpiY,
+                        (mainImage.Source as BitmapSource).Format, (mainImage.Source as BitmapSource).Palette);
 
                     //шаг и размер массива верные
                     int stride = (int)tempBitmapFragment.PixelWidth * (tempBitmapFragment.Format.BitsPerPixel + 0) / 8;
