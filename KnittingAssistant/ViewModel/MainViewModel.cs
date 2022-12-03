@@ -4,6 +4,7 @@ using System.Windows.Media.Imaging;
 using KnittingAssistant.View.userControls;
 using KnittingAssistant.Model;
 using System.Windows.Controls;
+using KnittingAssistant.View;
 
 namespace KnittingAssistant.ViewModel
 {
@@ -123,6 +124,10 @@ namespace KnittingAssistant.ViewModel
                         splitImage = new SplitImage(mainImage, FragmentCountWidth, FragmentCountHeight,
                             (int)FragmentWidthInPixels, (int)FragmentHeightInPixels);
                         resultImageFragments = splitImage.imageFragments;
+
+                        MainWindow window = obj as MainWindow;
+                        Grid fragments = CreateGridForFragments();
+                        window.propertyArea.Content = fragments;
                     }));
             }
         }
@@ -170,7 +175,7 @@ namespace KnittingAssistant.ViewModel
             SettingsIsEnabled = imageIsLoaded;
         }
 
-        public void CreateGridForFragments()
+        public Grid CreateGridForFragments()
         {
             Grid fragmentsGrid = new Grid();
             fragmentsGrid.ShowGridLines = true;
@@ -201,6 +206,8 @@ namespace KnittingAssistant.ViewModel
                     fragmentsGrid.Children.Add(fragment);
                 }
             }
+
+            return fragmentsGrid;
         }
     }
 }

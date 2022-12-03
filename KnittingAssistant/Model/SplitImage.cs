@@ -27,12 +27,14 @@ namespace KnittingAssistant.Model
                         PixelFormats.Bgra32, null);
 
                     //шаг и размер массива верные
-                    int stride = (int)tempBitmapFragment.PixelWidth * (tempBitmapFragment.Format.BitsPerPixel + 7) / 8;
-                    byte[] fragmentPixels = new byte[(int)mainBitmapImage.PixelHeight * stride];
+                    int stride = (int)tempBitmapFragment.PixelWidth * (tempBitmapFragment.Format.BitsPerPixel + 0) / 8;
+                    byte[] fragmentPixels = new byte[tempBitmapFragment.PixelHeight * stride];
+
+                    Int32Rect pixelsRect = new Int32Rect(i * fragmentWidthInPixels, j * fragmentHeightInPixels,
+                        fragmentWidthInPixels, fragmentHeightInPixels);
 
                     //копировать пиксели прямоугольника-фрагмента в массив byte[]
-                    mainBitmapImage.CopyPixels(new Int32Rect(i * fragmentWidthInPixels, j * fragmentHeightInPixels,
-                        fragmentWidthInPixels, fragmentHeightInPixels), fragmentPixels, stride, 0);
+                    mainBitmapImage.CopyPixels(pixelsRect, fragmentPixels, stride, 0);
 
                     //записать пиксели фрагмента в временный bitmap для фрагмента
                     tempBitmapFragment.WritePixels(new Int32Rect(0, 0, fragmentWidthInPixels, fragmentHeightInPixels), fragmentPixels, stride, 0);

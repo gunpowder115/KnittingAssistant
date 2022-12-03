@@ -16,7 +16,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
-        <usercontrols:PropertyArea Grid.Column="0" Margin="5 10 5 0"/>
+        <usercontrols:PropertyArea x:Name="propertyArea" Grid.Column="0" Margin="5 10 5 0"/>
         <GridSplitter Grid.Column="1" ShowsPreview="False" Width="3"
                       HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
         <Grid Grid.Column="2">

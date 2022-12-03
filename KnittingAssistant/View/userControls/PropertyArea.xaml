@@ -60,6 +60,7 @@
             </TextBox.Text>
         </TextBox>
         <CheckBox IsEnabled="False" IsChecked="{Binding IsSquareFragment}" Content="Квадратный фрагмент"/>
-        <Button Content="Разбить" Width="80" Margin="0 15 0 15" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+        <Button Content="Разбить" Width="80" Margin="0 15 0 15" HorizontalAlignment="Center" 
+                VerticalAlignment="Bottom" Command="{Binding BreakImageCommand}" CommandParameter="{Binding mainWindow}"/>
     </StackPanel>
 </UserControl>

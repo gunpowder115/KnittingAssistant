@@ -3,6 +3,7 @@ using Microsoft.Win32;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -49,11 +50,31 @@ namespace KnittingAssistant.View.userControls
             mainImage.Source = new BitmapImage(new Uri(imageFilename));
             imageLoaded = true;
             (DataContext as MainViewModel).SetSettingsIsEnabled(imageLoaded);
-            (DataContext as MainViewModel).MainImageWidth = mainImage.Source.Width;
-            (DataContext as MainViewModel).MainImageHeight = mainImage.Source.Height;
+            (DataContext as MainViewModel).MainImageWidth = (mainImage.Source as BitmapSource).PixelWidth;
+            (DataContext as MainViewModel).MainImageHeight = (mainImage.Source as BitmapSource).PixelHeight;
             (DataContext as MainViewModel).DisplayImageWidth = 100 * (DataContext as MainViewModel).DisplayImageFragmentWidth;
 
             (DataContext as MainViewModel).mainImage = mainImage;
+
+            AddImageContent(imageFilename);
+        }
+
+        private void AddImageContent(string imageFilename)
+        {
+            Image mainImageContent = new Image();
+            mainImageContent.Name = "mainImageContent";
+            mainImageContent.Source = new BitmapImage(new Uri(imageFilename));
+            mainImageContent.Cursor = Cursors.Hand;
+            mainImageContent.Stretch = Stretch.Uniform;
+            //mainImageContent.PreviewMouseLeftButtonDown += click_LoadImageOnForm;
+            //mainImageContent.AllowDrop = true;
+            //mainImageContent.Drop += drop_LoadImageOnForm;
+
+            ToolTip imageToolTip = new ToolTip();
+            imageToolTip.Content = "Загрузка";
+            mainImageContent.ToolTip = imageToolTip;
+
+            this.Content = mainImageContent;
         }
     }
 }
