@@ -120,6 +120,28 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private UserControl m_ImageArea;
+        public UserControl ImageArea
+        {
+            get { return m_ImageArea; }
+            set
+            {
+                m_ImageArea = value;
+                OnPropertyChanged("ImageArea");
+            }
+        }
+
+        private UserControl m_ToolbarArea;
+        public UserControl ToolbarArea
+        {
+            get { return m_ToolbarArea; }
+            set
+            {
+                m_ToolbarArea = value;
+                OnPropertyChanged("ToolbarArea");
+            }
+        }
+
         #endregion
 
         #region Relay Commands
@@ -136,9 +158,8 @@ namespace KnittingAssistant.ViewModel
                             (int)FragmentWidthInPixels, (int)FragmentHeightInPixels);
                         resultImageFragments = splitImage.imageFragments;
 
-                        //MainWindow window = obj as MainWindow;
                         Grid fragments = CreateGridForFragments();
-                        PropertyArea.Content = fragments;
+                        ImageArea.Content = fragments;
                     }));
             }
         }
