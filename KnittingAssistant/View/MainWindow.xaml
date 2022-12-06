@@ -4,12 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KnittingAssistant.View"
-        xmlns:converters="clr-namespace:KnittingAssistant.View.Converters"
+        xmlns:viewmodel="clr-namespace:KnittingAssistant.ViewModel"
         xmlns:usercontrols="clr-namespace:KnittingAssistant.View.userControls"
         mc:Ignorable="d"
-        Title="KnittingAsstistant" Height="768" Width="1024">
-    <Window.Resources>
-    </Window.Resources>
+        Title="KnittingAsstistant" Height="768" Width="1024" >
+    <Window.DataContext>
+        <viewmodel:MainViewModel/>
+    </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MinWidth="160" MaxWidth="750"/>
