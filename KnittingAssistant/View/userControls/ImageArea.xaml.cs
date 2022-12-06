@@ -56,26 +56,6 @@ namespace KnittingAssistant.View.userControls
 
             (DataContext as MainViewModel).mainImage = mainImage;
             (DataContext as MainViewModel).ImageArea = ImageAreaUC;
-
-            //AddImageContent(imageFilename);
-        }
-
-        private void AddImageContent(string imageFilename)
-        {
-            Image mainImageContent = new Image();
-            mainImageContent.Name = "mainImageContent";
-            mainImageContent.Source = new BitmapImage(new Uri(imageFilename));
-            mainImageContent.Cursor = Cursors.Hand;
-            mainImageContent.Stretch = Stretch.Uniform;
-            //mainImageContent.PreviewMouseLeftButtonDown += click_LoadImageOnForm;
-            //mainImageContent.AllowDrop = true;
-            //mainImageContent.Drop += drop_LoadImageOnForm;
-
-            ToolTip imageToolTip = new ToolTip();
-            imageToolTip.Content = "Загрузка";
-            mainImageContent.ToolTip = imageToolTip;
-
-            this.Content = mainImageContent;
         }
     }
 }

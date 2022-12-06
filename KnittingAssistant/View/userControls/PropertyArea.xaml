@@ -60,7 +60,11 @@
             </TextBox.Text>
         </TextBox>
         <CheckBox IsEnabled="False" IsChecked="{Binding IsSquareFragment}" Content="Квадратный фрагмент"/>
-        <Button Content="Разбить" Width="80" Margin="0 15 0 15" HorizontalAlignment="Center" 
+        <Button Content="Разбить" Width="80" Margin="0 15 0 25" HorizontalAlignment="Center" 
                 VerticalAlignment="Bottom" Command="{Binding BreakImageCommand}"/>
+        <StackPanel Visibility="Visible">
+            <TextBlock Text="{Binding SplittingProcessName, FallbackValue=Имя процесса разбиения, UpdateSourceTrigger=PropertyChanged}"/>
+            <ProgressBar Minimum="0" Maximum="100" Value="{Binding SplittingProcessValue, FallbackValue=50}" Height="20" Margin="10"/>
+        </StackPanel>
     </StackPanel>
 </UserControl>

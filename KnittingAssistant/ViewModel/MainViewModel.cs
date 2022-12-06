@@ -109,6 +109,30 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private string m_SplittingProcessName;
+        public string SplittingProcessName
+        {
+            get { return m_SplittingProcessName; }
+            set
+            {
+                m_SplittingProcessName = value;
+                OnPropertyChanged("SplittingProcessName");
+            }
+        }
+
+        private double m_SplittingProcessValue;
+        public double SplittingProcessValue
+        {
+            get { return m_SplittingProcessValue; }
+            set
+            {
+                m_SplittingProcessValue = value;
+                OnPropertyChanged("SplittingProcessValue");
+            }
+        }
+
+        #region User Controls Dependency Property
+
         private UserControl m_PropertyArea;
         public UserControl PropertyArea
         {
@@ -141,6 +165,8 @@ namespace KnittingAssistant.ViewModel
                 OnPropertyChanged("ToolbarArea");
             }
         }
+
+        #endregion
 
         #endregion
 
