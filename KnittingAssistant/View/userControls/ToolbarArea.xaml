@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="1024">
     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" FlowDirection="RightToLeft" Height="45">
-        <Button ToolTip="Показать сетку">
+        <Button ToolTip="Показать сетку" Command="{Binding ChangeGridLinesVisCommand}">
             <Image Source="../resources/grid_off_icon_1.png"></Image>
         </Button>
         <Button IsEnabled="False">
@@ -16,7 +16,7 @@
             </Button.ToolTip>
             <Image Source="../resources/save_image_icon_1.jpg"></Image>
         </Button>
-        <Button ToolTip="Загрузить изображение">
+        <Button ToolTip="Загрузить изображение" Command="{Binding LoadMainImageByClickCommand}">
             <Image Source="../resources/load_image_icon_2.jpg"></Image>
         </Button>
         <Button ToolTip="Палитра цветов">

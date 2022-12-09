@@ -4,11 +4,20 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:KnittingAssistant.View.userControls"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
-             d:DesignHeight="768" d:DesignWidth="1024" x:Name="ImageAreaUC"
-             HorizontalAlignment="Center" VerticalAlignment="Center">
+             d:DesignHeight="768" d:DesignWidth="1024"
+             HorizontalAlignment="Center" VerticalAlignment="Center" AllowDrop="True">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+            <i:InvokeCommandAction Command="{Binding LoadMainImageByClickCommand}"/>
+        </i:EventTrigger>
+        <i:EventTrigger EventName="PreviewDrop">
+            <i:CallMethodAction MethodName="LoadMainImageByDropCommand" TargetObject="{Binding}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Image x:Name="mainImage" Source="../resources/default_image.png" Cursor="Hand"
-                                   PreviewMouseLeftButtonDown="click_LoadImageOnForm" AllowDrop="True" Drop="drop_LoadImageOnForm" Stretch="Uniform">
+                                   AllowDrop="True" Stretch="Uniform">
         <Image.ToolTip>
             <ToolTip Content="Загрузить изображение"/>
         </Image.ToolTip>

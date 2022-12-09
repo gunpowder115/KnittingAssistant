@@ -4,10 +4,17 @@ using System.Windows.Media.Imaging;
 using KnittingAssistant.View.userControls;
 using KnittingAssistant.Model;
 using System.Windows.Controls;
-using KnittingAssistant.View;
+using System.Windows.Input;
+using System.Windows;
 
 namespace KnittingAssistant.ViewModel
 {
+    public enum en_ImageStates
+    {
+        mainImage,
+        fragmentsGrid
+    }
+
     public class MainViewModel : ViewModelBase
     {
         #region Dependency Properties
@@ -144,8 +151,8 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
-        private UserControl m_ImageArea;
-        public UserControl ImageArea
+        private ImageArea m_ImageArea;
+        public ImageArea ImageArea
         {
             get { return m_ImageArea; }
             set
@@ -190,21 +197,59 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private RelayCommand loadMainImageByClickCommand;
+        public RelayCommand LoadMainImageByClickCommand
+        {
+            get
+            {
+                return loadMainImageByClickCommand ??
+                    (loadMainImageByClickCommand = new RelayCommand(obj =>
+                    {
+                        OpenFileDialog fileDialogPicture = new OpenFileDialog();
+                        fileDialogPicture.Filter = "Изображения|*.bmp;*.jpg;*.gif;*.png;*.tif";
+                        fileDialogPicture.FilterIndex = 1;
+
+                        if (fileDialogPicture.ShowDialog() == true)
+                        {
+                            string imageFilename = fileDialogPicture.FileName;
+
+                            loadImageOnForm(imageFilename);
+                        }
+                    }));
+            }
+        }
+
+        private RelayCommand changeGridLinesVisCommand;
+        public RelayCommand ChangeGridLinesVisCommand
+        {
+            get
+            {
+                return changeGridLinesVisCommand ??
+                    (changeGridLinesVisCommand = new RelayCommand(obj =>
+                    {
+                        if (currentImageState == en_ImageStates.fragmentsGrid)
+                            (ImageArea.Content as Grid).ShowGridLines = !(ImageArea.Content as Grid).ShowGridLines;
+                    }));
+            }
+        }
+
         #endregion
 
-        public double MainImageWidth = 1.0;
-        public double MainImageHeight = 1.0;
+        private double MainImageWidth = 1.0;
+        private double MainImageHeight = 1.0;
         public double MainImageRatio => MainImageWidth / MainImageHeight;
 
-        public double FragmentRatio = 1.0;
-        public int FragmentCountWidth;
-        public int FragmentCountHeight;
+        private double FragmentRatio = 1.0;
+        private int FragmentCountWidth;
+        private int FragmentCountHeight;
         public double FragmentWidthInPixels => MainImageWidth * DisplayImageFragmentWidth / DisplayImageWidth;
         public double FragmentHeightInPixels => MainImageHeight * DisplayImageFragmentHeight / DisplayImageHeight;
 
-        public Image mainImage;
+        private Image mainImage;
         private SplitImage splitImage;
         private ImageFragment[,] resultImageFragments;
+
+        private en_ImageStates currentImageState = en_ImageStates.mainImage;
 
         public MainViewModel()
         {
@@ -233,9 +278,46 @@ namespace KnittingAssistant.ViewModel
             SettingsIsEnabled = imageIsLoaded;
         }
 
-        public Grid CreateGridForFragments()
+        public void LoadMainImageByDropCommand(object sender, DragEventArgs e)
+        {
+            string imageFilename = ((string[])e.Data.GetData(DataFormats.FileDrop))[0];
+            if (imageFilename.Contains(".bmp") || imageFilename.Contains(".jpg") ||
+                imageFilename.Contains(".gif") || imageFilename.Contains(".png") ||
+                imageFilename.Contains(".tif"))
+            {
+                loadImageOnForm(imageFilename);
+            }
+        }
+
+        private void loadImageOnForm(string imageFilename)
+        {
+            mainImage = CreateMainImage();
+            mainImage.Source = new BitmapImage(new Uri(imageFilename));
+            SetSettingsIsEnabled(true);
+            MainImageWidth = (mainImage.Source as BitmapSource).PixelWidth;
+            MainImageHeight = (mainImage.Source as BitmapSource).PixelHeight;
+            DisplayImageWidth = 100 * DisplayImageFragmentWidth;
+
+            ImageArea.Content = mainImage;
+        }
+
+        private Image CreateMainImage()
+        {
+            Image mainImage = new Image();
+
+            mainImage.Name = "mainImage";
+            mainImage.Cursor = Cursors.Hand;
+            mainImage.Stretch = System.Windows.Media.Stretch.Uniform;
+
+            currentImageState = en_ImageStates.mainImage;
+            return mainImage;
+        }
+
+        private Grid CreateGridForFragments()
         {
             Grid fragmentsGrid = new Grid();
+            fragmentsGrid.Name = "fragmentsGrid";
+            fragmentsGrid.Cursor = Cursors.Hand;
             fragmentsGrid.ShowGridLines = true;
             ColumnDefinition[] colDef = new ColumnDefinition[FragmentCountWidth];
             RowDefinition[] rowDef = new RowDefinition[FragmentCountHeight];
@@ -265,6 +347,7 @@ namespace KnittingAssistant.ViewModel
                 }
             }
 
+            currentImageState = en_ImageStates.fragmentsGrid;
             return fragmentsGrid;
         }
     }

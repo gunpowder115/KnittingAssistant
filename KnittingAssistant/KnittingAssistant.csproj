@@ -17,6 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Nuctech.Xaml.Behaviors.Wpf" Version="1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="View\resources\default_image.png" />
     <Resource Include="View\resources\grid_off_icon_1.png" />
     <Resource Include="View\resources\grid_on_icon_1.png" />

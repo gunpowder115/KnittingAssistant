@@ -26,8 +26,8 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <usercontrols:ToolbarArea Grid.Row="0" Margin ="15 15 15 0"/>
-                <usercontrols:ImageArea x:Name="imageArea" Grid.Row="1" Margin="15 0 15 15"/>
+                <usercontrols:ToolbarArea x:Name="toolbarArea" Grid.Row="0" Margin ="15 15 15 0"/>
+                <usercontrols:ImageArea x:Name="imageArea" Grid.Row="1" Margin="15"/>
             </Grid>
         </Grid>
     </Grid>
