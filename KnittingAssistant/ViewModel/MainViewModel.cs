@@ -6,6 +6,7 @@ using KnittingAssistant.Model;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows;
+using System.ComponentModel;
 
 namespace KnittingAssistant.ViewModel
 {
@@ -13,6 +14,12 @@ namespace KnittingAssistant.ViewModel
     {
         mainImage,
         fragmentsGrid
+    }
+
+    public enum en_SplittingStates
+    {
+        splittingMainImage,
+        creatingFragmentsGrid
     }
 
     public class MainViewModel : ViewModelBase
@@ -138,10 +145,21 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private Visibility m_SplittingProcessVisibility;
+        public Visibility SplittingProcessVisibility
+        {
+            get { return m_SplittingProcessVisibility; }
+            set
+            {
+                m_SplittingProcessVisibility = value;
+                OnPropertyChanged("SplittingProcessVisibility");
+            }
+        }
+
         #region User Controls Dependency Property
 
-        private UserControl m_PropertyArea;
-        public UserControl PropertyArea
+        private PropertyArea m_PropertyArea;
+        public PropertyArea PropertyArea
         {
             get { return m_PropertyArea; }
             set
@@ -162,8 +180,8 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
-        private UserControl m_ToolbarArea;
-        public UserControl ToolbarArea
+        private ToolbarArea m_ToolbarArea;
+        public ToolbarArea ToolbarArea
         {
             get { return m_ToolbarArea; }
             set
@@ -187,14 +205,57 @@ namespace KnittingAssistant.ViewModel
                 return breakImageCommand ??
                     (breakImageCommand = new RelayCommand(obj =>
                     {
+                        SplittingProcessName = "Разбиение изображения...";
+                        SplittingProcessVisibility = Visibility.Visible;
+                        SplittingProcessValue = 0;
+
+                        resultImageBitmaps = new WriteableBitmap[FragmentCountWidth, FragmentCountHeight];
+
                         splitImage = new SplitImage(mainImage, FragmentCountWidth, FragmentCountHeight,
                             (int)FragmentWidthInPixels, (int)FragmentHeightInPixels);
-                        resultImageFragments = splitImage.imageFragments;
 
-                        Grid fragments = CreateGridForFragments();
-                        ImageArea.Content = fragments;
+                        BackgroundWorker worker = new BackgroundWorker();
+                        worker.WorkerReportsProgress = true;
+                        worker.WorkerSupportsCancellation = true;
+                        worker.DoWork += worker_DoWork;
+                        worker.ProgressChanged += worker_ProgressChanged;
+                        worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+                        worker.RunWorkerAsync(splitImage);
                     }));
             }
+        }
+
+        private void worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            splitImage = (SplitImage)e.Argument;
+
+            int progressPercentage = 0;
+            for (int i = 0; i < FragmentCountWidth; i++)
+            {
+                for (int j = 0; j < FragmentCountHeight; j++)
+                {
+                    Application.Current.Dispatcher.Invoke(new Action(() => { resultImageBitmaps[i, j] = new WriteableBitmap(splitImage.DoSplitImage(i, j)); }));
+
+                    progressPercentage = Convert.ToInt32((double)(i * FragmentCountHeight + j) / (FragmentCountWidth * FragmentCountHeight) * 100);
+                    (sender as BackgroundWorker).ReportProgress(progressPercentage);
+                }
+            }
+
+            e.Result = resultImageBitmaps;
+        }
+
+        private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            SplittingProcessValue = e.ProgressPercentage;
+        }
+
+        private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            WriteableBitmap[,] fragments = e.Result as WriteableBitmap[,];
+            fragmentsGrid = CreateGridForFragments(fragments);
+            ImageArea.Content = fragmentsGrid;
+            SplittingProcessName = "Готово!";
+            SplittingProcessValue = 100;
         }
 
         private RelayCommand loadMainImageByClickCommand;
@@ -246,8 +307,10 @@ namespace KnittingAssistant.ViewModel
         public double FragmentHeightInPixels => MainImageHeight * DisplayImageFragmentHeight / DisplayImageHeight;
 
         private Image mainImage;
+        private Grid fragmentsGrid;
         private SplitImage splitImage;
-        private ImageFragment[,] resultImageFragments;
+
+        private WriteableBitmap[,] resultImageBitmaps;
 
         private en_ImageStates currentImageState = en_ImageStates.mainImage;
 
@@ -258,25 +321,18 @@ namespace KnittingAssistant.ViewModel
             DisplayImageFragmentHeight = 1.0;
             DisplayImageWidth = 100.0;
             DisplayImageHeight = 100.0;
-
             KeepRatioOfMainImage = true;
             IsSquareFragment = true;
+            SplittingProcessVisibility = Visibility.Visible;
         }
 
-        public double SetDisplayImageDimension(int newFragmentCountDimension, double fragmentDimension)
-        {
-            return newFragmentCountDimension * fragmentDimension;
-        }
+        public double SetDisplayImageDimension(int newFragmentCountDimension, double fragmentDimension) =>
+            newFragmentCountDimension * fragmentDimension;
 
-        public int SetFragmentCountDimension(double imageDimensionInput, double fragmentDimension, double ratio = 1.0)
-        {
-            return (int)Math.Round(imageDimensionInput * ratio / fragmentDimension);
-        }
+        public int SetFragmentCountDimension(double imageDimensionInput, double fragmentDimension, double ratio = 1.0) =>
+            (int)Math.Round(imageDimensionInput * ratio / fragmentDimension);
 
-        public void SetSettingsIsEnabled(bool imageIsLoaded)
-        {
-            SettingsIsEnabled = imageIsLoaded;
-        }
+        public void SetSettingsIsEnabled(bool imageIsLoaded) => SettingsIsEnabled = imageIsLoaded;
 
         public void LoadMainImageByDropCommand(object sender, DragEventArgs e)
         {
@@ -313,7 +369,7 @@ namespace KnittingAssistant.ViewModel
             return mainImage;
         }
 
-        private Grid CreateGridForFragments()
+        private Grid CreateGridForFragments(WriteableBitmap[,] resultImageBitmaps)
         {
             Grid fragmentsGrid = new Grid();
             fragmentsGrid.Name = "fragmentsGrid";
@@ -325,7 +381,7 @@ namespace KnittingAssistant.ViewModel
             for (int i = 0; i < FragmentCountWidth; i++)
             {
                 colDef[i] = new ColumnDefinition();
-                fragmentsGrid.ColumnDefinitions.Add(colDef[i]);
+                fragmentsGrid.ColumnDefinitions.Add(colDef[i]);                
             }
             for (int j = 0; j < FragmentCountHeight; j++)
             {
@@ -338,7 +394,7 @@ namespace KnittingAssistant.ViewModel
                 for (int j = 0; j < FragmentCountHeight; j++)
                 {
                     Image fragment = new Image();
-                    fragment.Source = resultImageFragments[i, j].GetResultFragment();
+                    fragment.Source = resultImageBitmaps[i, j];
 
                     Grid.SetColumn(fragment, i);
                     Grid.SetRow(fragment, j);

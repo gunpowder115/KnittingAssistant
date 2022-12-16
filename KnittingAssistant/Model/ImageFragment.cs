@@ -20,13 +20,14 @@ namespace KnittingAssistant.Model
         //найти средний цвет полученного фрагмента
         private void FindAverageColor()
         {
-            int sumB = 0, sumG = 0, sumR = 0, sumA = 0;
+            int sumB = 0, sumG = 0, sumR = 0;
             int numPixels = fragmentWidthInPixels * fragmentHeightInPixels;
             for (int i = 0; i < fragmentWidthInPixels; i++)
             {
                 for (int j = 0; j < fragmentHeightInPixels; j++)
                 {
-                    int stride = (int)fragmentBitmap.PixelWidth * (fragmentBitmap.Format.BitsPerPixel + 0) / 8;
+                    int stride = (int)fragmentBitmap.PixelWidth * (fragmentBitmap.Format.BitsPerPixel) / 8;
+
                     byte[] currentPixel = new byte[4];
                     fragmentBitmap.CopyPixels(new Int32Rect(i, j, 1, 1), currentPixel, stride, 0);
                     sumB += currentPixel[0];
