@@ -214,6 +214,8 @@ namespace KnittingAssistant.ViewModel
                         splitImage = new SplitImage(mainImage, FragmentCountWidth, FragmentCountHeight,
                             (int)FragmentWidthInPixels, (int)FragmentHeightInPixels);
 
+                        fragmentsGrid = InitGridForFragments();
+
                         BackgroundWorker worker = new BackgroundWorker();
                         worker.WorkerReportsProgress = true;
                         worker.WorkerSupportsCancellation = true;
@@ -234,7 +236,15 @@ namespace KnittingAssistant.ViewModel
             {
                 for (int j = 0; j < FragmentCountHeight; j++)
                 {
-                    Application.Current.Dispatcher.Invoke(new Action(() => { resultImageBitmaps[i, j] = new WriteableBitmap(splitImage.DoSplitImage(i, j)); }));
+                    Application.Current.Dispatcher.Invoke(new Action(() => { resultImageBitmaps[i, j] = new WriteableBitmap(splitImage.DoSplitImage(i, j));
+                        Image fragment = new Image();
+                        fragment.Source = resultImageBitmaps[i, j];
+
+                        Grid.SetColumn(fragment, i);
+                        Grid.SetRow(fragment, j);
+
+                        fragmentsGrid.Children.Add(fragment);
+                    }));
 
                     progressPercentage = Convert.ToInt32((double)(i * FragmentCountHeight + j) / (FragmentCountWidth * FragmentCountHeight) * 100);
                     (sender as BackgroundWorker).ReportProgress(progressPercentage);
@@ -251,8 +261,6 @@ namespace KnittingAssistant.ViewModel
 
         private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            WriteableBitmap[,] fragments = e.Result as WriteableBitmap[,];
-            fragmentsGrid = CreateGridForFragments(fragments);
             ImageArea.Content = fragmentsGrid;
             SplittingProcessName = "Готово!";
             SplittingProcessValue = 100;
@@ -288,8 +296,9 @@ namespace KnittingAssistant.ViewModel
                 return changeGridLinesVisCommand ??
                     (changeGridLinesVisCommand = new RelayCommand(obj =>
                     {
-                        if (currentImageState == en_ImageStates.fragmentsGrid)
-                            (ImageArea.Content as Grid).ShowGridLines = !(ImageArea.Content as Grid).ShowGridLines;
+                        Grid? content = ImageArea.Content as Grid;
+                        if (content != null)
+                            content.ShowGridLines = !content.ShowGridLines;
                     }));
             }
         }
@@ -369,7 +378,7 @@ namespace KnittingAssistant.ViewModel
             return mainImage;
         }
 
-        private Grid CreateGridForFragments(WriteableBitmap[,] resultImageBitmaps)
+        private Grid InitGridForFragments()
         {
             Grid fragmentsGrid = new Grid();
             fragmentsGrid.Name = "fragmentsGrid";
@@ -381,7 +390,7 @@ namespace KnittingAssistant.ViewModel
             for (int i = 0; i < FragmentCountWidth; i++)
             {
                 colDef[i] = new ColumnDefinition();
-                fragmentsGrid.ColumnDefinitions.Add(colDef[i]);                
+                fragmentsGrid.ColumnDefinitions.Add(colDef[i]);
             }
             for (int j = 0; j < FragmentCountHeight; j++)
             {
@@ -389,21 +398,6 @@ namespace KnittingAssistant.ViewModel
                 fragmentsGrid.RowDefinitions.Add(rowDef[j]);
             }
 
-            for (int i = 0; i < FragmentCountWidth; i++)
-            {
-                for (int j = 0; j < FragmentCountHeight; j++)
-                {
-                    Image fragment = new Image();
-                    fragment.Source = resultImageBitmaps[i, j];
-
-                    Grid.SetColumn(fragment, i);
-                    Grid.SetRow(fragment, j);
-
-                    fragmentsGrid.Children.Add(fragment);
-                }
-            }
-
-            currentImageState = en_ImageStates.fragmentsGrid;
             return fragmentsGrid;
         }
     }

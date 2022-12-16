@@ -64,7 +64,10 @@
                 VerticalAlignment="Bottom" Command="{Binding BreakImageCommand}"/>
         <StackPanel Visibility="{Binding SplittingProcessVisibility, FallbackValue=Visible}">
             <TextBlock Text="{Binding SplittingProcessName, FallbackValue=Разбиение изображения...}"/>
-            <ProgressBar x:Name="progressBar" Minimum="0" Maximum="100" Value="{Binding SplittingProcessValue, FallbackValue=50}" Height="20" Margin="10"/>
+            <Grid>
+                <ProgressBar x:Name="progressBar" Minimum="0" Maximum="100" Value="{Binding SplittingProcessValue, FallbackValue=50}" Height="20" Margin="10"/>
+                <TextBlock Text="{Binding ElementName=progressBar, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Grid>
         </StackPanel>
     </StackPanel>
 </UserControl>
