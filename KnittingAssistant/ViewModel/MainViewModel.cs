@@ -16,12 +16,6 @@ namespace KnittingAssistant.ViewModel
         fragmentsGrid
     }
 
-    public enum en_SplittingStates
-    {
-        splittingMainImage,
-        creatingFragmentsGrid
-    }
-
     public class MainViewModel : ViewModelBase
     {
         #region Dependency Properties
