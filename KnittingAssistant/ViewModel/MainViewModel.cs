@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using System.Windows.Media.Imaging;
 using KnittingAssistant.View.userControls;
+using KnittingAssistant.View;
 using KnittingAssistant.Model;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -293,6 +294,20 @@ namespace KnittingAssistant.ViewModel
                         Grid? content = ImageArea.Content as Grid;
                         if (content != null)
                             content.ShowGridLines = !content.ShowGridLines;
+                    }));
+            }
+        }
+
+        private RelayCommand openColorsManagementWindowCommand;
+        public RelayCommand OpenColorsManagementWindowCommand
+        {
+            get
+            {
+                return openColorsManagementWindowCommand ??
+                    (openColorsManagementWindowCommand = new RelayCommand(obj =>
+                    {
+                        ColorsWindow colorsWindow = new ColorsWindow();
+                        colorsWindow.ShowDialog();
                     }));
             }
         }
