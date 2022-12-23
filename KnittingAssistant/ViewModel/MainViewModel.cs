@@ -341,7 +341,7 @@ namespace KnittingAssistant.ViewModel
             DisplayImageHeight = 100.0;
             KeepRatioOfMainImage = true;
             IsSquareFragment = true;
-            SplittingProcessVisibility = Visibility.Visible;
+            SplittingProcessVisibility = Visibility.Hidden;
         }
 
         public double SetDisplayImageDimension(int newFragmentCountDimension, double fragmentDimension) =>

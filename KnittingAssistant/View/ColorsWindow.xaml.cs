@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using KnittingAssistant.ViewModel;
+using System.Windows;
 
 namespace KnittingAssistant.View
 {
@@ -10,6 +11,11 @@ namespace KnittingAssistant.View
         public ColorsWindow()
         {
             InitializeComponent();
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            (DataContext as ColorsViewModel).PaletteAreaImage = paletteAreaImage;
         }
     }
 }

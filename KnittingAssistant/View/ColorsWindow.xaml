@@ -5,9 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:KnittingAssistant.View"
+        xmlns:viewmodel="clr-namespace:KnittingAssistant.ViewModel"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Title="Управление цветами пряжи" Height="600" Width="400" SizeToContent="Height"
         ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
+    <Window.DataContext>
+        <viewmodel:ColorsViewModel/>
+    </Window.DataContext>
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Width" Value="100"/>
@@ -27,7 +32,12 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Border BorderBrush="Gray" BorderThickness="2" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Margin="10">
-                <Image  Source="resources/square_palette_image.png"/>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                        <i:CallMethodAction MethodName="SetSelectedColorCommand" TargetObject="{Binding}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <Image x:Name="paletteAreaImage" Source="resources/square_palette_image.png"  />
             </Border>
             <Border BorderBrush="Gray" BorderThickness="2" Grid.Column="1" Grid.Row="0" Height="80" Width="80" Margin="10">
                 <Image x:Name="selectedColor">
@@ -53,42 +63,7 @@
         </Grid>
         <TextBlock Text="Добавленные цвета:" Margin="10 10 10 0"/>
         <Border Height="95" Margin="10" BorderThickness="2" BorderBrush="LightGray">
-            <ScrollViewer>
-                <Grid ShowGridLines="False">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition MaxWidth="30"/>
-                        <ColumnDefinition MaxWidth="30"/>
-                        <ColumnDefinition MaxWidth="30"/>
-                        <ColumnDefinition MaxWidth="30"/>
-                        <ColumnDefinition MaxWidth="30"/>
-                        <ColumnDefinition MaxWidth="30"/>
-                        <ColumnDefinition MaxWidth="30"/>
-                        <ColumnDefinition MaxWidth="30"/>
-                        <ColumnDefinition MaxWidth="30"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition MinHeight="30"/>
-                        <RowDefinition MinHeight="30"/>
-                        <RowDefinition MinHeight="30"/>
-                        <RowDefinition MinHeight="30"/>
-                    </Grid.RowDefinitions>
-                    <Border Width="20" Height="20" Grid.Column="0" Grid.Row="0" BorderBrush="Gray" BorderThickness="2">
-                        <Image/>
-                    </Border>
-                    <Border Width="20" Height="20" Grid.Column="1" Grid.Row="0" BorderBrush="Gray" BorderThickness="2">
-                        <Image/>
-                    </Border>
-                    <Border Width="20" Height="20" Grid.Column="0" Grid.Row="1" BorderBrush="Gray" BorderThickness="2">
-                        <Image/>
-                    </Border>
-                    <Border Width="20" Height="20" Grid.Column="0" Grid.Row="2" BorderBrush="Gray" BorderThickness="2">
-                        <Image/>
-                    </Border>
-                    <Border Width="20" Height="20" Grid.Column="0" Grid.Row="3" BorderBrush="Gray" BorderThickness="2">
-                        <Image/>
-                    </Border>
-                </Grid>
-            </ScrollViewer>
+            <ScrollViewer Content="{Binding AddedColors}" />
         </Border>
         <Grid>
             <Grid.ColumnDefinitions>
