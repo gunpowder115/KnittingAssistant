@@ -241,7 +241,10 @@ namespace KnittingAssistant.ViewModel
                         fragmentsGrid.Children.Add(fragment);
                     }));
 
-                    progressPercentage = Convert.ToInt32((double)(i * FragmentCountHeight + j) / (FragmentCountWidth * FragmentCountHeight) * 100);
+                    if (i == FragmentCountWidth - 1 && j == FragmentCountHeight - 1)
+                        progressPercentage = 99;
+                    else
+                        progressPercentage = Convert.ToInt32((double)(i * FragmentCountHeight + j) / (FragmentCountWidth * FragmentCountHeight) * 100);
                     (sender as BackgroundWorker).ReportProgress(progressPercentage);
                 }
             }
@@ -252,6 +255,8 @@ namespace KnittingAssistant.ViewModel
         private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             SplittingProcessValue = e.ProgressPercentage;
+            if (SplittingProcessValue == 99)
+                SplittingProcessName = "Подготовка изображения...";
         }
 
         private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
