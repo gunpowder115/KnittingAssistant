@@ -91,8 +91,10 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Button Grid.Column="0" Grid.Row="0" Content="Очистить цвета" Margin="10" Background="Coral" HorizontalAlignment="Left"/>
-            <Button Grid.Column="1" Grid.Row="0" Content="Добавить цвет" Margin="10" HorizontalAlignment="Right"/>
-            <Button Grid.Column="1" Grid.Row="1" Content="Удалить цвет" Margin="10" HorizontalAlignment="Right"/>
+            <Button Grid.Column="1" Grid.Row="0" Content="Добавить цвет" 
+                    Margin="10" HorizontalAlignment="Right" IsEnabled="{Binding IsColorAdding}"/>
+            <Button Grid.Column="1" Grid.Row="1" Content="Удалить цвет" 
+                    Margin="10" HorizontalAlignment="Right" IsEnabled="{Binding IsColorDeleting}"/>
         </Grid>
     </StackPanel>
 </Window>

@@ -55,6 +55,28 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private bool m_IsColorAdding;
+        public bool IsColorAdding
+        {
+            get { return m_IsColorAdding; }
+            set
+            {
+                m_IsColorAdding = value;
+                OnPropertyChanged("IsColorAdding");
+            }
+        }
+
+        private bool m_IsColorDeleting;
+        public bool IsColorDeleting
+        {
+            get { return m_IsColorDeleting; }
+            set
+            {
+                m_IsColorDeleting = value;
+                OnPropertyChanged("IsColorDeleting");
+            }
+        }
+
         #endregion
 
         #region Relay Commands
@@ -70,6 +92,13 @@ namespace KnittingAssistant.ViewModel
         public ColorsViewModel()
         {
             InitAddedColorsGrid();
+
+            RedSelectedColorValue = 0;
+            GreenSelectedColorValue = 0;
+            BlueSelectedColorValue = 0;
+
+            IsColorAdding = false;
+            IsColorDeleting = false;
         }
 
         public void SetSelectedColorCommand(object sender, MouseButtonEventArgs e)
@@ -96,6 +125,9 @@ namespace KnittingAssistant.ViewModel
                 SelectedColor.Background = new SolidColorBrush(Color.FromArgb(currentPixel[3], (byte)RedSelectedColorValue, (byte)GreenSelectedColorValue, (byte)BlueSelectedColorValue));
                 if (SelectedColor.Child != null)
                     SelectedColor.Child = null;
+
+                IsColorAdding = true;
+                IsColorDeleting = false;
             }
         }
 
