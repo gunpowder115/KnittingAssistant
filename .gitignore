@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /KnittingAssistant/doc
+/resources/images/development/empty_image_source.png

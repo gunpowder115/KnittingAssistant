@@ -6,6 +6,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:KnittingAssistant.View"
         xmlns:viewmodel="clr-namespace:KnittingAssistant.ViewModel"
+        xmlns:converters="clr-namespace:KnittingAssistant.View.Converters"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Title="Управление цветами пряжи" Height="600" Width="400" SizeToContent="Height"
@@ -19,6 +20,7 @@
             <Setter Property="Height" Value="30"/>
             <Setter Property="Margin" Value="10"/>
         </Style>
+        <converters:StringToPropertyValue x:Key="stringToPropertyValue"/>
     </Window.Resources>
     <StackPanel>
         <TextBlock Text="Просмотр цветов:" Margin="10 10 10 0"/>
@@ -39,25 +41,39 @@
                 </i:Interaction.Triggers>
                 <Image x:Name="paletteAreaImage" Source="resources/square_palette_image.png"  />
             </Border>
-            <Border BorderBrush="Gray" BorderThickness="2" Grid.Column="1" Grid.Row="0" Height="80" Width="80" Margin="10">
-                <Image x:Name="selectedColor">
-                    <Image.ToolTip>
-                        <ToolTip Content="Выбранный цвет"/>
-                    </Image.ToolTip>
-                </Image>
+            <Border x:Name="selectedColor" BorderBrush="Gray" BorderThickness="2" Grid.Column="1" Grid.Row="0" Height="80" Width="80" Margin="10">
+                <Border.ToolTip>
+                    <ToolTip Content="Выбранный цвет"/>
+                </Border.ToolTip>
+                <Image Source="resources/large_empty_image.png" />
             </Border>
             <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <StackPanel Orientation="Horizontal" Margin="5">
                     <TextBlock Text="R: " Width="15"/>
-                    <TextBox Width="50"/>
+                    <TextBox x:Name="RedSelectedColorValueTextBox" Width="50">
+                        <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged" ConverterParameter="0">
+                            <Binding Path="RedSelectedColorValue"/>
+                            <Binding Path="Text" ElementName="RedSelectedColorValueTextBox"/>
+                        </MultiBinding>
+                    </TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="5">
                     <TextBlock Text="G: " Width="15"/>
-                    <TextBox Width="50"/>
+                    <TextBox x:Name="GreenSelectedColorValueTextBox" Width="50">
+                        <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged" ConverterParameter="0">
+                            <Binding Path="GreenSelectedColorValue"/>
+                            <Binding Path="Text" ElementName="GreenSelectedColorValueTextBox"/>
+                        </MultiBinding>
+                    </TextBox>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="5">
                     <TextBlock Text="B: " Width="15"/>
-                    <TextBox Width="50"/>
+                    <TextBox x:Name="BlueSelectedColorValueTextBox" Width="50">
+                        <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged" ConverterParameter="0">
+                            <Binding Path="BlueSelectedColorValue"/>
+                            <Binding Path="Text" ElementName="BlueSelectedColorValueTextBox"/>
+                        </MultiBinding>
+                    </TextBox>
                 </StackPanel>
             </StackPanel>
         </Grid>

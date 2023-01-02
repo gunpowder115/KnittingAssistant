@@ -26,7 +26,7 @@ namespace KnittingAssistant.Model
             {
                 for (int j = 0; j < fragmentHeightInPixels; j++)
                 {
-                    int stride = (int)fragmentBitmap.PixelWidth * (fragmentBitmap.Format.BitsPerPixel) / 8;
+                    int stride = (int)fragmentBitmap.PixelWidth * fragmentBitmap.Format.BitsPerPixel / 8;
 
                     byte[] currentPixel = new byte[4];
                     fragmentBitmap.CopyPixels(new Int32Rect(i, j, 1, 1), currentPixel, stride, 0);

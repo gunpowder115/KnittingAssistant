@@ -9,7 +9,12 @@ namespace KnittingAssistant.View.Converters
     {
         public object Convert(object[] value, Type targetType, object parameter, CultureInfo culture)
         {
-            double source = Math.Round((double)value[0], 2);
+            int decimalPartLength = 2;
+            double source;
+            if (int.TryParse((string)parameter, out decimalPartLength))
+                source = Math.Round((double)value[0], decimalPartLength);
+            else
+                source = Math.Round((double)value[0], 2);
             string text = (string)value[1];
 
             object result;
@@ -34,7 +39,12 @@ namespace KnittingAssistant.View.Converters
             if (result == null)
                 return null;
 
-            result = Math.Round((double)result, 2);
+            int decimalPartLength = 2;
+            if (int.TryParse((string)parameter, out decimalPartLength))
+                result = Math.Round((double)result, decimalPartLength);
+            else
+                result = Math.Round((double)result, 2);
+
             return new object[] { result };
         }
     }

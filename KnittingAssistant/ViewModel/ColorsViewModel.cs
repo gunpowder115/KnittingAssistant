@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -20,6 +22,39 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private double m_BlueSelectedColorValue;
+        public double BlueSelectedColorValue
+        {
+            get { return m_BlueSelectedColorValue; }
+            set
+            {
+                m_BlueSelectedColorValue = value;
+                OnPropertyChanged("BlueSelectedColorValue");
+            }
+        }
+
+        private double m_GreenSelectedColorValue;
+        public double GreenSelectedColorValue
+        {
+            get { return m_GreenSelectedColorValue; }
+            set
+            {
+                m_GreenSelectedColorValue = value;
+                OnPropertyChanged("GreenSelectedColorValue");
+            }
+        }
+
+        private double m_RedSelectedColorValue;
+        public double RedSelectedColorValue
+        {
+            get { return m_RedSelectedColorValue; }
+            set
+            {
+                m_RedSelectedColorValue = value;
+                OnPropertyChanged("RedSelectedColorValue");
+            }
+        }
+
         #endregion
 
         #region Relay Commands
@@ -30,7 +65,7 @@ namespace KnittingAssistant.ViewModel
         private const int addedColorsGridWidth = 12;
         private const int addedColorsGridHeight = 6;
         public Image PaletteAreaImage { get; set; }
-        private RenderTargetBitmap bitmapImage;
+        public Border SelectedColor { get; set; }
 
         public ColorsViewModel()
         {
@@ -39,7 +74,29 @@ namespace KnittingAssistant.ViewModel
 
         public void SetSelectedColorCommand(object sender, MouseButtonEventArgs e)
         {
+            PaletteAreaImage.Source = new BitmapImage(new Uri("D:/Development/KnittingAssistant/KnittingAssistant/View/resources/square_palette_image.png"));
 
+            BitmapImage tempBitmap = (BitmapImage)PaletteAreaImage.Source;
+            WriteableBitmap bitmapPalette = new WriteableBitmap(tempBitmap.PixelWidth, tempBitmap.PixelHeight,
+                tempBitmap.DpiX, tempBitmap.DpiY,
+                tempBitmap.Format, tempBitmap.Palette);
+
+            Point position = e.GetPosition(PaletteAreaImage);
+            if ((position.X <= bitmapPalette.PixelWidth) && (position.Y <= bitmapPalette.PixelHeight))
+            {
+                int stride = (int)bitmapPalette.PixelWidth * bitmapPalette.Format.BitsPerPixel / 8;
+
+                byte[] currentPixel = new byte[4];
+                tempBitmap.CopyPixels(new Int32Rect((int)position.X, (int)position.Y, 1, 1), currentPixel, stride, 0);
+
+                BlueSelectedColorValue = currentPixel[0];
+                GreenSelectedColorValue = currentPixel[1];
+                RedSelectedColorValue = currentPixel[2];
+
+                SelectedColor.Background = new SolidColorBrush(Color.FromArgb(currentPixel[3], (byte)RedSelectedColorValue, (byte)GreenSelectedColorValue, (byte)BlueSelectedColorValue));
+                if (SelectedColor.Child != null)
+                    SelectedColor.Child = null;
+            }
         }
 
         private void InitAddedColorsGrid()

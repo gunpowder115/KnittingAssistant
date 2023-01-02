@@ -25,7 +25,7 @@
         <TextBlock>Ширина изображения, см</TextBlock>
         <TextBox x:Name="MainImageWidthTextBlock">
             <TextBox.Text>
-                <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged">
+                <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged" ConverterParameter="2">
                     <Binding Path="DisplayImageWidth"/>
                     <Binding Path="Text" ElementName="MainImageWidthTextBlock"/>
                 </MultiBinding>
@@ -34,7 +34,7 @@
         <TextBlock>Высота изображения, см</TextBlock>
         <TextBox x:Name="MainImageHeightTextBlock">
             <TextBox.Text>
-                <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged">
+                <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged" ConverterParameter="2">
                     <Binding Path="DisplayImageHeight"/>
                     <Binding Path="Text" ElementName="MainImageHeightTextBlock"/>
                 </MultiBinding>
@@ -44,7 +44,7 @@
         <TextBlock>Ширина фрагмента, см</TextBlock>
         <TextBox x:Name="FragmentImageWidthTextBlock">
             <TextBox.Text>
-                <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged">
+                <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged" ConverterParameter="2">
                     <Binding Path="DisplayImageFragmentWidth"/>
                     <Binding Path="Text" ElementName="FragmentImageWidthTextBlock"/>
                 </MultiBinding>
@@ -53,7 +53,7 @@
         <TextBlock>Высота фрагмента, см</TextBlock>
         <TextBox x:Name="FragmentImageHeightTextBlock">
             <TextBox.Text>
-                <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged">
+                <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged" ConverterParameter="2">
                     <Binding Path="DisplayImageFragmentHeight"/>
                     <Binding Path="Text" ElementName="FragmentImageHeightTextBlock"/>
                 </MultiBinding>
