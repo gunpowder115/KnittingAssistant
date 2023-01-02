@@ -9,9 +9,8 @@ namespace KnittingAssistant.View.Converters
     {
         public object Convert(object[] value, Type targetType, object parameter, CultureInfo culture)
         {
-            int decimalPartLength = 2;
             double source;
-            if (int.TryParse((string)parameter, out decimalPartLength))
+            if (int.TryParse((string)parameter, out int decimalPartLength))
                 source = Math.Round((double)value[0], decimalPartLength);
             else
                 source = Math.Round((double)value[0], 2);
@@ -39,8 +38,7 @@ namespace KnittingAssistant.View.Converters
             if (result == null)
                 return null;
 
-            int decimalPartLength = 2;
-            if (int.TryParse((string)parameter, out decimalPartLength))
+            if (int.TryParse((string)parameter, out int decimalPartLength))
                 result = Math.Round((double)result, decimalPartLength);
             else
                 result = Math.Round((double)result, 2);
