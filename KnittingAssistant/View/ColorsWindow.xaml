@@ -97,7 +97,8 @@
                     Margin="10" HorizontalAlignment="Right" IsEnabled="{Binding IsColorAdding}"
                     Command="{Binding AddColorCommand}"/>
             <Button Grid.Column="1" Grid.Row="1" Content="Удалить цвет" 
-                    Margin="10" HorizontalAlignment="Right" IsEnabled="{Binding IsColorDeleting}"/>
+                    Margin="10" HorizontalAlignment="Right" IsEnabled="{Binding IsColorDeleting}"
+                    Command="{Binding DeleteColorCommand}"/>
         </Grid>
     </StackPanel>
 </Window>

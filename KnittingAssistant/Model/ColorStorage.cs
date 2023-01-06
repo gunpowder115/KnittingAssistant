@@ -126,7 +126,7 @@ namespace KnittingAssistant.Model
                     }
                     else
                     {
-                        addedColorBorder.BorderBrush = Brushes.Red;
+                        addedColorBorder.BorderBrush = Brushes.White;
                         addedColorBorder.Background = Brushes.White;
                     }
                     addedColorBorder.BorderThickness = new Thickness(2);

@@ -125,7 +125,7 @@ namespace KnittingAssistant.ViewModel
 
         #endregion
 
-        private const int addedColorsGridWidth = 12;
+        private const int addedColorsGridWidth = 11;
         private const int addedColorsGridHeight = 3;
         private ColorStorage colorStorage;
         private Color selectedColor;
@@ -174,41 +174,6 @@ namespace KnittingAssistant.ViewModel
 
                 IsColorAdding = true;
                 IsColorDeleting = false;
-            }
-        }
-
-        private void InitAddedColorsGrid()
-        {
-            AddedColors = new Grid();
-
-            ColumnDefinition[] colDef = new ColumnDefinition[addedColorsGridWidth];
-            RowDefinition[] rowDef = new RowDefinition[addedColorsGridHeight];            
-            for (int i = 0; i < addedColorsGridWidth; i++)
-            {
-                colDef[i] = new ColumnDefinition();
-                colDef[i].MaxWidth = 30;
-                AddedColors.ColumnDefinitions.Add(colDef[i]);
-            }
-            for (int j = 0; j < addedColorsGridHeight; j++)
-            {
-                rowDef[j] = new RowDefinition();
-                rowDef[j].MinHeight = 30;
-                AddedColors.RowDefinitions.Add(rowDef[j]);
-            }
-
-            Border addedColorBorder;
-            for (int i = 0; i < addedColorsGridWidth; i++)
-            {
-                for (int j = 0; j < addedColorsGridHeight; j++)
-                {
-                    addedColorBorder = new Border();
-                    addedColorBorder.Width = addedColorBorder.Height = 20;
-                    addedColorBorder.BorderBrush = Brushes.Gray;
-                    addedColorBorder.BorderThickness = new Thickness(2);
-                    Grid.SetColumn(addedColorBorder, i);
-                    Grid.SetRow(addedColorBorder, j);
-                    AddedColors.Children.Add(addedColorBorder);
-                }
             }
         }
     }
