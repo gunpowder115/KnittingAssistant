@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KnittingAssistant.Model;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -81,24 +82,68 @@ namespace KnittingAssistant.ViewModel
 
         #region Relay Commands
 
+        private RelayCommand addColorCommand;
+        public RelayCommand AddColorCommand
+        {
+            get
+            {
+                return addColorCommand ??
+                    (addColorCommand = new RelayCommand(obj =>
+                    {
+                        colorStorage.AddColor(selectedColor);
+                        AddedColors = colorStorage.GetColorGridFromFile();
+                    }));
+            }
+        }
+
+        private RelayCommand deleteColorCommand;
+        public RelayCommand DeleteColorCommand
+        {
+            get
+            {
+                return deleteColorCommand ??
+                    (deleteColorCommand = new RelayCommand(obj =>
+                    {
+                        
+                    }));
+            }
+        }
+
+        private RelayCommand clearColorsCommand;
+        public RelayCommand ClearColorsCommand
+        {
+            get
+            {
+                return clearColorsCommand ??
+                    (clearColorsCommand = new RelayCommand(obj =>
+                    {
+                        colorStorage.ClearColors();
+                        AddedColors = colorStorage.GetColorGridFromFile();
+                    }));
+            }
+        }
 
         #endregion
 
         private const int addedColorsGridWidth = 12;
-        private const int addedColorsGridHeight = 6;
+        private const int addedColorsGridHeight = 3;
+        private ColorStorage colorStorage;
+        private Color selectedColor;
         public Image PaletteAreaImage { get; set; }
         public Border SelectedColor { get; set; }
 
         public ColorsViewModel()
         {
-            InitAddedColorsGrid();
-
             RedSelectedColorValue = 0;
             GreenSelectedColorValue = 0;
             BlueSelectedColorValue = 0;
 
             IsColorAdding = false;
             IsColorDeleting = false;
+
+            colorStorage = new ColorStorage("colors.txt", addedColorsGridWidth, addedColorsGridHeight);
+
+            AddedColors = colorStorage.GetColorGridFromFile();
         }
 
         public void SetSelectedColorCommand(object sender, MouseButtonEventArgs e)
@@ -121,8 +166,9 @@ namespace KnittingAssistant.ViewModel
                 BlueSelectedColorValue = currentPixel[0];
                 GreenSelectedColorValue = currentPixel[1];
                 RedSelectedColorValue = currentPixel[2];
+                selectedColor = Color.FromRgb((byte)RedSelectedColorValue, (byte)GreenSelectedColorValue, (byte)BlueSelectedColorValue);
 
-                SelectedColor.Background = new SolidColorBrush(Color.FromArgb(currentPixel[3], (byte)RedSelectedColorValue, (byte)GreenSelectedColorValue, (byte)BlueSelectedColorValue));
+                SelectedColor.Background = new SolidColorBrush(selectedColor);
                 if (SelectedColor.Child != null)
                     SelectedColor.Child = null;
 
@@ -150,7 +196,7 @@ namespace KnittingAssistant.ViewModel
                 AddedColors.RowDefinitions.Add(rowDef[j]);
             }
 
-            Border addedColorBorder;            
+            Border addedColorBorder;
             for (int i = 0; i < addedColorsGridWidth; i++)
             {
                 for (int j = 0; j < addedColorsGridHeight; j++)
@@ -158,7 +204,7 @@ namespace KnittingAssistant.ViewModel
                     addedColorBorder = new Border();
                     addedColorBorder.Width = addedColorBorder.Height = 20;
                     addedColorBorder.BorderBrush = Brushes.Gray;
-                    addedColorBorder.BorderThickness = new System.Windows.Thickness(2);
+                    addedColorBorder.BorderThickness = new Thickness(2);
                     Grid.SetColumn(addedColorBorder, i);
                     Grid.SetRow(addedColorBorder, j);
                     AddedColors.Children.Add(addedColorBorder);
