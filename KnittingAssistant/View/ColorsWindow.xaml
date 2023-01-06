@@ -36,7 +36,7 @@
             <Border BorderBrush="Gray" BorderThickness="2" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Margin="10">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                        <i:CallMethodAction MethodName="SetSelectedColorCommand" TargetObject="{Binding}"/>
+                        <i:CallMethodAction MethodName="SetSelectedColorForAddingCommand" TargetObject="{Binding}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <Image x:Name="paletteAreaImage" Source="resources/square_palette_image.png"  />

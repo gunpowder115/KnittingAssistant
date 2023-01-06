@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace KnittingAssistant.Model
@@ -17,12 +18,15 @@ namespace KnittingAssistant.Model
         private string filename = "colors.txt";
         private int defaultColumnCount = 12;
         private int defaultRowCount = 3;
+        private MouseButtonEventHandler setSelectedColorForDeleting;
 
-        public ColorStorage(string filename, int defaultColumnCount, int defaultRowCount)
+        public ColorStorage(string filename, int defaultColumnCount, int defaultRowCount,
+            MouseButtonEventHandler setSelectedColorForDeleting)
         {
             this.filename = filename;
             this.defaultColumnCount = defaultColumnCount;
             this.defaultRowCount = defaultRowCount;
+            this.setSelectedColorForDeleting = setSelectedColorForDeleting;
         }
 
         public void AddColor(Color color)
@@ -124,14 +128,10 @@ namespace KnittingAssistant.Model
                         addedColorBorder.BorderBrush = Brushes.Gray;
                         addedColorBorder.Background = new SolidColorBrush(colors[colorIndex++]);
                     }
-                    else
-                    {
-                        addedColorBorder.BorderBrush = Brushes.White;
-                        addedColorBorder.Background = Brushes.White;
-                    }
                     addedColorBorder.BorderThickness = new Thickness(2);
                     Grid.SetColumn(addedColorBorder, j);
                     Grid.SetRow(addedColorBorder, i);
+                    addedColorBorder.PreviewMouseLeftButtonDown += setSelectedColorForDeleting;
                     addedColors.Children.Add(addedColorBorder);
                 }
             }

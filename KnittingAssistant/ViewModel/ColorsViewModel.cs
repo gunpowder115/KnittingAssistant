@@ -141,12 +141,13 @@ namespace KnittingAssistant.ViewModel
             IsColorAdding = false;
             IsColorDeleting = false;
 
-            colorStorage = new ColorStorage("colors.txt", addedColorsGridWidth, addedColorsGridHeight);
+            colorStorage = new ColorStorage("colors.txt", addedColorsGridWidth, addedColorsGridHeight,
+                SetSelectedColorForDeleting);
 
             AddedColors = colorStorage.GetColorGridFromFile();
         }
 
-        public void SetSelectedColorCommand(object sender, MouseButtonEventArgs e)
+        public void SetSelectedColorForAddingCommand(object sender, MouseButtonEventArgs e)
         {
             PaletteAreaImage.Source = new BitmapImage(new Uri("D:/Development/KnittingAssistant/KnittingAssistant/View/resources/square_palette_image.png"));
 
@@ -175,6 +176,17 @@ namespace KnittingAssistant.ViewModel
                 IsColorAdding = true;
                 IsColorDeleting = false;
             }
+        }
+
+        public void SetSelectedColorForDeleting(object sender, MouseButtonEventArgs e)
+        {
+            Border selectedColorBorder = sender as Border;
+            SelectedColor.Background = selectedColorBorder.Background;
+            //Color selectedColor = ((SolidColorBrush)selectedColorBorder.Background).Color;
+            //int selectedColorIndex = (selectedColorBorder.Parent as Grid).Children.IndexOf(selectedColorBorder);
+
+            IsColorAdding = false;
+            IsColorDeleting = true;
         }
     }
 }
