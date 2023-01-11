@@ -1,5 +1,7 @@
 ﻿using KnittingAssistant.Model;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -8,7 +10,7 @@ using System.Windows.Media.Imaging;
 
 namespace KnittingAssistant.ViewModel
 {
-    class ColorsViewModel : ViewModelBase
+    public class ColorsViewModel : ViewModelBase
     {
         #region Dependency Properties
 
@@ -90,8 +92,8 @@ namespace KnittingAssistant.ViewModel
                 return addColorCommand ??
                     (addColorCommand = new RelayCommand(obj =>
                     {
-                        colorStorage.AddColor(selectedColor);
-                        AddedColors = colorStorage.GetColorGridFromFile();
+                        colorStorage.AddColor(selectedColorForAdding);
+                        AddedColors = CreateColorGrid(colorStorage.ColorList);
                     }));
             }
         }
@@ -104,7 +106,29 @@ namespace KnittingAssistant.ViewModel
                 return deleteColorCommand ??
                     (deleteColorCommand = new RelayCommand(obj =>
                     {
-                        
+                        LinkedListNode<Color> nextSelectedColorLinkedListNode;
+
+                        if (selectedColorIndex == colorStorage.ColorsCount - 1)
+                        {
+                            selectedColorIndex--;
+                            nextSelectedColorLinkedListNode = selectedLinkedListNode.Previous;
+                        }
+                        else if (selectedColorIndex == 0 && colorStorage.ColorsCount == 1)
+                        {
+                            selectedColorIndex = -1;
+                            nextSelectedColorLinkedListNode = null;
+                        }
+                        else
+                        {
+                            nextSelectedColorLinkedListNode = selectedLinkedListNode.Next;
+                        }
+
+                        colorStorage.RemoveColor(selectedLinkedListNode);
+                        AddedColors = CreateColorGrid(colorStorage.ColorList);
+
+                        selectedLinkedListNode = nextSelectedColorLinkedListNode;
+
+                        ShowSelectedColor(selectedLinkedListNode);
                     }));
             }
         }
@@ -118,7 +142,33 @@ namespace KnittingAssistant.ViewModel
                     (clearColorsCommand = new RelayCommand(obj =>
                     {
                         colorStorage.ClearColors();
-                        AddedColors = colorStorage.GetColorGridFromFile();
+                        AddedColors = CreateColorGrid(colorStorage.ColorList);
+                    }));
+            }
+        }
+
+        private RelayCommand saveColorsCommand;
+        public RelayCommand SaveColorsCommand
+        {
+            get
+            {
+                return saveColorsCommand ??
+                    (saveColorsCommand = new RelayCommand(obj =>
+                    {
+                        colorStorage.WriteColorsToFile();
+                    }));
+            }
+        }
+
+        private RelayCommand notSaveColorsCommand;
+        public RelayCommand NotSaveColorsCommand
+        {
+            get
+            {
+                return notSaveColorsCommand ??
+                    (notSaveColorsCommand = new RelayCommand(obj =>
+                    {
+                        
                     }));
             }
         }
@@ -128,7 +178,10 @@ namespace KnittingAssistant.ViewModel
         private const int addedColorsGridWidth = 11;
         private const int addedColorsGridHeight = 3;
         private ColorStorage colorStorage;
-        private Color selectedColor;
+        private Color selectedColorForAdding;
+        private int selectedColorIndex;
+        private LinkedListNode<Color> selectedLinkedListNode;
+        private ArrayToGridIndexConverter arrayToGridIndexConverter;
         public Image PaletteAreaImage { get; set; }
         public Border SelectedColor { get; set; }
 
@@ -141,10 +194,12 @@ namespace KnittingAssistant.ViewModel
             IsColorAdding = false;
             IsColorDeleting = false;
 
-            colorStorage = new ColorStorage("colors.txt", addedColorsGridWidth, addedColorsGridHeight,
-                SetSelectedColorForDeleting);
+            arrayToGridIndexConverter = new ArrayToGridIndexConverter(addedColorsGridWidth, addedColorsGridHeight);
 
-            AddedColors = colorStorage.GetColorGridFromFile();
+            colorStorage = new ColorStorage("colors.txt");
+            colorStorage.ReadColorsFromFile();
+
+            AddedColors = CreateColorGrid(colorStorage.ColorList);
         }
 
         public void SetSelectedColorForAddingCommand(object sender, MouseButtonEventArgs e)
@@ -157,7 +212,7 @@ namespace KnittingAssistant.ViewModel
                 tempBitmap.Format, tempBitmap.Palette);
 
             Point position = e.GetPosition(PaletteAreaImage);
-            if ((position.X <= bitmapPalette.PixelWidth) && (position.Y <= bitmapPalette.PixelHeight))
+            if (position.X <= bitmapPalette.PixelWidth && position.X >= 0 && position.Y <= bitmapPalette.PixelHeight && position.Y >= 0)
             {
                 int stride = (int)bitmapPalette.PixelWidth * bitmapPalette.Format.BitsPerPixel / 8;
 
@@ -167,26 +222,137 @@ namespace KnittingAssistant.ViewModel
                 BlueSelectedColorValue = currentPixel[0];
                 GreenSelectedColorValue = currentPixel[1];
                 RedSelectedColorValue = currentPixel[2];
-                selectedColor = Color.FromRgb((byte)RedSelectedColorValue, (byte)GreenSelectedColorValue, (byte)BlueSelectedColorValue);
 
-                SelectedColor.Background = new SolidColorBrush(selectedColor);
-                if (SelectedColor.Child != null)
-                    SelectedColor.Child = null;
+                selectedColorForAdding = Color.FromRgb((byte)RedSelectedColorValue, (byte)GreenSelectedColorValue, (byte)BlueSelectedColorValue);
+
+                ShowSelectedColor(selectedColorForAdding);
 
                 IsColorAdding = true;
                 IsColorDeleting = false;
             }
         }
 
-        public void SetSelectedColorForDeleting(object sender, MouseButtonEventArgs e)
+        public void SetSelectedColorForDeletingCommand(object sender, MouseButtonEventArgs e)
         {
             Border selectedColorBorder = sender as Border;
-            SelectedColor.Background = selectedColorBorder.Background;
-            //Color selectedColor = ((SolidColorBrush)selectedColorBorder.Background).Color;
-            //int selectedColorIndex = (selectedColorBorder.Parent as Grid).Children.IndexOf(selectedColorBorder);
+            selectedColorIndex = (selectedColorBorder.Parent as Grid).Children.IndexOf(selectedColorBorder);
+            selectedLinkedListNode = colorStorage.GetNodeByIndex(selectedColorIndex);
+
+            ShowSelectedColor(selectedLinkedListNode);
 
             IsColorAdding = false;
             IsColorDeleting = true;
         }
+
+        public void ShowSelectedColor(Color selectedColor)
+        {
+            SelectedColor.Background = new SolidColorBrush(selectedColor);
+            BlueSelectedColorValue = selectedColor.B;
+            GreenSelectedColorValue = selectedColor.G;
+            RedSelectedColorValue = selectedColor.R;
+
+            if (SelectedColor.Child != null)
+                SelectedColor.Child = null;
+        }
+
+        public void ShowSelectedColor(LinkedListNode<Color> selectedColorNode)
+        {
+            if (selectedColorNode != null)
+                ShowSelectedColor(selectedColorNode.Value);
+            else
+            {
+                Image emptyColorImage = new Image();
+                emptyColorImage.Source = new BitmapImage(new Uri("D:/Development/KnittingAssistant/KnittingAssistant/View/resources/large_empty_image.png"));
+                SelectedColor.Child = emptyColorImage;
+                BlueSelectedColorValue = GreenSelectedColorValue = RedSelectedColorValue = 0;
+            }
+        }
+
+        private Grid CreateColorGrid(LinkedList<Color> colorList)
+        {
+            GridIndex gridSize = arrayToGridIndexConverter.GetGridSize(colorStorage.ColorList.Count);
+            int columnCount = gridSize.column;
+            int rowCount = gridSize.row;
+
+            Grid addedColors = new Grid();
+            ColumnDefinition[] colDef = new ColumnDefinition[columnCount];
+            RowDefinition[] rowDef = new RowDefinition[rowCount];
+            for (int i = 0; i < columnCount; i++)
+            {
+                colDef[i] = new ColumnDefinition();
+                colDef[i].MaxWidth = 30;
+                addedColors.ColumnDefinitions.Add(colDef[i]);
+            }
+            for (int j = 0; j < rowCount; j++)
+            {
+                rowDef[j] = new RowDefinition();
+                rowDef[j].MinHeight = 30;
+                addedColors.RowDefinitions.Add(rowDef[j]);
+            }
+
+            Border addedColorBorder;
+            int colorIndex = 0;
+            for (int i = 0; i < rowCount; i++)
+            {
+                for (int j = 0; j < columnCount; j++)
+                {
+                    addedColorBorder = new Border();
+                    addedColorBorder.Width = addedColorBorder.Height = 20;
+                    if (colorIndex < colorList.Count)
+                    {
+                        addedColorBorder.BorderBrush = Brushes.Gray;
+                        addedColorBorder.Background = new SolidColorBrush(colorList.ElementAt(colorIndex++));
+                    }
+                    addedColorBorder.BorderThickness = new Thickness(2);
+                    Grid.SetColumn(addedColorBorder, j);
+                    Grid.SetRow(addedColorBorder, i);
+                    addedColorBorder.PreviewMouseLeftButtonDown += SetSelectedColorForDeletingCommand;
+                    addedColors.Children.Add(addedColorBorder);
+                }
+            }
+
+            return addedColors;
+        }
+    }
+
+    public class ArrayToGridIndexConverter
+    {
+        private int defaultColumnCount;
+        private int defaultRowCount;
+
+        public ArrayToGridIndexConverter(int defaultColumnCount, int defaultRowCount)
+        {
+            this.defaultColumnCount = defaultColumnCount;
+            this.defaultRowCount = defaultRowCount;
+        }
+
+        public GridIndex GetGridSize(int arrayLength)
+        {
+            GridIndex gridSize = ConvertArrayIndexToGrid(arrayLength - 1);
+            int columnCount = gridSize.column;
+            int rowCount = gridSize.row;
+
+            if (arrayLength > defaultColumnCount)
+                columnCount = defaultColumnCount;
+            else
+                columnCount++;
+
+            if (++rowCount < defaultRowCount) rowCount = defaultRowCount;
+
+            return new GridIndex { column = columnCount, row = rowCount };
+        }
+
+        public GridIndex ConvertArrayIndexToGrid(int arrayIndex)
+        {
+            int column = arrayIndex % defaultColumnCount;
+            int row = arrayIndex / defaultColumnCount;
+            return new GridIndex { column = column, row = row };
+        }
+    }
+
+    public struct GridIndex
+    {
+        public int column;
+        public int row;
     }
 }

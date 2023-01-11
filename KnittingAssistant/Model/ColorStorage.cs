@@ -1,63 +1,29 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 
 namespace KnittingAssistant.Model
 {
-    struct GridIndex
-    {
-        public int column;
-        public int row;
-    }
-
     class ColorStorage
     {
         private string filename = "colors.txt";
-        private int defaultColumnCount = 12;
-        private int defaultRowCount = 3;
-        private MouseButtonEventHandler setSelectedColorForDeleting;
 
-        public ColorStorage(string filename, int defaultColumnCount, int defaultRowCount,
-            MouseButtonEventHandler setSelectedColorForDeleting)
+        public LinkedList<Color> ColorList { get; }
+        public int ColorsCount { get => ColorList.Count; }
+
+        public ColorStorage(string filename)
         {
             this.filename = filename;
-            this.defaultColumnCount = defaultColumnCount;
-            this.defaultRowCount = defaultRowCount;
-            this.setSelectedColorForDeleting = setSelectedColorForDeleting;
+
+            ColorList = new LinkedList<Color>();
         }
 
-        public void AddColor(Color color)
+        public void ReadColorsFromFile()
         {
-            StreamWriter sw = new StreamWriter(filename, true);
-
-            string writeableColor = color.R.ToString() + " " + color.G.ToString() + " " + color.B.ToString();
-            sw.WriteLine(writeableColor);
-
-            sw.Close();
-        }
-
-        public void DeleteColor(int id, bool allColors = false)
-        {
-            var storageContent = File.ReadAllLines(filename).ToList();
-            storageContent.RemoveAt(id);
-            File.WriteAllLines(filename, storageContent.ToArray());
-        }
-
-        public void ClearColors()
-        {
-            var storageContent = File.ReadAllLines(filename).ToList();
-            storageContent.Clear();
-            File.WriteAllLines(filename, storageContent.ToArray());
-        }
-
-        public Grid GetColorGridFromFile()
-        {
-            var storageContent = File.ReadAllLines(filename);
+            ClearColors();
+            string[] storageContent = File.ReadAllLines(filename);
             byte[,] colorBytes = new byte[storageContent.Length, 3];
-            Color[] colors = new Color[storageContent.Length];
 
             for (int i = 0; i < storageContent.Length; i++)
             {
@@ -66,77 +32,32 @@ namespace KnittingAssistant.Model
                 colorBytes[i, 1] = byte.Parse(colorString[1]);
                 colorBytes[i, 2] = byte.Parse(colorString[2]);
 
-                colors[i] = Color.FromRgb(colorBytes[i, 0], colorBytes[i, 1], colorBytes[i, 2]);
+                ColorList.AddLast(Color.FromRgb(colorBytes[i, 0], colorBytes[i, 1], colorBytes[i, 2]));
             }
-
-            GridIndex gridSize = GetGridSize(storageContent.Length);
-
-            return CreateColorGrid(gridSize.column, gridSize.row, colors);
         }
 
-        private GridIndex ConvertIndexArrayToGrid(int arrayIndex)
+        public void WriteColorsToFile()
         {
-            int column = arrayIndex % defaultColumnCount;
-            int row = arrayIndex / defaultColumnCount;
-            return new GridIndex { column = column, row = row };
-        }
+            StreamWriter sw = new StreamWriter(filename);
 
-        private GridIndex GetGridSize(int arrayLength)
-        {
-            GridIndex gridSize = ConvertIndexArrayToGrid(arrayLength - 1);
-            int columnCount = gridSize.column;
-            int rowCount = gridSize.row;
-
-            if (arrayLength > defaultColumnCount)
-                columnCount = defaultColumnCount;
-            else
-                columnCount++;
-
-            if (++rowCount < defaultRowCount) rowCount = defaultRowCount;
-
-            return new GridIndex { column = columnCount, row = rowCount };
-        }
-
-        private Grid CreateColorGrid(int columnCount, int rowCount, Color[] colors)
-        {
-            Grid addedColors = new Grid();
-            ColumnDefinition[] colDef = new ColumnDefinition[columnCount];
-            RowDefinition[] rowDef = new RowDefinition[rowCount];
-            for (int i = 0; i < columnCount; i++)
+            foreach (Color color in ColorList)
             {
-                colDef[i] = new ColumnDefinition();
-                colDef[i].MaxWidth = 30;
-                addedColors.ColumnDefinitions.Add(colDef[i]);
-            }
-            for (int j = 0; j < rowCount; j++)
-            {
-                rowDef[j] = new RowDefinition();
-                rowDef[j].MinHeight = 30;
-                addedColors.RowDefinitions.Add(rowDef[j]);
+                string writeableColor = color.R.ToString() + " " + color.G.ToString() + " " + color.B.ToString();
+                sw.WriteLine(writeableColor);
             }
 
-            Border addedColorBorder;
-            int colorIndex = 0;
-            for (int i = 0; i < rowCount; i++)
-            {
-                for (int j = 0; j < columnCount; j++)
-                {
-                    addedColorBorder = new Border();
-                    addedColorBorder.Width = addedColorBorder.Height = 20;
-                    if (colorIndex < colors.Length)
-                    {
-                        addedColorBorder.BorderBrush = Brushes.Gray;
-                        addedColorBorder.Background = new SolidColorBrush(colors[colorIndex++]);
-                    }
-                    addedColorBorder.BorderThickness = new Thickness(2);
-                    Grid.SetColumn(addedColorBorder, j);
-                    Grid.SetRow(addedColorBorder, i);
-                    addedColorBorder.PreviewMouseLeftButtonDown += setSelectedColorForDeleting;
-                    addedColors.Children.Add(addedColorBorder);
-                }
-            }
-
-            return addedColors;
+            sw.Close();
         }
+
+        public void AddColor(Color color) => ColorList.AddLast(color);
+
+        public void RemoveColor(int index) => ColorList.Remove(ColorList.ElementAt(index));
+        public void RemoveColor(LinkedListNode<Color> colorNode) => ColorList.Remove(colorNode);
+
+        public void ClearColors() => ColorList.Clear();
+
+        public int GetCountOfColors() => ColorList.Count;
+
+        public LinkedListNode<Color> GetNodeByIndex(int index) => ColorList.Find(ColorList.ElementAt(index));
     }
 }
