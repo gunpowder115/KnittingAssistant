@@ -69,14 +69,14 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
-        private bool m_IsColorDeleting;
-        public bool IsColorDeleting
+        private bool m_IsColorRemoving;
+        public bool IsColorRemoving
         {
-            get { return m_IsColorDeleting; }
+            get { return m_IsColorRemoving; }
             set
             {
-                m_IsColorDeleting = value;
-                OnPropertyChanged("IsColorDeleting");
+                m_IsColorRemoving = value;
+                OnPropertyChanged("IsColorRemoving");
             }
         }
 
@@ -98,13 +98,13 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
-        private RelayCommand deleteColorCommand;
-        public RelayCommand DeleteColorCommand
+        private RelayCommand removeColorCommand;
+        public RelayCommand RemoveColorCommand
         {
             get
             {
-                return deleteColorCommand ??
-                    (deleteColorCommand = new RelayCommand(obj =>
+                return removeColorCommand ??
+                    (removeColorCommand = new RelayCommand(obj =>
                     {
                         LinkedListNode<Color> nextSelectedColorLinkedListNode;
 
@@ -143,6 +143,8 @@ namespace KnittingAssistant.ViewModel
                     {
                         colorStorage.ClearColors();
                         AddedColors = CreateColorGrid(colorStorage.ColorList);
+                        selectedLinkedListNode = null;
+                        ShowSelectedColor(selectedLinkedListNode);
                     }));
             }
         }
@@ -192,7 +194,7 @@ namespace KnittingAssistant.ViewModel
             BlueSelectedColorValue = 0;
 
             IsColorAdding = false;
-            IsColorDeleting = false;
+            IsColorRemoving = false;
 
             arrayToGridIndexConverter = new ArrayToGridIndexConverter(addedColorsGridWidth, addedColorsGridHeight);
 
@@ -228,11 +230,11 @@ namespace KnittingAssistant.ViewModel
                 ShowSelectedColor(selectedColorForAdding);
 
                 IsColorAdding = true;
-                IsColorDeleting = false;
+                IsColorRemoving = false;
             }
         }
 
-        public void SetSelectedColorForDeletingCommand(object sender, MouseButtonEventArgs e)
+        public void SetSelectedColorForRemovingCommand(object sender, MouseButtonEventArgs e)
         {
             Border selectedColorBorder = sender as Border;
             selectedColorIndex = (selectedColorBorder.Parent as Grid).Children.IndexOf(selectedColorBorder);
@@ -241,7 +243,7 @@ namespace KnittingAssistant.ViewModel
             ShowSelectedColor(selectedLinkedListNode);
 
             IsColorAdding = false;
-            IsColorDeleting = true;
+            IsColorRemoving = true;
         }
 
         public void ShowSelectedColor(Color selectedColor)
@@ -306,7 +308,12 @@ namespace KnittingAssistant.ViewModel
                     addedColorBorder.BorderThickness = new Thickness(2);
                     Grid.SetColumn(addedColorBorder, j);
                     Grid.SetRow(addedColorBorder, i);
-                    addedColorBorder.PreviewMouseLeftButtonDown += SetSelectedColorForDeletingCommand;
+                    addedColorBorder.PreviewMouseLeftButtonDown += SetSelectedColorForRemovingCommand;
+
+                    InputGesture mouseGesture = new MouseGesture(MouseAction.LeftDoubleClick);
+                    InputBinding mouseBinding = new InputBinding(RemoveColorCommand, mouseGesture);
+                    addedColorBorder.InputBindings.Add(mouseBinding);
+
                     addedColors.Children.Add(addedColorBorder);
                 }
             }
