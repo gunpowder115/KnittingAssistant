@@ -7,7 +7,7 @@ namespace KnittingAssistant.Model
 {
     class ColorStorage
     {
-        private string filename = "colors.txt";
+        private string filename;
 
         public LinkedList<Color> ColorList { get; }
         public int ColorsCount { get => ColorList.Count; }
@@ -15,9 +15,10 @@ namespace KnittingAssistant.Model
         public ColorStorage(string filename)
         {
             this.filename = filename;
-
             ColorList = new LinkedList<Color>();
         }
+
+        public ColorStorage() : this("colors.txt") { }
 
         public void ReadColorsFromFile()
         {

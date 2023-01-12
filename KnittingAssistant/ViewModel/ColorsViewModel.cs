@@ -198,7 +198,7 @@ namespace KnittingAssistant.ViewModel
 
             arrayToGridIndexConverter = new ArrayToGridIndexConverter(addedColorsGridWidth, addedColorsGridHeight);
 
-            colorStorage = new ColorStorage("colors.txt");
+            colorStorage = new ColorStorage();
             colorStorage.ReadColorsFromFile();
 
             AddedColors = CreateColorGrid(colorStorage.ColorList);
@@ -305,6 +305,7 @@ namespace KnittingAssistant.ViewModel
                         addedColorBorder.BorderBrush = Brushes.Gray;
                         addedColorBorder.Background = new SolidColorBrush(colorList.ElementAt(colorIndex++));
                     }
+
                     addedColorBorder.BorderThickness = new Thickness(2);
                     Grid.SetColumn(addedColorBorder, j);
                     Grid.SetRow(addedColorBorder, i);
