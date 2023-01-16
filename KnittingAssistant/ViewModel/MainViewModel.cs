@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows;
 using System.ComponentModel;
+using System.Windows.Media;
 
 namespace KnittingAssistant.ViewModel
 {
@@ -25,7 +26,7 @@ namespace KnittingAssistant.ViewModel
         public bool SettingsIsEnabled
         {
             get { return m_SettingsIsEnabled; }
-            set 
+            set
             {
                 m_SettingsIsEnabled = value;
                 OnPropertyChanged("SettingsIsEnabled");
@@ -36,7 +37,7 @@ namespace KnittingAssistant.ViewModel
         public double DisplayImageWidth
         {
             get { return m_DisplayImageWidth; }
-            set 
+            set
             {
                 FragmentCountWidth = SetFragmentCountDimension(value, DisplayImageFragmentWidth);
                 m_DisplayImageWidth = SetDisplayImageDimension(FragmentCountWidth, DisplayImageFragmentWidth);
@@ -54,7 +55,7 @@ namespace KnittingAssistant.ViewModel
         public double DisplayImageHeight
         {
             get { return m_DisplayImageHeight; }
-            set 
+            set
             {
                 FragmentCountHeight = SetFragmentCountDimension(value, DisplayImageFragmentHeight);
                 m_DisplayImageHeight = SetDisplayImageDimension(FragmentCountHeight, DisplayImageFragmentHeight);
@@ -151,6 +152,28 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private string m_SwitchGridIconFilename;
+        public string SwitchGridIconFilename
+        {
+            get { return m_SwitchGridIconFilename; }
+            set
+            {
+                m_SwitchGridIconFilename = value;
+                OnPropertyChanged("SwitchGridIconFilename");
+            }
+        }
+
+        private string m_SwitchGridIconToolTip;
+        public string SwitchGridIconToolTip
+        {
+            get { return m_SwitchGridIconToolTip; }
+            set
+            {
+                m_SwitchGridIconToolTip = value;
+                OnPropertyChanged("SwitchGridIconToolTip");
+            }
+        }
+
         #region User Controls Dependency Property
 
         private PropertyArea m_PropertyArea;
@@ -205,9 +228,9 @@ namespace KnittingAssistant.ViewModel
                         SplittingProcessValue = 0;
 
                         resultImageBitmaps = new WriteableBitmap[FragmentCountWidth, FragmentCountHeight];
+                        resultImageColors = new Color[FragmentCountWidth, FragmentCountHeight];
 
-                        splitImage = new SplitImage(mainImage, FragmentCountWidth, FragmentCountHeight,
-                            (int)FragmentWidthInPixels, (int)FragmentHeightInPixels);
+                        splitImage = new SplitImage(mainImage, FragmentCountWidth, FragmentCountHeight, (int)FragmentWidthInPixels, (int)FragmentHeightInPixels);
 
                         fragmentsGrid = InitGridForFragments();
 
@@ -231,25 +254,30 @@ namespace KnittingAssistant.ViewModel
             {
                 for (int j = 0; j < FragmentCountHeight; j++)
                 {
-                    Application.Current.Dispatcher.Invoke(new Action(() => { resultImageBitmaps[i, j] = new WriteableBitmap(splitImage.DoSplitImage(i, j));
-                        Image fragment = new Image();
-                        fragment.Source = resultImageBitmaps[i, j];
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        resultImageColors[i, j] = splitImage.DoSplitImage(i, j);
+                        Border fragment = new Border();
+
+                        fragment.Height = ImageArea.mainImageContainer.ActualHeight / FragmentCountHeight;
+                        fragment.Width = fragment.Height;
+                        fragment.BorderThickness = new Thickness(0.5);
+                        fragment.BorderBrush = Brushes.Black;
+                        fragment.Background = new SolidColorBrush(resultImageColors[i, j]);
 
                         Grid.SetColumn(fragment, i);
                         Grid.SetRow(fragment, j);
-
                         fragmentsGrid.Children.Add(fragment);
                     }));
 
-                    if (i == FragmentCountWidth - 1 && j == FragmentCountHeight - 1)
+                    progressPercentage = Convert.ToInt32((double)(i * FragmentCountHeight + j) / (FragmentCountWidth * FragmentCountHeight) * 100);
+                    if (progressPercentage >= 100)
                         progressPercentage = 99;
-                    else
-                        progressPercentage = Convert.ToInt32((double)(i * FragmentCountHeight + j) / (FragmentCountWidth * FragmentCountHeight) * 100);
                     (sender as BackgroundWorker).ReportProgress(progressPercentage);
                 }
             }
 
-            e.Result = resultImageBitmaps;
+            e.Result = resultImageColors;
         }
 
         private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -261,7 +289,15 @@ namespace KnittingAssistant.ViewModel
 
         private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            ImageArea.Content = fragmentsGrid;
+            ImageArea.mainImageContainer.Children.Clear();
+
+            Image splittedImage = new Image();
+            splittedImage.Source = splitImage.GridBitmapImage;
+            Grid.SetColumn(splittedImage, 0);
+            Grid.SetRow(splittedImage, 0);
+            ImageArea.mainImageContainer.Children.Add(splittedImage);
+            gridLinesVis = true;
+
             SplittingProcessName = "Готово!";
             SplittingProcessValue = 100;
         }
@@ -296,9 +332,26 @@ namespace KnittingAssistant.ViewModel
                 return changeGridLinesVisCommand ??
                     (changeGridLinesVisCommand = new RelayCommand(obj =>
                     {
-                        Grid? content = ImageArea.Content as Grid;
-                        if (content != null)
-                            content.ShowGridLines = !content.ShowGridLines;
+                        if (gridLinesVis != null)
+                        {
+                            Image splittedImage = new Image();
+                            if ((bool)gridLinesVis)
+                            {
+                                splittedImage.Source = splitImage.SplittedBitmapImage;
+                                SwitchGridIconFilename = "../resources/grid_on_icon_1.png";
+                                SwitchGridIconToolTip = "Показать сетку";
+                            }
+                            else
+                            {
+                                splittedImage.Source = splitImage.GridBitmapImage;
+                                SwitchGridIconFilename = "../resources/grid_off_icon_1.png";
+                                SwitchGridIconToolTip = "Скрыть сетку";
+                            }
+                            Grid.SetColumn(splittedImage, 0);
+                            Grid.SetRow(splittedImage, 0);
+                            ImageArea.mainImageContainer.Children.Add(splittedImage);
+                            gridLinesVis = !gridLinesVis;
+                        }
                     }));
             }
         }
@@ -332,8 +385,10 @@ namespace KnittingAssistant.ViewModel
         private Image mainImage;
         private Grid fragmentsGrid;
         private SplitImage splitImage;
+        private bool? gridLinesVis;
 
         private WriteableBitmap[,] resultImageBitmaps;
+        private Color[,] resultImageColors;
 
         private en_ImageStates currentImageState = en_ImageStates.mainImage;
 
@@ -347,6 +402,8 @@ namespace KnittingAssistant.ViewModel
             KeepRatioOfMainImage = true;
             IsSquareFragment = true;
             SplittingProcessVisibility = Visibility.Hidden;
+            gridLinesVis = null;
+            SwitchGridIconFilename = "../resources/grid_off_icon_1.png";
         }
 
         public double SetDisplayImageDimension(int newFragmentCountDimension, double fragmentDimension) =>
@@ -377,7 +434,12 @@ namespace KnittingAssistant.ViewModel
             MainImageHeight = (mainImage.Source as BitmapSource).PixelHeight;
             DisplayImageWidth = 100 * DisplayImageFragmentWidth;
 
-            ImageArea.Content = mainImage;
+            ImageArea.mainImageContainer.Children.Clear();
+            Grid.SetColumn(mainImage, 0);
+            Grid.SetRow(mainImage, 0);
+            ImageArea.mainImageContainer.Children.Add(mainImage);
+
+            gridLinesVis = null;
         }
 
         private Image CreateMainImage()
@@ -386,7 +448,7 @@ namespace KnittingAssistant.ViewModel
 
             mainImage.Name = "mainImage";
             mainImage.Cursor = Cursors.Hand;
-            mainImage.Stretch = System.Windows.Media.Stretch.Uniform;
+            mainImage.Stretch = Stretch.Uniform;
 
             currentImageState = en_ImageStates.mainImage;
             return mainImage;

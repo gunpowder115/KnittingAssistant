@@ -16,10 +16,12 @@
             <i:CallMethodAction MethodName="LoadMainImageByDropCommand" TargetObject="{Binding}"/>
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    <Image x:Name="mainImage" Source="../resources/default_image.png" Cursor="Hand"
-                                   AllowDrop="True" Stretch="Uniform">
-        <Image.ToolTip>
-            <ToolTip Content="Загрузить изображение"/>
-        </Image.ToolTip>
-    </Image>
+    <Grid x:Name="mainImageContainer">
+        <Image x:Name="mainImage" Source="../resources/default_image.png" Cursor="Hand" 
+               AllowDrop="True" Stretch="Uniform">
+            <Image.ToolTip>
+                <ToolTip Content="Загрузить изображение"/>
+            </Image.ToolTip>
+        </Image>
+    </Grid>
 </UserControl>

@@ -1,5 +1,5 @@
-﻿using System.Drawing;
-using System.Windows.Media.Imaging;
+﻿using System.Windows.Media.Imaging;
+using System.Windows.Media;
 using System.Windows;
 using System;
 
@@ -55,7 +55,7 @@ namespace KnittingAssistant.Model
             averageColorBytes[1] = sumG / numPixels;
             averageColorBytes[0] = sumR / numPixels;
 
-            averageColor = Color.FromArgb(averageColorBytes[0], averageColorBytes[1], averageColorBytes[2]);
+            averageColor = Color.FromRgb((byte)averageColorBytes[0], (byte)averageColorBytes[1], (byte)averageColorBytes[2]);
         }
 
         //заполнить фрагмент найденным/выбранным цветом
@@ -96,69 +96,42 @@ namespace KnittingAssistant.Model
                 }
             }
 
-            nearestColor = Color.FromArgb(colorBytes[currColorIndex, 0], colorBytes[currColorIndex, 1], colorBytes[currColorIndex, 2]);
+            nearestColor = Color.FromRgb((byte)colorBytes[currColorIndex, 0], (byte)colorBytes[currColorIndex, 1], (byte)colorBytes[currColorIndex, 2]);
         }
         
-        private void SelectNearestColor_My()
-        {
-            int[] indexNearest = new int[3];
-            int[] colorByteDelta = new int[3];
-
-            for (int colorByte = 0; colorByte < 3; colorByte++)
-            {
-                indexNearest[colorByte] = 0;
-                colorByteDelta[colorByte] = 255;
-                for (int i = 0; i < colorStorage.ColorsCount; i++)
-                {
-                    int delta = Math.Abs(colorBytes[i, colorByte] - averageColorBytes[colorByte]);
-                    if (delta < colorByteDelta[colorByte])
-                    {
-                        indexNearest[colorByte] = i;
-                        colorByteDelta[colorByte] = delta;
-                    }
-                }
-            }
-
-            int indexR = indexNearest[0];
-            int indexG = indexNearest[1];
-            int indexB = indexNearest[2];
-
-            int selectedIndex = 0;
-            if (indexR == indexG && indexG == indexB)
-                selectedIndex = indexR;
-            else if ((indexR == indexG) || (indexG == indexB) || (indexB == indexR))
-            {
-                if (indexR == indexG) selectedIndex = indexR;
-                else if (indexG == indexB) selectedIndex = indexG;
-                else selectedIndex = indexB;
-            }
-            else
-                selectedIndex = FindIndexOfMin(colorByteDelta);
-
-            nearestColor = Color.FromArgb(colorBytes[selectedIndex, 0], colorBytes[selectedIndex, 1], colorBytes[selectedIndex, 2]);
-        }
-
-        private int FindIndexOfMin(int[] numbers)
-        {
-            int index = 0;
-            int value = numbers[0];
-            for (int i = 1; i < numbers.Length; i++)
-            {
-                if (numbers[i] < value)
-                    index = i;
-            }
-            return index;
-        }
-
         //вернуть результирующий фрагмент выбранного цвета
-        public WriteableBitmap GetResultFragment()
+        public Color GetResultFragmentColor()
         {
             FindAverageColor();
             SelectNearestColor();
-            //FillFragmentByColor(averageColor);
-            FillFragmentByColor(nearestColor);
 
-            return fragmentBitmap;
+            return nearestColor;
         }
+    }
+
+    public class ColorRGB
+    {
+        public byte R { get; set; }
+        public byte G { get; set; }
+        public byte B { get; set; }
+
+        public ColorRGB(in Color color) : this(color.R, color.G, color.B) { }
+        public ColorRGB() : this(new Color()) { }
+        public ColorRGB(ColorRGB color) : this(color.R, color.G, color.B) { }
+        public ColorRGB(byte R, byte G, byte B)
+        {
+            this.R = R;
+            this.G = G;
+            this.B = B;
+        }
+
+        public void WriteColorRGB(Color color)
+        {
+            R = color.R;
+            G = color.G;
+            B = color.B;
+        }
+
+        public static explicit operator Color(ColorRGB param) => Color.FromRgb(param.R, param.G, param.B);
     }
 }

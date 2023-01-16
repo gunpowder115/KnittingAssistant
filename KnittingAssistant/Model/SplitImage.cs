@@ -1,31 +1,67 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows;
-using System;
+using System.Windows.Media;
 
 namespace KnittingAssistant.Model
 {
     public class SplitImage
     {
         public ImageFragment[,] imageFragments { get; }
-        private Image mainImage;
         private BitmapImage mainBitmapImage;
+        public WriteableBitmap SplittedBitmapImage { get; }
+        public WriteableBitmap GridBitmapImage { get; }
         private int fragmentWidthInPixels, fragmentHeightInPixels;
-        private delegate void copyPixels(Int32Rect sourceRect, Array pixels, int stride, int offset);
 
-        public SplitImage(Image mainImage, int fragmentCountWidth, int fragmentCountHeight,
-            int fragmentWidthInPixels, int fragmentHeightInPixels)
+        public SplitImage(Image mainImage, int fragmentCountWidth, int fragmentCountHeight, int fragmentWidthInPixels, int fragmentHeightInPixels)
         {
-            this.mainImage = mainImage;
             this.fragmentWidthInPixels = fragmentWidthInPixels;
             this.fragmentHeightInPixels = fragmentHeightInPixels;
 
             imageFragments = new ImageFragment[fragmentCountWidth, fragmentCountHeight]; //массив фрагментов изображения
 
             mainBitmapImage = (BitmapImage)mainImage.Source; //главный bitmap
+
+            SplittedBitmapImage = new WriteableBitmap(fragmentWidthInPixels * fragmentCountWidth, fragmentHeightInPixels * fragmentCountHeight,
+                mainBitmapImage.DpiX, mainBitmapImage.DpiY, mainBitmapImage.Format, mainBitmapImage.Palette);
+            GridBitmapImage = new WriteableBitmap(fragmentWidthInPixels * fragmentCountWidth, fragmentHeightInPixels * fragmentCountHeight,
+                mainBitmapImage.DpiX, mainBitmapImage.DpiY, mainBitmapImage.Format, mainBitmapImage.Palette);
         }
 
-        public WriteableBitmap DoSplitImage(int currentWidthFragment, int currentHeightFragment)
+        private void DrawFragmentOnSplittedImage(Color fragmentColor, Color gridColor, int currentWidthFragment, int currentHeightFragment)
+        {
+            int stride = 4 * fragmentWidthInPixels; //4 is bytes per pixel
+            byte[] colorData = new byte[fragmentHeightInPixels * stride];
+            byte[] gridColorData = new byte[fragmentHeightInPixels * stride];
+            Int32Rect rect = new Int32Rect(currentWidthFragment * fragmentWidthInPixels, 
+                currentHeightFragment * fragmentHeightInPixels, fragmentWidthInPixels, fragmentHeightInPixels);
+            for (int i = 0; i < colorData.Length - 3; i += 4)
+            {
+                if ((i >= 0 && i < fragmentWidthInPixels * 4) || (i % fragmentWidthInPixels * 4 == 0))
+                {
+                    gridColorData[i] = gridColor.B;
+                    gridColorData[i + 1] = gridColor.G;
+                    gridColorData[i + 2] = gridColor.R;
+                }
+                else
+                {
+                    gridColorData[i] = fragmentColor.B;
+                    gridColorData[i + 1] = fragmentColor.G;
+                    gridColorData[i + 2] = fragmentColor.R;
+                }
+                gridColorData[i + 3] = 0;
+
+                colorData[i] = fragmentColor.B;
+                colorData[i + 1] = fragmentColor.G;
+                colorData[i + 2] = fragmentColor.R;
+                colorData[i + 3] = 0;
+            }
+
+            SplittedBitmapImage.WritePixels(rect, colorData, stride, 0);
+            GridBitmapImage.WritePixels(rect, gridColorData, stride, 0);
+        }
+
+        public Color DoSplitImage(int currentWidthFragment, int currentHeightFragment)
         {
             //временный bitmap для фрагмента
             WriteableBitmap tempBitmapFragment = new WriteableBitmap(fragmentWidthInPixels, fragmentHeightInPixels,
@@ -48,7 +84,12 @@ namespace KnittingAssistant.Model
             //создать новый ImageFragment
             imageFragments[currentWidthFragment, currentHeightFragment] = new ImageFragment(tempBitmapFragment, fragmentWidthInPixels, fragmentHeightInPixels);
 
-            return imageFragments[currentWidthFragment, currentHeightFragment].GetResultFragment();
+            Color resultColor = imageFragments[currentWidthFragment, currentHeightFragment].GetResultFragmentColor();
+            Color gridColor = Color.FromArgb(0, 0, 0, 0);
+
+            DrawFragmentOnSplittedImage(resultColor, gridColor, currentWidthFragment, currentHeightFragment);
+
+            return resultColor;
         }
     }
 }

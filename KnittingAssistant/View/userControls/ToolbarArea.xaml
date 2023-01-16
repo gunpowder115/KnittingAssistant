@@ -7,8 +7,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="1024">
     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" FlowDirection="RightToLeft" Height="45">
-        <Button ToolTip="Показать сетку" Command="{Binding ChangeGridLinesVisCommand}">
-            <Image Source="../resources/grid_off_icon_1.png"></Image>
+        <Button ToolTip="{Binding SwitchGridIconToolTip}" Command="{Binding ChangeGridLinesVisCommand}">
+            <Image Source="{Binding SwitchGridIconFilename}"/>
         </Button>
         <Button IsEnabled="False">
             <Button.ToolTip>
