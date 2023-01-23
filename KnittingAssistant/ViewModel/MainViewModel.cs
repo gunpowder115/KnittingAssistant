@@ -39,14 +39,14 @@ namespace KnittingAssistant.ViewModel
             get { return m_DisplayImageWidth; }
             set
             {
-                FragmentCountWidth = SetFragmentCountDimension(value, DisplayImageFragmentWidth);
-                m_DisplayImageWidth = SetDisplayImageDimension(FragmentCountWidth, DisplayImageFragmentWidth);
+                m_DisplayImageWidth = value;
                 OnPropertyChanged("DisplayImageWidth");
 
-                FragmentCountHeight = SetFragmentCountDimension(value, DisplayImageFragmentHeight, 1 / MainImageRatio);
-                double newDisplayHeight = SetDisplayImageDimension(FragmentCountHeight, DisplayImageFragmentHeight);
+                double newDisplayHeight = SetDisplayImageSize(m_DisplayImageWidth, 1 / MainImageRatio);
                 if (m_DisplayImageHeight != newDisplayHeight)
+                {
                     m_DisplayImageHeight = newDisplayHeight;
+                }
                 OnPropertyChanged("DisplayImageHeight");
             }
         }
@@ -57,14 +57,14 @@ namespace KnittingAssistant.ViewModel
             get { return m_DisplayImageHeight; }
             set
             {
-                FragmentCountHeight = SetFragmentCountDimension(value, DisplayImageFragmentHeight);
-                m_DisplayImageHeight = SetDisplayImageDimension(FragmentCountHeight, DisplayImageFragmentHeight);
+                m_DisplayImageHeight = value;
                 OnPropertyChanged("DisplayImageHeight");
 
-                FragmentCountWidth = SetFragmentCountDimension(value, DisplayImageFragmentWidth, MainImageRatio);
-                double newDisplayWidth = SetDisplayImageDimension(FragmentCountWidth, DisplayImageFragmentWidth);
+                double newDisplayWidth = SetDisplayImageSize(m_DisplayImageHeight, MainImageRatio);
                 if (m_DisplayImageWidth != newDisplayWidth)
+                {
                     m_DisplayImageWidth = newDisplayWidth;
+                }
                 OnPropertyChanged("DisplayImageWidth");
             }
         }
@@ -227,10 +227,16 @@ namespace KnittingAssistant.ViewModel
                         SplittingProcessVisibility = Visibility.Visible;
                         SplittingProcessValue = 0;
 
+                        FragmentCountWidth = SetFragmentCount(m_DisplayImageWidth, m_DisplayImageFragmentWidth, FragmentWidthInPixels, MainImageWidth);
+                        DisplayImageWidth = SetDisplayImageSize(FragmentCountWidth, m_DisplayImageFragmentWidth);
+                        FragmentCountHeight = SetFragmentCount(m_DisplayImageHeight, m_DisplayImageFragmentHeight, FragmentHeightInPixels, MainImageHeight);
+                        DisplayImageHeight = SetDisplayImageSize(FragmentCountHeight, m_DisplayImageFragmentHeight);
+
                         resultImageBitmaps = new WriteableBitmap[FragmentCountWidth, FragmentCountHeight];
                         resultImageColors = new Color[FragmentCountWidth, FragmentCountHeight];
 
-                        splitImage = new SplitImage(mainImage, FragmentCountWidth, FragmentCountHeight, (int)FragmentWidthInPixels, (int)FragmentHeightInPixels);
+                        splitImage = new SplitImage(mainImage, FragmentCountWidth, FragmentCountHeight, 
+                            (int)Math.Round(FragmentWidthInPixels), (int)Math.Round(FragmentHeightInPixels));
 
                         fragmentsGrid = InitGridForFragments();
 
@@ -311,7 +317,7 @@ namespace KnittingAssistant.ViewModel
                     (loadMainImageByClickCommand = new RelayCommand(obj =>
                     {
                         OpenFileDialog fileDialogPicture = new OpenFileDialog();
-                        fileDialogPicture.Filter = "Изображения|*.bmp;*.jpg;*.gif;*.png;*.tif";
+                        fileDialogPicture.Filter = "Изображения|*.bmp;*.jpg;*.jpeg;*.gif;*.png;*.tif";
                         fileDialogPicture.FilterIndex = 1;
 
                         if (fileDialogPicture.ShowDialog() == true)
@@ -406,11 +412,26 @@ namespace KnittingAssistant.ViewModel
             SwitchGridIconFilename = "../resources/grid_off_icon_1.png";
         }
 
-        public double SetDisplayImageDimension(int newFragmentCountDimension, double fragmentDimension) =>
-            newFragmentCountDimension * fragmentDimension;
+        public double SetDisplayImageSize(int newFragmentCountDimension, double fragmentDimension)
+        {
+            return newFragmentCountDimension * fragmentDimension;
+        }
 
-        public int SetFragmentCountDimension(double imageDimensionInput, double fragmentDimension, double ratio = 1.0) =>
-            (int)Math.Round(imageDimensionInput * ratio / fragmentDimension);
+        private double SetDisplayImageSize(double otherInputSize, double mainImageRatio = 1.0)
+        {
+            return otherInputSize * mainImageRatio;
+        }
+
+        public int SetFragmentCount(double imageSizeInput, double fragmentSizeInput, double fragmentSizePx, double imageSizePx, double mainImageRatio = 1.0)
+        {
+            int fragmentCount = (int)Math.Round(imageSizeInput * mainImageRatio / fragmentSizeInput);
+            int fragmentSizePxInt = (int)Math.Round(fragmentSizePx);
+            while (fragmentCount * fragmentSizePxInt - imageSizePx >= fragmentSizePxInt)
+            {
+                fragmentCount--;
+            }
+            return fragmentCount;
+        }
 
         public void SetSettingsIsEnabled(bool imageIsLoaded) => SettingsIsEnabled = imageIsLoaded;
 
@@ -475,6 +496,11 @@ namespace KnittingAssistant.ViewModel
             }
 
             return fragmentsGrid;
+        }
+
+        private double FindMin(double a, double b)
+        {
+            return a < b ? a : b;
         }
     }
 }

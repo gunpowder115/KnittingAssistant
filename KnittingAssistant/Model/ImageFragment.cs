@@ -18,8 +18,8 @@ namespace KnittingAssistant.Model
         public ImageFragment(WriteableBitmap fragmentBitmap, int fragmentWidthInPixels, int fragmentHeightInPixels)
         {
             this.fragmentBitmap = fragmentBitmap;
-            this.fragmentWidthInPixels = fragmentWidthInPixels;
-            this.fragmentHeightInPixels = fragmentHeightInPixels;
+            this.fragmentWidthInPixels = fragmentBitmap.PixelWidth;
+            this.fragmentHeightInPixels = fragmentBitmap.PixelHeight;
 
             colorStorage = new ColorStorage();
             colorStorage.ReadColorsFromFile();
