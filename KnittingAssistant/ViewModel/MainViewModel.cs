@@ -390,7 +390,10 @@ namespace KnittingAssistant.ViewModel
                 return fragmentImageWidthChanged ??
                     (fragmentImageWidthChanged = new RelayCommand(obj =>
                     {
-
+                        if (IsSquareFragment)
+                        {
+                            DisplayImageFragmentHeight = DisplayImageFragmentWidth;
+                        }
                     }));
             }
         }
@@ -403,7 +406,10 @@ namespace KnittingAssistant.ViewModel
                 return fragmentImageHeightChanged ??
                     (fragmentImageHeightChanged = new RelayCommand(obj =>
                     {
-
+                        if (IsSquareFragment)
+                        {
+                            DisplayImageFragmentWidth = DisplayImageFragmentHeight;
+                        }
                     }));
             }
         }
@@ -472,7 +478,7 @@ namespace KnittingAssistant.ViewModel
             string imageFilename = ((string[])e.Data.GetData(DataFormats.FileDrop))[0];
             if (imageFilename.Contains(".bmp") || imageFilename.Contains(".jpg") ||
                 imageFilename.Contains(".gif") || imageFilename.Contains(".png") ||
-                imageFilename.Contains(".tif"))
+                imageFilename.Contains(".tif") || imageFilename.Contains(".jpeg"))
             {
                 loadImageOnForm(imageFilename);
             }
