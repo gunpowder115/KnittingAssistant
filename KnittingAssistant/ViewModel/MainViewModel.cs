@@ -41,13 +41,6 @@ namespace KnittingAssistant.ViewModel
             {
                 m_DisplayImageWidth = value;
                 OnPropertyChanged("DisplayImageWidth");
-
-                double newDisplayHeight = SetDisplayImageSize(m_DisplayImageWidth, 1 / MainImageRatio);
-                if (m_DisplayImageHeight != newDisplayHeight)
-                {
-                    m_DisplayImageHeight = newDisplayHeight;
-                }
-                OnPropertyChanged("DisplayImageHeight");
             }
         }
 
@@ -59,13 +52,6 @@ namespace KnittingAssistant.ViewModel
             {
                 m_DisplayImageHeight = value;
                 OnPropertyChanged("DisplayImageHeight");
-
-                double newDisplayWidth = SetDisplayImageSize(m_DisplayImageHeight, MainImageRatio);
-                if (m_DisplayImageWidth != newDisplayWidth)
-                {
-                    m_DisplayImageWidth = newDisplayWidth;
-                }
-                OnPropertyChanged("DisplayImageWidth");
             }
         }
 
@@ -77,9 +63,6 @@ namespace KnittingAssistant.ViewModel
             {
                 m_DisplayImageFragmentWidth = value;
                 OnPropertyChanged("DisplayImageFragmentWidth");
-
-                m_DisplayImageFragmentHeight = m_DisplayImageFragmentWidth;
-                OnPropertyChanged("DisplayImageFragmentHeight");
             }
         }
 
@@ -91,9 +74,6 @@ namespace KnittingAssistant.ViewModel
             {
                 m_DisplayImageFragmentHeight = value;
                 OnPropertyChanged("DisplayImageFragmentHeight");
-
-                m_DisplayImageFragmentWidth = m_DisplayImageFragmentHeight;
-                OnPropertyChanged("DisplayImageFragmentWidth");
             }
         }
 
@@ -227,10 +207,10 @@ namespace KnittingAssistant.ViewModel
                         SplittingProcessVisibility = Visibility.Visible;
                         SplittingProcessValue = 0;
 
-                        FragmentCountWidth = SetFragmentCount(m_DisplayImageWidth, m_DisplayImageFragmentWidth, FragmentWidthInPixels, MainImageWidth);
-                        DisplayImageWidth = SetDisplayImageSize(FragmentCountWidth, m_DisplayImageFragmentWidth);
-                        FragmentCountHeight = SetFragmentCount(m_DisplayImageHeight, m_DisplayImageFragmentHeight, FragmentHeightInPixels, MainImageHeight);
-                        DisplayImageHeight = SetDisplayImageSize(FragmentCountHeight, m_DisplayImageFragmentHeight);
+                        FragmentCountWidth = SetFragmentCount(DisplayImageWidth, DisplayImageFragmentWidth, FragmentWidthInPixels, MainImageWidth);
+                        DisplayImageWidth = SetDisplayImageSize(FragmentCountWidth, DisplayImageFragmentWidth);
+                        FragmentCountHeight = SetFragmentCount(DisplayImageHeight, DisplayImageFragmentHeight, FragmentHeightInPixels, MainImageHeight);
+                        DisplayImageHeight = SetDisplayImageSize(FragmentCountHeight, DisplayImageFragmentHeight);
 
                         resultImageBitmaps = new WriteableBitmap[FragmentCountWidth, FragmentCountHeight];
                         resultImageColors = new Color[FragmentCountWidth, FragmentCountHeight];
@@ -376,6 +356,58 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private RelayCommand mainImageWidthChanged;
+        public RelayCommand MainImageWidthChanged
+        {
+            get
+            {
+                return mainImageWidthChanged ??
+                    (mainImageWidthChanged = new RelayCommand(obj =>
+                    {
+                        DisplayImageHeight = SetDisplayImageSize(DisplayImageWidth, 1 / MainImageRatio);
+                    }));
+            }
+        }
+
+        private RelayCommand mainImageHeightChanged;
+        public RelayCommand MainImageHeightChanged
+        {
+            get
+            {
+                return mainImageHeightChanged ??
+                    (mainImageHeightChanged = new RelayCommand(obj =>
+                    {
+                        DisplayImageWidth = SetDisplayImageSize(DisplayImageHeight, MainImageRatio);
+                    }));
+            }
+        }
+
+        private RelayCommand fragmentImageWidthChanged;
+        public RelayCommand FragmentImageWidthChanged
+        {
+            get
+            {
+                return fragmentImageWidthChanged ??
+                    (fragmentImageWidthChanged = new RelayCommand(obj =>
+                    {
+
+                    }));
+            }
+        }
+
+        private RelayCommand fragmentImageHeightChanged;
+        public RelayCommand FragmentImageHeightChanged
+        {
+            get
+            {
+                return fragmentImageHeightChanged ??
+                    (fragmentImageHeightChanged = new RelayCommand(obj =>
+                    {
+
+                    }));
+            }
+        }
+
         #endregion
 
         private double MainImageWidth = 1.0;
@@ -454,6 +486,7 @@ namespace KnittingAssistant.ViewModel
             MainImageWidth = (mainImage.Source as BitmapSource).PixelWidth;
             MainImageHeight = (mainImage.Source as BitmapSource).PixelHeight;
             DisplayImageWidth = 100 * DisplayImageFragmentWidth;
+            DisplayImageHeight = DisplayImageWidth / MainImageRatio;
 
             ImageArea.mainImageContainer.Children.Clear();
             Grid.SetColumn(mainImage, 0);

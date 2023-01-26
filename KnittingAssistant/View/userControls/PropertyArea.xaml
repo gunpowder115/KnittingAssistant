@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:KnittingAssistant.View.userControls"
              xmlns:converters="clr-namespace:KnittingAssistant.View.Converters"
              mc:Ignorable="d" 
@@ -24,6 +25,11 @@
     <StackPanel IsEnabled="{Binding SettingsIsEnabled}">
         <TextBlock>Ширина изображения, см</TextBlock>
         <TextBox x:Name="MainImageWidthTextBlock">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="TextChanged">
+                    <i:InvokeCommandAction Command="{Binding MainImageWidthChanged}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <TextBox.Text>
                 <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged" ConverterParameter="2">
                     <Binding Path="DisplayImageWidth"/>
@@ -33,6 +39,11 @@
         </TextBox>
         <TextBlock>Высота изображения, см</TextBlock>
         <TextBox x:Name="MainImageHeightTextBlock">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="TextChanged">
+                    <i:InvokeCommandAction Command="{Binding MainImageHeightChanged}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <TextBox.Text>
                 <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged" ConverterParameter="2">
                     <Binding Path="DisplayImageHeight"/>
@@ -43,6 +54,11 @@
         <CheckBox IsEnabled="False" IsChecked="{Binding KeepRatioOfMainImage}" Content="Сохранить пропорции" Margin="0 5 0 15"/>
         <TextBlock>Ширина фрагмента, см</TextBlock>
         <TextBox x:Name="FragmentImageWidthTextBlock">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="TextChanged">
+                    <i:InvokeCommandAction Command="{Binding FragmentImageWidthChanged}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <TextBox.Text>
                 <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged" ConverterParameter="2">
                     <Binding Path="DisplayImageFragmentWidth"/>
@@ -52,6 +68,11 @@
         </TextBox>
         <TextBlock>Высота фрагмента, см</TextBlock>
         <TextBox x:Name="FragmentImageHeightTextBlock">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="TextChanged">
+                    <i:InvokeCommandAction Command="{Binding FragmentImageHeightChanged}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <TextBox.Text>
                 <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged" ConverterParameter="2">
                     <Binding Path="DisplayImageFragmentHeight"/>
