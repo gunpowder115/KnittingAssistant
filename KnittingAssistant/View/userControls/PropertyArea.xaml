@@ -26,7 +26,7 @@
         <TextBlock>Ширина изображения, см</TextBlock>
         <TextBox x:Name="MainImageWidthTextBlock">
             <i:Interaction.Triggers>
-                <i:EventTrigger EventName="TextChanged">
+                <i:EventTrigger EventName="PreviewKeyUp">
                     <i:InvokeCommandAction Command="{Binding MainImageWidthChanged}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
@@ -40,7 +40,7 @@
         <TextBlock>Высота изображения, см</TextBlock>
         <TextBox x:Name="MainImageHeightTextBlock">
             <i:Interaction.Triggers>
-                <i:EventTrigger EventName="TextChanged">
+                <i:EventTrigger EventName="PreviewKeyUp">
                     <i:InvokeCommandAction Command="{Binding MainImageHeightChanged}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
@@ -55,7 +55,7 @@
         <TextBlock>Ширина фрагмента, см</TextBlock>
         <TextBox x:Name="FragmentImageWidthTextBlock">
             <i:Interaction.Triggers>
-                <i:EventTrigger EventName="TextChanged">
+                <i:EventTrigger EventName="PreviewKeyUp">
                     <i:InvokeCommandAction Command="{Binding FragmentImageWidthChanged}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
@@ -69,7 +69,7 @@
         <TextBlock>Высота фрагмента, см</TextBlock>
         <TextBox x:Name="FragmentImageHeightTextBlock">
             <i:Interaction.Triggers>
-                <i:EventTrigger EventName="TextChanged">
+                <i:EventTrigger EventName="PreviewKeyUp">
                     <i:InvokeCommandAction Command="{Binding FragmentImageHeightChanged}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
