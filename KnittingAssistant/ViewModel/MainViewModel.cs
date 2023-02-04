@@ -18,6 +18,15 @@ namespace KnittingAssistant.ViewModel
         fragmentsGrid
     }
 
+    public struct Fragmentation
+    {
+        public int mainCount;
+        public int mainSize;
+        public int secondaryCount;
+        public int secondarySize;
+        public int SumCount => mainCount + secondaryCount;
+    }
+
     public class MainViewModel : ViewModelBase
     {
         #region Dependency Properties
@@ -207,16 +216,17 @@ namespace KnittingAssistant.ViewModel
                         SplittingProcessVisibility = Visibility.Visible;
                         SplittingProcessValue = 0;
 
-                        FragmentCountWidth = SetFragmentCount(DisplayImageWidth, DisplayImageFragmentWidth, FragmentWidthInPixels, MainImageWidth);
+                        Fragmentation widthFragmentation = SetFragmentCount(DisplayImageWidth, DisplayImageFragmentWidth, FragmentWidthInPixels, MainImageWidth);
+                        FragmentCountWidth = widthFragmentation.SumCount;
                         DisplayImageWidth = SetDisplayImageSize(FragmentCountWidth, DisplayImageFragmentWidth);
-                        FragmentCountHeight = SetFragmentCount(DisplayImageHeight, DisplayImageFragmentHeight, FragmentHeightInPixels, MainImageHeight);
+                        Fragmentation heightFragmentation = SetFragmentCount(DisplayImageHeight, DisplayImageFragmentHeight, FragmentHeightInPixels, MainImageHeight);
+                        FragmentCountHeight = heightFragmentation.SumCount;
                         DisplayImageHeight = SetDisplayImageSize(FragmentCountHeight, DisplayImageFragmentHeight);
 
                         resultImageBitmaps = new WriteableBitmap[FragmentCountWidth, FragmentCountHeight];
                         resultImageColors = new Color[FragmentCountWidth, FragmentCountHeight];
 
-                        splitImage = new SplitImage(mainImage, FragmentCountWidth, FragmentCountHeight, 
-                            (int)Math.Round(FragmentWidthInPixels), (int)Math.Round(FragmentHeightInPixels));
+                        splitImage = new ImageSplitter(mainImage, widthFragmentation, heightFragmentation);
 
                         fragmentsGrid = InitGridForFragments();
 
@@ -233,7 +243,7 @@ namespace KnittingAssistant.ViewModel
 
         private void worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            splitImage = (SplitImage)e.Argument;
+            splitImage = (ImageSplitter)e.Argument;
 
             int progressPercentage = 0;
             for (int i = 0; i < FragmentCountWidth; i++)
@@ -428,7 +438,7 @@ namespace KnittingAssistant.ViewModel
 
         private Image mainImage;
         private Grid fragmentsGrid;
-        private SplitImage splitImage;
+        private ImageSplitter splitImage;
         private bool? gridLinesVis;
 
         private WriteableBitmap[,] resultImageBitmaps;
@@ -460,15 +470,19 @@ namespace KnittingAssistant.ViewModel
             return otherInputSize * mainImageRatio;
         }
 
-        public int SetFragmentCount(double imageSizeInput, double fragmentSizeInput, double fragmentSizePx, double imageSizePx, double mainImageRatio = 1.0)
+        public Fragmentation SetFragmentCount(double imageSizeInput, double fragmentSizeInput, double fragmentSizePx, double imageSizePx, double mainImageRatio = 1.0)
         {
+            Fragmentation fragmentation = new Fragmentation();
             int fragmentCount = (int)Math.Round(imageSizeInput * mainImageRatio / fragmentSizeInput);
             int fragmentSizePxInt = (int)Math.Round(fragmentSizePx);
-            while (fragmentCount * fragmentSizePxInt - imageSizePx >= fragmentSizePxInt)
-            {
-                fragmentCount--;
-            }
-            return fragmentCount;
+            int deltaCount = (int)(fragmentCount * fragmentSizePxInt - imageSizePx/* - fragmentSizePxInt*/);
+
+            fragmentation.mainCount = fragmentCount - Math.Abs(deltaCount);
+            fragmentation.secondaryCount = Math.Abs(deltaCount);
+            fragmentation.mainSize = fragmentSizePxInt;
+            fragmentation.secondarySize = fragmentSizePxInt - Math.Sign(deltaCount);
+
+            return fragmentation;
         }
 
         public void SetSettingsIsEnabled(bool imageIsLoaded) => SettingsIsEnabled = imageIsLoaded;

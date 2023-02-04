@@ -15,7 +15,7 @@ namespace KnittingAssistant.Model
         private int[,] colorBytes;
         private int[] averageColorBytes;
 
-        public ImageFragment(WriteableBitmap fragmentBitmap, int fragmentWidthInPixels, int fragmentHeightInPixels)
+        public ImageFragment(WriteableBitmap fragmentBitmap)
         {
             this.fragmentBitmap = fragmentBitmap;
             this.fragmentWidthInPixels = fragmentBitmap.PixelWidth;
