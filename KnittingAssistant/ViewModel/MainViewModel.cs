@@ -424,6 +424,22 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private RelayCommand fragmentProportionChanged;
+        public RelayCommand FragmentProportionChanged
+        {
+            get
+            {
+                return fragmentProportionChanged ??
+                    (fragmentProportionChanged = new RelayCommand(obj =>
+                    {
+                        if (IsSquareFragment)
+                        {
+                            DisplayImageFragmentHeight = DisplayImageFragmentWidth;
+                        }
+                    }));
+            }
+        }
+
         #endregion
 
         private double MainImageWidth = 1.0;

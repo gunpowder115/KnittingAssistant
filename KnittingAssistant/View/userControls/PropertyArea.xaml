@@ -80,7 +80,7 @@
                 </MultiBinding>
             </TextBox.Text>
         </TextBox>
-        <CheckBox IsEnabled="False" IsChecked="{Binding IsSquareFragment}" Content="Квадратный фрагмент"/>
+        <CheckBox IsEnabled="True" IsChecked="{Binding IsSquareFragment, FallbackValue=True}" Command="{Binding FragmentProportionChanged}" Content="Квадратный фрагмент"/>
         <Button Content="Разбить" Width="80" Margin="0 15 0 25" HorizontalAlignment="Center" 
                 VerticalAlignment="Bottom" Command="{Binding BreakImageCommand}"/>
         <StackPanel Visibility="{Binding SplittingProcessVisibility, FallbackValue=Visible}">
