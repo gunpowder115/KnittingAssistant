@@ -530,6 +530,7 @@ namespace KnittingAssistant.ViewModel
             ImageArea.mainImageContainer.Children.Add(mainImage);
 
             gridLinesVis = null;
+            SplittingProcessVisibility = Visibility.Hidden;
         }
 
         private Image CreateMainImage()
