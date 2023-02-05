@@ -14,6 +14,7 @@ namespace KnittingAssistant.Model
         private ColorStorage colorStorage; //хранилище цветов
         private int[,] colorBytes;
         private int[] averageColorBytes;
+        public static bool isAverageColor;
 
         public ImageFragment(WriteableBitmap fragmentBitmap)
         {
@@ -23,6 +24,7 @@ namespace KnittingAssistant.Model
 
             colorStorage = new ColorStorage();
             colorStorage.ReadColorsFromFile();
+            isAverageColor = colorStorage.ColorsCount == 0;
             colorBytes = new int[colorStorage.ColorsCount, 3];
             averageColorBytes = new int[3];
             for (int i = 0; i < colorStorage.ColorsCount; i++)
@@ -78,25 +80,32 @@ namespace KnittingAssistant.Model
         //выбрать ближайший к среднему цвет из хранилища
         private void SelectNearestColor()
         {
-            int currColorIndex = 0;
-            int currColorKoef = 30 * (int)Math.Pow(colorBytes[currColorIndex, 0] - averageColorBytes[0], 2) +
-                    59 * (int)Math.Pow(colorBytes[currColorIndex, 1] - averageColorBytes[1], 2) +
-                    11 * (int)Math.Pow(colorBytes[currColorIndex, 2] - averageColorBytes[2], 2);
-            
-            for (int i = 1; i < colorStorage.ColorsCount; i++)
+            if (isAverageColor)
             {
-                int colorKoef = 30 * (int)Math.Pow(colorBytes[i, 0] - averageColorBytes[0], 2) + 
-                    59 * (int)Math.Pow(colorBytes[i, 1] - averageColorBytes[1], 2) +
-                    11 * (int)Math.Pow(colorBytes[i, 2] - averageColorBytes[2], 2);
-
-                if (colorKoef < currColorKoef)
-                {
-                    currColorKoef = colorKoef;
-                    currColorIndex = i;
-                }
+                nearestColor = averageColor;
             }
+            else
+            {
+                int currColorIndex = 0;
+                int currColorKoef = 30 * (int)Math.Pow(colorBytes[currColorIndex, 0] - averageColorBytes[0], 2) +
+                        59 * (int)Math.Pow(colorBytes[currColorIndex, 1] - averageColorBytes[1], 2) +
+                        11 * (int)Math.Pow(colorBytes[currColorIndex, 2] - averageColorBytes[2], 2);
 
-            nearestColor = Color.FromRgb((byte)colorBytes[currColorIndex, 0], (byte)colorBytes[currColorIndex, 1], (byte)colorBytes[currColorIndex, 2]);
+                for (int i = 1; i < colorStorage.ColorsCount; i++)
+                {
+                    int colorKoef = 30 * (int)Math.Pow(colorBytes[i, 0] - averageColorBytes[0], 2) +
+                        59 * (int)Math.Pow(colorBytes[i, 1] - averageColorBytes[1], 2) +
+                        11 * (int)Math.Pow(colorBytes[i, 2] - averageColorBytes[2], 2);
+
+                    if (colorKoef < currColorKoef)
+                    {
+                        currColorKoef = colorKoef;
+                        currColorIndex = i;
+                    }
+                }
+
+                nearestColor = Color.FromRgb((byte)colorBytes[currColorIndex, 0], (byte)colorBytes[currColorIndex, 1], (byte)colorBytes[currColorIndex, 2]);
+            }
         }
         
         //вернуть результирующий фрагмент выбранного цвета

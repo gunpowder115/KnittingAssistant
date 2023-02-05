@@ -302,6 +302,11 @@ namespace KnittingAssistant.ViewModel
 
             SplittingProcessName = "Готово!";
             SplittingProcessValue = 100;
+
+            if (splitImage.isAverageColor)
+            {
+                MessageBox.Show("Не добавлено ни одного цвета\nЦвета определены автоматически", "Внимание", MessageBoxButton.OK);
+            }
         }
 
         private RelayCommand loadMainImageByClickCommand;

@@ -51,14 +51,9 @@ namespace KnittingAssistant.Model
         }
 
         public void AddColor(Color color) => ColorList.AddLast(color);
-
         public void RemoveColor(int index) => ColorList.Remove(ColorList.ElementAt(index));
         public void RemoveColor(LinkedListNode<Color> colorNode) => ColorList.Remove(colorNode);
-
         public void ClearColors() => ColorList.Clear();
-
-        public int GetCountOfColors() => ColorList.Count;
-
         public LinkedListNode<Color> GetNodeByIndex(int index) => ColorList.Find(ColorList.ElementAt(index));
     }
 }

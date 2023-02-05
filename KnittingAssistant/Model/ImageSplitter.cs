@@ -16,6 +16,7 @@ namespace KnittingAssistant.Model
         private int fragmentWidthSecondary, fragmentHeightSecondary;
         private int fragmentCountWidthMain, fragmentCountHeightMain;
         private int fragmentCountWidthSecondary, fragmentCountHeightSecondary;
+        public bool isAverageColor => ImageFragment.isAverageColor;
 
         public ImageSplitter(Image mainImage, Fragmentation widthFragmentation, Fragmentation heightFragmentation)
         {
