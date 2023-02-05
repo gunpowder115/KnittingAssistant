@@ -14,8 +14,11 @@ namespace KnittingAssistant.ViewModel
 {
     public enum en_ImageStates
     {
-        mainImage,
-        fragmentsGrid
+        emptyImage,
+        mainImageLoaded,
+        mainImageSplitting,
+        resultImageNotSaved,
+        resultImageSaved
     }
 
     public struct Fragmentation
@@ -230,6 +233,8 @@ namespace KnittingAssistant.ViewModel
 
                         fragmentsGrid = InitGridForFragments();
 
+                        currentImageState = en_ImageStates.mainImageSplitting;
+
                         BackgroundWorker worker = new BackgroundWorker();
                         worker.WorkerReportsProgress = true;
                         worker.WorkerSupportsCancellation = true;
@@ -293,6 +298,7 @@ namespace KnittingAssistant.ViewModel
             Grid.SetRow(splittedImage, 0);
             ImageArea.mainImageContainer.Children.Add(splittedImage);
             gridLinesVis = true;
+            currentImageState = en_ImageStates.resultImageNotSaved;
 
             SplittingProcessName = "Готово!";
             SplittingProcessValue = 100;
@@ -460,7 +466,7 @@ namespace KnittingAssistant.ViewModel
         private WriteableBitmap[,] resultImageBitmaps;
         private Color[,] resultImageColors;
 
-        private en_ImageStates currentImageState = en_ImageStates.mainImage;
+        private en_ImageStates currentImageState;
 
         public MainViewModel()
         {
@@ -474,6 +480,7 @@ namespace KnittingAssistant.ViewModel
             SplittingProcessVisibility = Visibility.Hidden;
             gridLinesVis = null;
             SwitchGridIconFilename = "../resources/grid_off_icon_1.png";
+            currentImageState = en_ImageStates.emptyImage;
         }
 
         public double SetDisplayImageSize(int newFragmentCountDimension, double fragmentDimension)
@@ -516,21 +523,34 @@ namespace KnittingAssistant.ViewModel
 
         private void loadImageOnForm(string imageFilename)
         {
-            mainImage = CreateMainImage();
-            mainImage.Source = new BitmapImage(new Uri(imageFilename));
-            SetSettingsIsEnabled(true);
-            MainImageWidth = (mainImage.Source as BitmapSource).PixelWidth;
-            MainImageHeight = (mainImage.Source as BitmapSource).PixelHeight;
-            DisplayImageWidth = 100 * DisplayImageFragmentWidth;
-            DisplayImageHeight = DisplayImageWidth / MainImageRatio;
+            bool loadNewImage = true;
+            if (currentImageState == en_ImageStates.resultImageNotSaved)
+            {
+                MessageBoxResult messageBoxResult = MessageBox.Show("Загрузить новое изображение?\nТекущее изображение не было сохранено!", "Внимание", MessageBoxButton.YesNo);
+                if (messageBoxResult == MessageBoxResult.No)
+                {
+                    loadNewImage = false;
+                }
+            }
 
-            ImageArea.mainImageContainer.Children.Clear();
-            Grid.SetColumn(mainImage, 0);
-            Grid.SetRow(mainImage, 0);
-            ImageArea.mainImageContainer.Children.Add(mainImage);
+            if (loadNewImage)
+            {
+                mainImage = CreateMainImage();
+                mainImage.Source = new BitmapImage(new Uri(imageFilename));
+                SetSettingsIsEnabled(true);
+                MainImageWidth = (mainImage.Source as BitmapSource).PixelWidth;
+                MainImageHeight = (mainImage.Source as BitmapSource).PixelHeight;
+                DisplayImageWidth = 100 * DisplayImageFragmentWidth;
+                DisplayImageHeight = DisplayImageWidth / MainImageRatio;
 
-            gridLinesVis = null;
-            SplittingProcessVisibility = Visibility.Hidden;
+                ImageArea.mainImageContainer.Children.Clear();
+                Grid.SetColumn(mainImage, 0);
+                Grid.SetRow(mainImage, 0);
+                ImageArea.mainImageContainer.Children.Add(mainImage);
+
+                gridLinesVis = null;
+                SplittingProcessVisibility = Visibility.Hidden;
+            }
         }
 
         private Image CreateMainImage()
@@ -541,7 +561,7 @@ namespace KnittingAssistant.ViewModel
             mainImage.Cursor = Cursors.Hand;
             mainImage.Stretch = Stretch.Uniform;
 
-            currentImageState = en_ImageStates.mainImage;
+            currentImageState = en_ImageStates.mainImageLoaded;
             return mainImage;
         }
 
