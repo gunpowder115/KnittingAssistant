@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows;
 using System.ComponentModel;
 using System.Windows.Media;
+using System.IO;
 
 namespace KnittingAssistant.ViewModel
 {
@@ -326,6 +327,32 @@ namespace KnittingAssistant.ViewModel
                             string imageFilename = fileDialogPicture.FileName;
 
                             loadImageOnForm(imageFilename);
+                        }
+                    }));
+            }
+        }
+
+        private RelayCommand saveImageToFileCommand;
+        public RelayCommand SaveImageToFileCommand
+        {
+            get
+            {
+                return saveImageToFileCommand ??
+                    (saveImageToFileCommand = new RelayCommand(obj =>
+                    {
+                        SaveFileDialog saveFileDialog = new SaveFileDialog();
+                        saveFileDialog.Filter = "Изображения|*.bmp;*.jpg;*.jpeg;*.gif;*.png;*.tif";
+                        saveFileDialog.DefaultExt = ".jpg";
+                        saveFileDialog.FileName = "Image";
+
+                        if (saveFileDialog.ShowDialog() == true)
+                        {
+                            string filename = saveFileDialog.FileName;
+                            JpegBitmapEncoder jpegBitmapEncoder = new JpegBitmapEncoder();
+                            jpegBitmapEncoder.Frames.Add(BitmapFrame.Create(
+                                gridLinesVis.Value ? splitImage.GridBitmapImage : splitImage.SplittedBitmapImage));
+                            using (FileStream fileStream = new FileStream(filename, FileMode.Create))
+                                jpegBitmapEncoder.Save(fileStream);
                         }
                     }));
             }
