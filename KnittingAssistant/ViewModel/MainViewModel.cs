@@ -318,16 +318,9 @@ namespace KnittingAssistant.ViewModel
                 return loadMainImageByClickCommand ??
                     (loadMainImageByClickCommand = new RelayCommand(obj =>
                     {
-                        OpenFileDialog fileDialogPicture = new OpenFileDialog();
-                        fileDialogPicture.Filter = "Изображения|*.bmp;*.jpg;*.jpeg;*.gif;*.png;*.tif";
-                        fileDialogPicture.FilterIndex = 1;
-
-                        if (fileDialogPicture.ShowDialog() == true)
-                        {
-                            string imageFilename = fileDialogPicture.FileName;
-
-                            loadImageOnForm(imageFilename);
-                        }
+                        string imageFilename = imageLoader.GetImageFilename();
+                        if (imageFilename.Length > 0)
+                            LoadImageOnForm(imageFilename);
                     }));
             }
         }
@@ -340,20 +333,7 @@ namespace KnittingAssistant.ViewModel
                 return saveImageToFileCommand ??
                     (saveImageToFileCommand = new RelayCommand(obj =>
                     {
-                        SaveFileDialog saveFileDialog = new SaveFileDialog();
-                        saveFileDialog.Filter = "Изображения|*.bmp;*.jpg;*.jpeg;*.gif;*.png;*.tif";
-                        saveFileDialog.DefaultExt = ".jpg";
-                        saveFileDialog.FileName = "Image";
-
-                        if (saveFileDialog.ShowDialog() == true)
-                        {
-                            string filename = saveFileDialog.FileName;
-                            JpegBitmapEncoder jpegBitmapEncoder = new JpegBitmapEncoder();
-                            jpegBitmapEncoder.Frames.Add(BitmapFrame.Create(
-                                gridLinesVis.Value ? splitImage.GridBitmapImage : splitImage.SplittedBitmapImage));
-                            using (FileStream fileStream = new FileStream(filename, FileMode.Create))
-                                jpegBitmapEncoder.Save(fileStream);
-                        }
+                        imageSaver.SaveImage(gridLinesVis.Value ? splitImage.GridBitmapImage : splitImage.SplittedBitmapImage);
                     }));
             }
         }
@@ -499,6 +479,8 @@ namespace KnittingAssistant.ViewModel
         private Color[,] resultImageColors;
 
         private en_ImageStates currentImageState;
+        private ImageLoader imageLoader;
+        private ImageSaver imageSaver;
 
         public MainViewModel()
         {
@@ -513,6 +495,8 @@ namespace KnittingAssistant.ViewModel
             gridLinesVis = null;
             SwitchGridIconFilename = "../resources/grid_off_icon_1.png";
             currentImageState = en_ImageStates.emptyImage;
+            imageLoader = new ImageLoader();
+            imageSaver = new ImageSaver();
         }
 
         public double SetDisplayImageSize(int newFragmentCountDimension, double fragmentDimension)
@@ -545,15 +529,13 @@ namespace KnittingAssistant.ViewModel
         public void LoadMainImageByDropCommand(object sender, DragEventArgs e)
         {
             string imageFilename = ((string[])e.Data.GetData(DataFormats.FileDrop))[0];
-            if (imageFilename.Contains(".bmp") || imageFilename.Contains(".jpg") ||
-                imageFilename.Contains(".gif") || imageFilename.Contains(".png") ||
-                imageFilename.Contains(".tif") || imageFilename.Contains(".jpeg"))
+            if (imageLoader.IsSupportedFormat(imageFilename))
             {
-                loadImageOnForm(imageFilename);
+                LoadImageOnForm(imageFilename);
             }
         }
 
-        private void loadImageOnForm(string imageFilename)
+        private void LoadImageOnForm(string imageFilename)
         {
             bool loadNewImage = true;
             if (currentImageState == en_ImageStates.resultImageNotSaved)
@@ -588,11 +570,9 @@ namespace KnittingAssistant.ViewModel
         private Image CreateMainImage()
         {
             Image mainImage = new Image();
-
             mainImage.Name = "mainImage";
             mainImage.Cursor = Cursors.Hand;
             mainImage.Stretch = Stretch.Uniform;
-
             currentImageState = en_ImageStates.mainImageLoaded;
             return mainImage;
         }
@@ -618,11 +598,6 @@ namespace KnittingAssistant.ViewModel
             }
 
             return fragmentsGrid;
-        }
-
-        private double FindMin(double a, double b)
-        {
-            return a < b ? a : b;
         }
     }
 }

@@ -69,12 +69,12 @@ namespace KnittingAssistant.Model
                     gridColorData[i, 1] = fragmentColor.G;
                     gridColorData[i, 2] = fragmentColor.R;
                 }
-                gridColorData[i, 3] = 0;
+                gridColorData[i, 3] = 255;
 
                 colorData[i, 0] = fragmentColor.B;
                 colorData[i, 1] = fragmentColor.G;
                 colorData[i, 2] = fragmentColor.R;
-                colorData[i, 3] = 0;
+                colorData[i, 3] = 255;
             }
 
             SplittedBitmapImage.WritePixels(rect, colorData, stride, 0);
