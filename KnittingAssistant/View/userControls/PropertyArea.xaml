@@ -24,7 +24,7 @@
     </UserControl.Resources>
     <StackPanel IsEnabled="{Binding SettingsIsEnabled}">
         <TextBlock>Ширина изображения, см</TextBlock>
-        <TextBox x:Name="MainImageWidthTextBlock">
+        <TextBox x:Name="MainImageWidthTextBlock" IsReadOnly="{Binding KeepValue, FallbackValue=False}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewKeyUp">
                     <i:InvokeCommandAction Command="{Binding MainImageWidthChanged}"/>
@@ -38,7 +38,7 @@
             </TextBox.Text>
         </TextBox>
         <TextBlock>Высота изображения, см</TextBlock>
-        <TextBox x:Name="MainImageHeightTextBlock">
+        <TextBox x:Name="MainImageHeightTextBlock" IsReadOnly="{Binding KeepValue, FallbackValue=False}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewKeyUp">
                     <i:InvokeCommandAction Command="{Binding MainImageHeightChanged}"/>
@@ -51,9 +51,10 @@
                 </MultiBinding>
             </TextBox.Text>
         </TextBox>
-        <CheckBox IsEnabled="False" IsChecked="{Binding KeepRatioOfMainImage}" Content="Исходные пропорции" Margin="0 5 0 15"/>
+        <CheckBox IsEnabled="False" IsChecked="{Binding KeepRatioOfMainImage, FallbackValue=False, Mode=TwoWay}" Content="Исходные пропорции"
+                  Margin="0 5 0 15" Command="{Binding KeepRatioOfMainImageChanged}"/>
         <TextBlock>Ширина фрагмента, см</TextBlock>
-        <TextBox x:Name="FragmentImageWidthTextBlock">
+        <TextBox x:Name="FragmentImageWidthTextBlock" IsReadOnly="{Binding KeepValue, FallbackValue=False}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewKeyUp">
                     <i:InvokeCommandAction Command="{Binding FragmentImageWidthChanged}"/>
@@ -67,7 +68,7 @@
             </TextBox.Text>
         </TextBox>
         <TextBlock>Высота фрагмента, см</TextBlock>
-        <TextBox x:Name="FragmentImageHeightTextBlock">
+        <TextBox x:Name="FragmentImageHeightTextBlock" IsReadOnly="{Binding KeepValue, FallbackValue=False}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewKeyUp">
                     <i:InvokeCommandAction Command="{Binding FragmentImageHeightChanged}"/>

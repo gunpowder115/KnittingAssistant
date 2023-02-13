@@ -16,6 +16,7 @@ namespace KnittingAssistant.Model
         private int fragmentWidthSecondary, fragmentHeightSecondary;
         private int fragmentCountWidthMain, fragmentCountHeightMain;
         private int fragmentCountWidthSecondary, fragmentCountHeightSecondary;
+        private bool keepMainImageRatio;
         public bool isAverageColor => ImageFragment.isAverageColor;
 
         public ImageSplitter(Image mainImage, Fragmentation widthFragmentation, Fragmentation heightFragmentation)
@@ -42,6 +43,8 @@ namespace KnittingAssistant.Model
             GridBitmapImage = new WriteableBitmap((fragmentCountWidthMain + fragmentCountWidthSecondary) * fragmentWidthMain,
                 (fragmentCountHeightMain + fragmentCountHeightSecondary) * fragmentHeightMain,
                 mainBitmapImage.DpiX, mainBitmapImage.DpiY, mainBitmapImage.Format, mainBitmapImage.Palette);
+
+            keepMainImageRatio = fragmentWidthMain == 1 && fragmentHeightMain == 1;
         }
 
         private void DrawFragmentOnSplittedImage(Color fragmentColor, Color gridColor, int currentWidthFragment, int currentHeightFragment, int width, int height)
@@ -110,7 +113,7 @@ namespace KnittingAssistant.Model
             imageFragments[currentWidthFragment, currentHeightFragment] = new ImageFragment(tempBitmapFragment);
 
             Color resultColor = imageFragments[currentWidthFragment, currentHeightFragment].GetResultFragmentColor();
-            Color gridColor = Color.FromArgb(0, 0, 0, 0);
+            Color gridColor = keepMainImageRatio ? resultColor : Color.FromArgb(0, 0, 0, 0);
 
             DrawFragmentOnSplittedImage(resultColor, gridColor, currentWidthFragment, currentHeightFragment, fragmentWidthMain, fragmentHeightMain);
 

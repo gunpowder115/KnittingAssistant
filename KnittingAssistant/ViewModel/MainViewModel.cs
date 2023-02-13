@@ -167,6 +167,17 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private bool m_KeepValue;
+        public bool KeepValue
+        {
+            get { return m_KeepValue; }
+            set
+            {
+                m_KeepValue = value;
+                OnPropertyChanged("KeepValue");
+            }
+        }
+
         #region User Controls Dependency Property
 
         private PropertyArea m_PropertyArea;
@@ -334,6 +345,7 @@ namespace KnittingAssistant.ViewModel
                     (saveImageToFileCommand = new RelayCommand(obj =>
                     {
                         imageSaver.SaveImage(gridLinesVis.Value ? splitImage.GridBitmapImage : splitImage.SplittedBitmapImage);
+                        currentImageState = en_ImageStates.resultImageSaved;
                     }));
             }
         }
@@ -458,6 +470,30 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private RelayCommand keepRatioOfMainImageChanged;
+        public RelayCommand KeepRatioOfMainImageChanged
+        {
+            get
+            {
+                return keepRatioOfMainImageChanged ??
+                    (keepRatioOfMainImageChanged = new RelayCommand(obj =>
+                    {
+                        if (KeepRatioOfMainImage)
+                        {
+                            DisplayImageWidth = MainImageWidth;
+                            DisplayImageHeight = MainImageHeight;
+                            DisplayImageFragmentWidth = 1;
+                            DisplayImageFragmentHeight = 1;
+                            KeepValue = true;
+                        }
+                        else
+                        {
+                            KeepValue = false;
+                        }
+                    }));
+            }
+        }
+
         #endregion
 
         private double MainImageWidth = 1.0;
@@ -489,7 +525,7 @@ namespace KnittingAssistant.ViewModel
             DisplayImageFragmentHeight = 1.0;
             DisplayImageWidth = 100.0;
             DisplayImageHeight = 100.0;
-            KeepRatioOfMainImage = true;
+            KeepRatioOfMainImage = false;
             IsSquareFragment = true;
             SplittingProcessVisibility = Visibility.Hidden;
             gridLinesVis = null;
