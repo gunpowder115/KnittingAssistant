@@ -14,9 +14,9 @@ namespace KnittingAssistant.View.userControls
         public PropertyArea()
         {
             InitializeComponent();
-            this.Loaded += PropertyArea_Loaded;
 
             propertyAreaViewModel = new PropertyAreaViewModel();
+            this.Loaded += PropertyArea_Loaded;
         }
 
         private void PropertyArea_Loaded(object sender, RoutedEventArgs e)
