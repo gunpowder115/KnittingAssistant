@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:KnittingAssistant.View.userControls"
+             xmlns:viewmodel="clr-namespace:KnittingAssistant.ViewModel"
              xmlns:converters="clr-namespace:KnittingAssistant.View.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="170" Background="White">
