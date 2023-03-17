@@ -13,6 +13,28 @@ using System.IO;
 
 namespace KnittingAssistant.ViewModel
 {
+    public class MainViewModel : ViewModelBase
+    {
+        #region Dependency Properties
+
+        #endregion
+
+        #region Relay Commands
+
+        #endregion
+
+        private MainImageParams mainImageParams;
+        public UserControlParams UserControlParams { get; set; }
+
+        private double FragmentRatio = 1.0;
+
+        public MainViewModel()
+        {
+            mainImageParams = new MainImageParams();
+            UserControlParams = new UserControlParams();
+        }
+    }
+
     public enum en_ImageStates
     {
         emptyImage,
@@ -29,40 +51,5 @@ namespace KnittingAssistant.ViewModel
         public int secondaryCount;
         public int secondarySize;
         public int SumCount => mainCount + secondaryCount;
-    }
-
-    public class MainViewModel : ViewModelBase
-    {
-        #region Dependency Properties
-
-        #endregion
-
-        #region Relay Commands
-
-        #endregion
-
-        private double MainImageWidth = 1.0;
-        private double MainImageHeight = 1.0;
-        public double MainImageRatio => MainImageWidth / MainImageHeight;
-
-        private double FragmentRatio = 1.0;
-
-        private Image mainImage;
-        private ImageSplitter splitImage;
-        private bool? gridLinesVis;
-
-        private WriteableBitmap[,] resultImageBitmaps;
-        private Color[,] resultImageColors;
-
-        private en_ImageStates currentImageState;
-        private ImageLoader imageLoader;
-        private ImageSaver imageSaver;
-
-        public MainViewModel()
-        {
-            gridLinesVis = null;
-            currentImageState = en_ImageStates.emptyImage;
-            imageSaver = new ImageSaver();
-        }
     }
 }

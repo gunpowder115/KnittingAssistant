@@ -4,12 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace KnittingAssistant.ViewModel
 {
     public class ImageAreaViewModel : ViewModelBase
     {
-        private ImageLoader imageLoader;
+        private MainImageParams mainImageParams;
+        private UserControlParams userControlParams;
 
         #region Dependency Property
 
@@ -23,16 +29,16 @@ namespace KnittingAssistant.ViewModel
 
         #endregion
 
-        public ImageAreaViewModel()
+        public ImageAreaViewModel(MainImageParams mainImageParams, UserControlParams userControlParams)
         {
-            imageLoader = new ImageLoader();
-
+            this.mainImageParams = mainImageParams;
+            this.userControlParams = userControlParams;
         }
 
         public void LoadMainImageByDropCommand(object sender, DragEventArgs e)
         {
             string imageFilename = ((string[])e.Data.GetData(DataFormats.FileDrop))[0];
-            if (imageLoader.IsSupportedFormat(imageFilename))
+            if (mainImageParams.ImageLoader.IsSupportedFormat(imageFilename))
             {
                 LoadImageOnForm(imageFilename);
             }
@@ -41,7 +47,7 @@ namespace KnittingAssistant.ViewModel
         private void LoadImageOnForm(string imageFilename)
         {
             bool loadNewImage = true;
-            if (currentImageState == en_ImageStates.resultImageNotSaved)
+            if (mainImageParams.CurrentImageState == en_ImageStates.resultImageNotSaved)
             {
                 MessageBoxResult messageBoxResult = MessageBox.Show("Загрузить новое изображение?\nТекущее изображение не было сохранено!", "Внимание", MessageBoxButton.YesNo);
                 if (messageBoxResult == MessageBoxResult.No)
@@ -52,17 +58,17 @@ namespace KnittingAssistant.ViewModel
 
             if (loadNewImage)
             {
-                mainImage = CreateMainImage();
-                mainImage.Source = new BitmapImage(new Uri(imageFilename));
-                MainImageWidth = (mainImage.Source as BitmapSource).PixelWidth;
-                MainImageHeight = (mainImage.Source as BitmapSource).PixelHeight;
+                mainImageParams.MainImage = CreateMainImage();
+                mainImageParams.MainImage.Source = new BitmapImage(new Uri(imageFilename));
+                mainImageParams.MainImageWidth = (mainImageParams.MainImage.Source as BitmapSource).PixelWidth;
+                mainImageParams.MainImageHeight = (mainImageParams.MainImage.Source as BitmapSource).PixelHeight;
 
-                ImageArea.mainImageContainer.Children.Clear();
-                Grid.SetColumn(mainImage, 0);
-                Grid.SetRow(mainImage, 0);
-                ImageArea.mainImageContainer.Children.Add(mainImage);
+                userControlParams.ImageArea.mainImageContainer.Children.Clear();
+                Grid.SetColumn(mainImageParams.MainImage, 0);
+                Grid.SetRow(mainImageParams.MainImage, 0);
+                userControlParams.ImageArea.mainImageContainer.Children.Add(mainImageParams.MainImage);
 
-                gridLinesVis = null;
+                mainImageParams.GridLinesVis = null;
             }
         }
 
@@ -72,7 +78,7 @@ namespace KnittingAssistant.ViewModel
             mainImage.Name = "mainImage";
             mainImage.Cursor = Cursors.Hand;
             mainImage.Stretch = Stretch.Uniform;
-            currentImageState = en_ImageStates.mainImageLoaded;
+            mainImageParams.CurrentImageState = en_ImageStates.mainImageLoaded;
             return mainImage;
         }
 

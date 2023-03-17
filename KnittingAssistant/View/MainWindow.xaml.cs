@@ -17,8 +17,8 @@ namespace KnittingAssistant.View
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            (DataContext as MainViewModel).ImageArea = imageArea;
-            (DataContext as MainViewModel).ToolbarArea = toolbarArea;
+            (DataContext as MainViewModel).UserControlParams.ImageArea = imageArea;
+            (DataContext as MainViewModel).UserControlParams.ToolbarArea = toolbarArea;
         }
     }
 }

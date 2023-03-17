@@ -1,13 +1,18 @@
-﻿using System;
+﻿using KnittingAssistant.View;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace KnittingAssistant.ViewModel
 {
     public class ToolbarAreaViewModel : ViewModelBase
     {
+        private MainImageParams mainImageParams;
+        private UserControlParams userControlParams;
+
         #region Dependency Property
 
         private string m_SwitchGridIconFilename;
@@ -44,7 +49,7 @@ namespace KnittingAssistant.ViewModel
                 return loadMainImageByClickCommand ??
                     (loadMainImageByClickCommand = new RelayCommand(obj =>
                     {
-                        string imageFilename = imageLoader.GetImageFilename();
+                        string imageFilename = mainImageParams.ImageLoader.GetImageFilename();
                         if (imageFilename.Length > 0)
                             LoadImageOnForm(imageFilename);
                     }));
@@ -59,8 +64,8 @@ namespace KnittingAssistant.ViewModel
                 return saveImageToFileCommand ??
                     (saveImageToFileCommand = new RelayCommand(obj =>
                     {
-                        imageSaver.SaveImage(gridLinesVis.Value ? splitImage.GridBitmapImage : splitImage.SplittedBitmapImage);
-                        currentImageState = en_ImageStates.resultImageSaved;
+                        mainImageParams.ImageSaver.SaveImage(mainImageParams.GridLinesVis.Value ? mainImageParams.ImageSplitter.GridBitmapImage : mainImageParams.ImageSplitter.SplittedBitmapImage);
+                        mainImageParams.CurrentImageState = en_ImageStates.resultImageSaved;
                     }));
             }
         }
@@ -73,25 +78,25 @@ namespace KnittingAssistant.ViewModel
                 return changeGridLinesVisCommand ??
                     (changeGridLinesVisCommand = new RelayCommand(obj =>
                     {
-                        if (gridLinesVis != null)
+                        if (mainImageParams.GridLinesVis != null)
                         {
                             Image splittedImage = new Image();
-                            if ((bool)gridLinesVis)
+                            if ((bool)mainImageParams.GridLinesVis)
                             {
-                                splittedImage.Source = splitImage.SplittedBitmapImage;
+                                splittedImage.Source = mainImageParams.ImageSplitter.SplittedBitmapImage;
                                 SwitchGridIconFilename = "../resources/grid_on_icon_1.png";
                                 SwitchGridIconToolTip = "Показать сетку";
                             }
                             else
                             {
-                                splittedImage.Source = splitImage.GridBitmapImage;
+                                splittedImage.Source = mainImageParams.ImageSplitter.GridBitmapImage;
                                 SwitchGridIconFilename = "../resources/grid_off_icon_1.png";
                                 SwitchGridIconToolTip = "Скрыть сетку";
                             }
                             Grid.SetColumn(splittedImage, 0);
                             Grid.SetRow(splittedImage, 0);
-                            ImageArea.mainImageContainer.Children.Add(splittedImage);
-                            gridLinesVis = !gridLinesVis;
+                            userControlParams.ImageArea.mainImageContainer.Children.Add(splittedImage);
+                            mainImageParams.GridLinesVis = !mainImageParams.GridLinesVis;
                         }
                     }));
             }
@@ -113,8 +118,10 @@ namespace KnittingAssistant.ViewModel
 
         #endregion
 
-        public ToolbarAreaViewModel()
+        public ToolbarAreaViewModel(MainImageParams mainImageParams, UserControlParams userControlParams)
         {
+            this.mainImageParams = mainImageParams;
+            this.userControlParams = userControlParams;
             SwitchGridIconFilename = "../resources/grid_off_icon_1.png";
         }
     }
