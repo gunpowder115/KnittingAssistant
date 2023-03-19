@@ -51,7 +51,7 @@ namespace KnittingAssistant.ViewModel
                     {
                         string imageFilename = mainImageParams.ImageLoader.GetImageFilename();
                         if (imageFilename.Length > 0)
-                            LoadImageOnForm(imageFilename);
+                            mainImageParams.LoadImageOnForm(imageFilename, userControlParams);
                     }));
             }
         }

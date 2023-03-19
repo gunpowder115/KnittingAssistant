@@ -1,5 +1,10 @@
 ﻿using KnittingAssistant.Model;
+using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace KnittingAssistant.ViewModel
 {
@@ -24,7 +29,44 @@ namespace KnittingAssistant.ViewModel
             ImageLoader = new ImageLoader();
             ImageSaver = new ImageSaver();
         }
-
         public MainImageParams() : this(1.0, 1.0) { }
+
+        public void LoadImageOnForm(string imageFilename, UserControlParams userControlParams)
+        {
+            bool loadNewImage = true;
+            if (CurrentImageState == en_ImageStates.resultImageNotSaved)
+            {
+                MessageBoxResult messageBoxResult = MessageBox.Show("Загрузить новое изображение?\nТекущее изображение не было сохранено!", "Внимание", MessageBoxButton.YesNo);
+                if (messageBoxResult == MessageBoxResult.No)
+                {
+                    loadNewImage = false;
+                }
+            }
+
+            if (loadNewImage)
+            {
+                MainImage = CreateMainImage();
+                MainImage.Source = new BitmapImage(new Uri(imageFilename));
+                MainImageWidth = (MainImage.Source as BitmapSource).PixelWidth;
+                MainImageHeight = (MainImage.Source as BitmapSource).PixelHeight;
+
+                userControlParams.ImageArea.mainImageContainer.Children.Clear();
+                Grid.SetColumn(MainImage, 0);
+                Grid.SetRow(MainImage, 0);
+                userControlParams.ImageArea.mainImageContainer.Children.Add(MainImage);
+
+                GridLinesVis = null;
+            }
+        }
+
+        private Image CreateMainImage()
+        {
+            Image mainImage = new Image();
+            mainImage.Name = "mainImage";
+            mainImage.Cursor = Cursors.Hand;
+            mainImage.Stretch = Stretch.Uniform;
+            CurrentImageState = en_ImageStates.mainImageLoaded;
+            return mainImage;
+        }
     }
 }

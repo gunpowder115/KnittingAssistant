@@ -40,48 +40,8 @@ namespace KnittingAssistant.ViewModel
             string imageFilename = ((string[])e.Data.GetData(DataFormats.FileDrop))[0];
             if (mainImageParams.ImageLoader.IsSupportedFormat(imageFilename))
             {
-                LoadImageOnForm(imageFilename);
+                mainImageParams.LoadImageOnForm(imageFilename, userControlParams);
             }
         }
-
-        private void LoadImageOnForm(string imageFilename)
-        {
-            bool loadNewImage = true;
-            if (mainImageParams.CurrentImageState == en_ImageStates.resultImageNotSaved)
-            {
-                MessageBoxResult messageBoxResult = MessageBox.Show("Загрузить новое изображение?\nТекущее изображение не было сохранено!", "Внимание", MessageBoxButton.YesNo);
-                if (messageBoxResult == MessageBoxResult.No)
-                {
-                    loadNewImage = false;
-                }
-            }
-
-            if (loadNewImage)
-            {
-                mainImageParams.MainImage = CreateMainImage();
-                mainImageParams.MainImage.Source = new BitmapImage(new Uri(imageFilename));
-                mainImageParams.MainImageWidth = (mainImageParams.MainImage.Source as BitmapSource).PixelWidth;
-                mainImageParams.MainImageHeight = (mainImageParams.MainImage.Source as BitmapSource).PixelHeight;
-
-                userControlParams.ImageArea.mainImageContainer.Children.Clear();
-                Grid.SetColumn(mainImageParams.MainImage, 0);
-                Grid.SetRow(mainImageParams.MainImage, 0);
-                userControlParams.ImageArea.mainImageContainer.Children.Add(mainImageParams.MainImage);
-
-                mainImageParams.GridLinesVis = null;
-            }
-        }
-
-        private Image CreateMainImage()
-        {
-            Image mainImage = new Image();
-            mainImage.Name = "mainImage";
-            mainImage.Cursor = Cursors.Hand;
-            mainImage.Stretch = Stretch.Uniform;
-            mainImageParams.CurrentImageState = en_ImageStates.mainImageLoaded;
-            return mainImage;
-        }
-
-
     }
 }
