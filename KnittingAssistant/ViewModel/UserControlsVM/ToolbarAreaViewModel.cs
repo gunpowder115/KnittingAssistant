@@ -49,9 +49,7 @@ namespace KnittingAssistant.ViewModel
                 return loadMainImageByClickCommand ??
                     (loadMainImageByClickCommand = new RelayCommand(obj =>
                     {
-                        string imageFilename = mainImageParams.ImageLoader.GetImageFilename();
-                        if (imageFilename.Length > 0)
-                            mainImageParams.LoadImageOnForm(imageFilename, userControlParams);
+                        mainImageParams.LoadMainImageByClick(userControlParams);
                     }));
             }
         }

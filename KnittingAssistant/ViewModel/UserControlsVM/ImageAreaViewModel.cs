@@ -25,7 +25,18 @@ namespace KnittingAssistant.ViewModel
 
         #region Relay Commands
 
-
+        private RelayCommand loadMainImageByClickCommand;
+        public RelayCommand LoadMainImageByClickCommand
+        {
+            get
+            {
+                return loadMainImageByClickCommand ??
+                    (loadMainImageByClickCommand = new RelayCommand(obj =>
+                    {
+                        mainImageParams.LoadMainImageByClick(userControlParams);
+                    }));
+            }
+        }
 
         #endregion
 

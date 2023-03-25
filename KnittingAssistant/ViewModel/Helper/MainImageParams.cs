@@ -18,7 +18,7 @@ namespace KnittingAssistant.ViewModel
         public en_ImageStates CurrentImageState { get; set; }
         public ImageLoader ImageLoader { get; set; }
         public ImageSaver ImageSaver { get; set; }
-        public  ImageSplitter ImageSplitter { get; set; }
+        public ImageSplitter ImageSplitter { get; set; }
 
         public MainImageParams(double mainImageWidth, double mainImageHeight)
         {
@@ -57,6 +57,13 @@ namespace KnittingAssistant.ViewModel
 
                 GridLinesVis = null;
             }
+        }
+
+        public void LoadMainImageByClick(UserControlParams userControlParams)
+        {
+            string imageFilename = ImageLoader.GetImageFilename();
+            if (imageFilename.Length > 0)
+                LoadImageOnForm(imageFilename, userControlParams);
         }
 
         private Image CreateMainImage()
