@@ -321,8 +321,12 @@ namespace KnittingAssistant.ViewModel
 
         #endregion
 
-        public PropertyAreaViewModel(MainImageParams mainImageParams, UserControlParams userControlParams)
+        public PropertyAreaViewModel(MainImageParams mainImageParams, 
+            UserControlParams userControlParams)
         {
+            this.mainImageParams = mainImageParams;
+            this.userControlParams = userControlParams;
+
             SettingsIsEnabled = false;
             DisplayImageFragmentWidth = 1.0;
             DisplayImageFragmentHeight = 1.0;
@@ -331,18 +335,17 @@ namespace KnittingAssistant.ViewModel
             KeepRatioOfMainImage = false;
             IsSquareFragment = true;
             SplittingProcessVisibility = Visibility.Hidden;
-
-            this.mainImageParams = mainImageParams;
-            this.userControlParams = userControlParams;
         }
 
-        public void UpdateForNewImage()
+        public void UpdateForNewImage(double mainImageRatio)
         {
             SetSettingsIsEnabled(true);
             DisplayImageWidth = 100 * DisplayImageFragmentWidth;
-            DisplayImageHeight = DisplayImageWidth / mainImageParams.MainImageRatio;
+            DisplayImageHeight = DisplayImageWidth / mainImageRatio;
             SplittingProcessVisibility = Visibility.Hidden;
         }
+
+        private void SetSettingsIsEnabled(bool imageIsLoaded) => SettingsIsEnabled = imageIsLoaded;
 
         private double SetDisplayImageSize(int newFragmentCountDimension, double fragmentDimension)
         {
@@ -368,8 +371,5 @@ namespace KnittingAssistant.ViewModel
 
             return fragmentation;
         }
-
-        public void SetSettingsIsEnabled(bool imageIsLoaded) => SettingsIsEnabled = imageIsLoaded;
-
     }
 }

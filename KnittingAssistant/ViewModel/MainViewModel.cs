@@ -26,6 +26,7 @@ namespace KnittingAssistant.ViewModel
         private double FragmentRatio = 1.0;
 
         private MainImageParams mainImageParams;
+
         public UserControlParams UserControlParams { get; set; }
         public PropertyAreaViewModel PropertyAreaViewModel { get; set; }
         public ImageAreaViewModel ImageAreaViewModel { get; set; }
@@ -35,9 +36,12 @@ namespace KnittingAssistant.ViewModel
         {
             mainImageParams = new MainImageParams();
             UserControlParams = new UserControlParams();
+
             PropertyAreaViewModel = new PropertyAreaViewModel(mainImageParams, UserControlParams);
-            ImageAreaViewModel = new ImageAreaViewModel(mainImageParams, UserControlParams);
-            ToolbarAreaViewModel = new ToolbarAreaViewModel(mainImageParams, UserControlParams);
+            ImageAreaViewModel = new ImageAreaViewModel(mainImageParams, UserControlParams,
+                PropertyAreaViewModel);
+            ToolbarAreaViewModel = new ToolbarAreaViewModel(mainImageParams, UserControlParams,
+                PropertyAreaViewModel);
         }
     }
 

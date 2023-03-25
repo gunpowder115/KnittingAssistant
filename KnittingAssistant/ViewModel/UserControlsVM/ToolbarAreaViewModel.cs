@@ -12,6 +12,7 @@ namespace KnittingAssistant.ViewModel
     {
         private MainImageParams mainImageParams;
         private UserControlParams userControlParams;
+        private readonly PropertyAreaViewModel propertyAreaViewModel;
 
         #region Dependency Property
 
@@ -50,6 +51,7 @@ namespace KnittingAssistant.ViewModel
                     (loadMainImageByClickCommand = new RelayCommand(obj =>
                     {
                         mainImageParams.LoadMainImageByClick(userControlParams);
+                        propertyAreaViewModel.UpdateForNewImage(mainImageParams.MainImageRatio);
                     }));
             }
         }
@@ -116,10 +118,12 @@ namespace KnittingAssistant.ViewModel
 
         #endregion
 
-        public ToolbarAreaViewModel(MainImageParams mainImageParams, UserControlParams userControlParams)
+        public ToolbarAreaViewModel(MainImageParams mainImageParams, 
+            UserControlParams userControlParams, PropertyAreaViewModel propertyAreaViewModel)
         {
             this.mainImageParams = mainImageParams;
             this.userControlParams = userControlParams;
+            this.propertyAreaViewModel = propertyAreaViewModel;
             SwitchGridIconFilename = "../resources/grid_off_icon_1.png";
         }
     }

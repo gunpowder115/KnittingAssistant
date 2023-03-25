@@ -18,7 +18,7 @@ namespace KnittingAssistant.ViewModel
         public en_ImageStates CurrentImageState { get; set; }
         public ImageLoader ImageLoader { get; set; }
         public ImageSaver ImageSaver { get; set; }
-        public ImageSplitter ImageSplitter { get; set; }
+        public ImageSplitter ImageSplitter { get; set; }        
 
         public MainImageParams(double mainImageWidth, double mainImageHeight)
         {
