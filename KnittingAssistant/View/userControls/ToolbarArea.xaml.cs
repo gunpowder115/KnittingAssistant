@@ -9,20 +9,9 @@ namespace KnittingAssistant.View.userControls
     /// </summary>
     public partial class ToolbarArea : UserControl
     {
-        private ToolbarAreaViewModel toolbarAreaViewModel;
-
         public ToolbarArea()
         {
             InitializeComponent();
-
-            toolbarAreaViewModel = new ToolbarAreaViewModel();
-            this.Loaded += ToolbarArea_Loaded;
         }
-
-        private void ToolbarArea_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.DataContext = toolbarAreaViewModel;
-        }
-
     }
 }

@@ -9,19 +9,9 @@ namespace KnittingAssistant.View.userControls
     /// </summary>
     public partial class ImageArea : UserControl
     {
-        private ImageAreaViewModel imageAreaViewModel;
-
         public ImageArea()
         {
             InitializeComponent();
-
-            imageAreaViewModel = new ImageAreaViewModel();
-            this.Loaded += ImageArea_Loaded;
-        }
-
-        private void ImageArea_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.DataContext = imageAreaViewModel;
         }
     }
 }

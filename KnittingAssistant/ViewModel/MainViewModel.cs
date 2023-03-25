@@ -23,15 +23,21 @@ namespace KnittingAssistant.ViewModel
 
         #endregion
 
+        private double FragmentRatio = 1.0;
+
         private MainImageParams mainImageParams;
         public UserControlParams UserControlParams { get; set; }
-
-        private double FragmentRatio = 1.0;
+        public PropertyAreaViewModel PropertyAreaViewModel { get; set; }
+        public ImageAreaViewModel ImageAreaViewModel { get; set; }
+        public ToolbarAreaViewModel ToolbarAreaViewModel { get; set; }
 
         public MainViewModel()
         {
             mainImageParams = new MainImageParams();
             UserControlParams = new UserControlParams();
+            PropertyAreaViewModel = new PropertyAreaViewModel(mainImageParams, UserControlParams);
+            ImageAreaViewModel = new ImageAreaViewModel(mainImageParams, UserControlParams);
+            ToolbarAreaViewModel = new ToolbarAreaViewModel(mainImageParams, UserControlParams);
         }
     }
 

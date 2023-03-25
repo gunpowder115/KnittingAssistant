@@ -9,19 +9,9 @@ namespace KnittingAssistant.View.userControls
     /// </summary>
     public partial class PropertyArea : UserControl
     {
-        private PropertyAreaViewModel propertyAreaViewModel;
-
         public PropertyArea()
         {
             InitializeComponent();
-
-            propertyAreaViewModel = new PropertyAreaViewModel();
-            this.Loaded += PropertyArea_Loaded;
-        }
-
-        private void PropertyArea_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.DataContext = propertyAreaViewModel;
         }
     }
 }
