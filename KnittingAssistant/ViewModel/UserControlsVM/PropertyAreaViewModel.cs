@@ -188,7 +188,10 @@ namespace KnittingAssistant.ViewModel
             {
                 for (int j = 0; j < FragmentCountHeight; j++)
                 {
-                    resultImageColors[i, j] = mainImageParams.ImageSplitter.DoSplitImage(i, j);
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        resultImageColors[i, j] = mainImageParams.ImageSplitter.DoSplitImage(i, j);
+                    }));
 
                     progressPercentage = Convert.ToInt32((double)(i * FragmentCountHeight + j) / (FragmentCountWidth * FragmentCountHeight) * 100);
                     if (progressPercentage >= 100)
