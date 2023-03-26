@@ -19,7 +19,6 @@ namespace KnittingAssistant.View
         {
             DataContext = new MainViewModel();
             (DataContext as MainViewModel).UserControlParams.ImageArea = imageArea;
-            (DataContext as MainViewModel).UserControlParams.ToolbarArea = toolbarArea;
 
             this.propertyArea.DataContext = (DataContext as MainViewModel).PropertyAreaViewModel;
             this.imageArea.DataContext = (DataContext as MainViewModel).ImageAreaViewModel;
