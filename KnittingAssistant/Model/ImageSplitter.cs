@@ -84,7 +84,7 @@ namespace KnittingAssistant.Model
             GridBitmapImage.WritePixels(rect, gridColorData, stride, 0);
         }
 
-        public Color DoSplitImage(int currentWidthFragment, int currentHeightFragment)
+        public void SplitImage(int currentWidthFragment, int currentHeightFragment)
         {
             int fragmentPixelWidth = currentWidthFragment < fragmentCountWidthMain ? fragmentWidthMain : fragmentWidthSecondary;
             int fragmentPixelHeight = currentHeightFragment < fragmentCountHeightMain ? fragmentHeightMain : fragmentHeightSecondary;
@@ -116,8 +116,6 @@ namespace KnittingAssistant.Model
             Color gridColor = keepMainImageRatio ? resultColor : Color.FromArgb(0, 0, 0, 0);
 
             DrawFragmentOnSplittedImage(resultColor, gridColor, currentWidthFragment, currentHeightFragment, fragmentWidthMain, fragmentHeightMain);
-
-            return resultColor;
         }
     }
 }

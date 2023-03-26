@@ -1,14 +1,4 @@
-﻿using KnittingAssistant.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+﻿using System.Windows;
 
 namespace KnittingAssistant.ViewModel
 {
@@ -43,7 +33,7 @@ namespace KnittingAssistant.ViewModel
 
         #endregion
 
-        public ImageAreaViewModel(MainImageParams mainImageParams, 
+        public ImageAreaViewModel(MainImageParams mainImageParams,
             UserControlParams userControlParams, PropertyAreaViewModel propertyAreaViewModel)
         {
             this.mainImageParams = mainImageParams;

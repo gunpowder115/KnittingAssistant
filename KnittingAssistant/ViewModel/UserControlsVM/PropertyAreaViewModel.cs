@@ -13,7 +13,6 @@ namespace KnittingAssistant.ViewModel
         private int FragmentCountHeight;
         private MainImageParams mainImageParams;
         private UserControlParams userControlParams;
-        private Color[,] resultImageColors;
         public double FragmentWidthInPixels => mainImageParams.MainImageWidth * DisplayImageFragmentWidth / DisplayImageWidth;
         public double FragmentHeightInPixels => mainImageParams.MainImageHeight * DisplayImageFragmentHeight / DisplayImageHeight;
 
@@ -164,7 +163,6 @@ namespace KnittingAssistant.ViewModel
                         DisplayImageHeight = SetDisplayImageSize(FragmentCountHeight, DisplayImageFragmentHeight);
 
                         mainImageParams.ImageSplitter = new ImageSplitter(mainImageParams.MainImage, widthFragmentation, heightFragmentation);
-                        resultImageColors = new Color[FragmentCountWidth, FragmentCountHeight];
 
                         mainImageParams.CurrentImageState = en_ImageStates.mainImageSplitting;
 
@@ -190,7 +188,7 @@ namespace KnittingAssistant.ViewModel
                 {
                     Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
-                        resultImageColors[i, j] = mainImageParams.ImageSplitter.DoSplitImage(i, j);
+                        mainImageParams.ImageSplitter.SplitImage(i, j);
                     }));
 
                     progressPercentage = Convert.ToInt32((double)(i * FragmentCountHeight + j) / (FragmentCountWidth * FragmentCountHeight) * 100);
