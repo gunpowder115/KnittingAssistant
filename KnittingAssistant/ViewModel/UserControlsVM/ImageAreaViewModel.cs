@@ -25,8 +25,9 @@ namespace KnittingAssistant.ViewModel
                 return loadMainImageByClickCommand ??
                     (loadMainImageByClickCommand = new RelayCommand(obj =>
                     {
-                        mainImageParams.LoadMainImageByClick(userControlParams);
-                        propertyAreaViewModel.UpdateForNewImage(mainImageParams.MainImageRatio);
+                        bool loadNewImage = mainImageParams.LoadMainImageByClick(userControlParams);
+                        if (loadNewImage)
+                            propertyAreaViewModel.UpdateForNewImage(mainImageParams.MainImageRatio);
                     }));
             }
         }

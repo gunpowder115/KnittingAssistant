@@ -52,7 +52,7 @@
                 </MultiBinding>
             </TextBox.Text>
         </TextBox>
-        <CheckBox IsEnabled="False" IsChecked="{Binding KeepRatioOfMainImage, FallbackValue=False, Mode=TwoWay}" Content="Исходные пропорции"
+        <CheckBox IsEnabled="False" Visibility="Hidden" IsChecked="{Binding KeepRatioOfMainImage, FallbackValue=False, Mode=TwoWay}" Content="Исходные пропорции"
                   Margin="0 5 0 15" Command="{Binding KeepRatioOfMainImageChanged}"/>
         <TextBlock>Ширина фрагмента, см</TextBlock>
         <TextBox x:Name="FragmentImageWidthTextBlock" IsReadOnly="{Binding KeepValue, FallbackValue=False}">

@@ -59,11 +59,15 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
-        public void LoadMainImageByClick(UserControlParams userControlParams)
+        public bool LoadMainImageByClick(UserControlParams userControlParams)
         {
             string imageFilename = ImageLoader.GetImageFilename();
             if (imageFilename.Length > 0)
+            {
                 LoadImageOnForm(imageFilename, userControlParams);
+                return true;
+            }
+            return false;
         }
 
         private Image CreateMainImage()
