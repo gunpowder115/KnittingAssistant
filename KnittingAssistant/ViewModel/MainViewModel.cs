@@ -1,17 +1,4 @@
-﻿using System;
-using Microsoft.Win32;
-using System.Windows.Media.Imaging;
-using KnittingAssistant.View.userControls;
-using KnittingAssistant.View;
-using KnittingAssistant.Model;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows;
-using System.ComponentModel;
-using System.Windows.Media;
-using System.IO;
-
-namespace KnittingAssistant.ViewModel
+﻿namespace KnittingAssistant.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
