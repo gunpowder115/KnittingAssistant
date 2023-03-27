@@ -17,7 +17,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid x:Name="mainImageContainer">
-        <Image x:Name="mainImage" Source="../resources/default_image.png" Cursor="Hand" 
+        <Image x:Name="mainImage" Source="{Binding DisplayedImage, Mode=TwoWay}"  Cursor="Hand" 
                AllowDrop="True" Stretch="Uniform">
             <Image.ToolTip>
                 <ToolTip Content="Загрузить изображение"/>

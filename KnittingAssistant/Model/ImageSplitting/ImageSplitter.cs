@@ -9,7 +9,7 @@ namespace KnittingAssistant.Model
     public class ImageSplitter
     {
         public ImageFragment[,] imageFragments { get; }
-        private BitmapImage mainBitmapImage;
+        private WriteableBitmap mainBitmapImage;
         public WriteableBitmap SplittedBitmapImage { get; }
         public WriteableBitmap GridBitmapImage { get; }
         private int fragmentWidthMain, fragmentHeightMain;
@@ -19,7 +19,7 @@ namespace KnittingAssistant.Model
         private bool keepMainImageRatio;
         public bool isAverageColor => ImageFragment.isAverageColor;
 
-        public ImageSplitter(Image mainImage, Fragmentation widthFragmentation, Fragmentation heightFragmentation)
+        public ImageSplitter(WriteableBitmap mainImage, Fragmentation widthFragmentation, Fragmentation heightFragmentation)
         {
             this.fragmentCountWidthMain = widthFragmentation.mainCount;
             this.fragmentCountHeightMain = heightFragmentation.mainCount;
@@ -33,7 +33,7 @@ namespace KnittingAssistant.Model
             imageFragments = new ImageFragment[fragmentCountWidthMain + fragmentCountWidthSecondary, 
                 fragmentCountHeightMain + fragmentCountHeightSecondary]; //массив фрагментов изображения
 
-            mainBitmapImage = (BitmapImage)mainImage.Source; //главный bitmap
+            mainBitmapImage = mainImage; //главный bitmap
 
             int bitmapWidth = fragmentCountWidthMain * fragmentWidthMain + fragmentCountWidthSecondary * fragmentWidthSecondary;
             int bitmapHeight = fragmentCountHeightMain * fragmentHeightMain + fragmentCountHeightSecondary * fragmentHeightSecondary;

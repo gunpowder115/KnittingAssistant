@@ -1,4 +1,6 @@
-﻿namespace KnittingAssistant.ViewModel
+﻿using KnittingAssistant.Model;
+
+namespace KnittingAssistant.ViewModel
 {
     public class MainViewModel : ViewModelBase
     {
@@ -11,24 +13,18 @@
         #endregion
 
         private double FragmentRatio = 1.0;
+        private ImageProcessor imageProcessor;
 
-        private MainImageParams mainImageParams;
-
-        public UserControlParams UserControlParams { get; set; }
         public PropertyAreaViewModel PropertyAreaViewModel { get; set; }
         public ImageAreaViewModel ImageAreaViewModel { get; set; }
         public ToolbarAreaViewModel ToolbarAreaViewModel { get; set; }
 
         public MainViewModel()
         {
-            mainImageParams = new MainImageParams();
-            UserControlParams = new UserControlParams();
-
-            PropertyAreaViewModel = new PropertyAreaViewModel(mainImageParams, UserControlParams);
-            ImageAreaViewModel = new ImageAreaViewModel(mainImageParams, UserControlParams,
-                PropertyAreaViewModel);
-            ToolbarAreaViewModel = new ToolbarAreaViewModel(mainImageParams, UserControlParams,
-                PropertyAreaViewModel);
+            imageProcessor = new ImageProcessor();
+            PropertyAreaViewModel = new PropertyAreaViewModel(imageProcessor);
+            ImageAreaViewModel = new ImageAreaViewModel(PropertyAreaViewModel, imageProcessor);
+            ToolbarAreaViewModel = new ToolbarAreaViewModel(PropertyAreaViewModel, imageProcessor);
         }
     }
 

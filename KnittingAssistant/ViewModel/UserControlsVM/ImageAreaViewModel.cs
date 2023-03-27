@@ -1,17 +1,30 @@
-﻿using System.Windows;
+﻿using KnittingAssistant.Model;
+using System;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace KnittingAssistant.ViewModel
 {
     public class ImageAreaViewModel : ViewModelBase
     {
-        private MainImageParams mainImageParams;
-        private UserControlParams userControlParams;
-
         private readonly PropertyAreaViewModel propertyAreaViewModel;
+        private ImageProcessor imageProcessor;
+
+        private const string DefaultFilename = "D:/Development/KnittingAssistant/KnittingAssistant/View/resources/default_image.png";
 
         #region Dependency Property
 
-
+        private WriteableBitmap displayedImage;
+        public WriteableBitmap DisplayedImage
+        {
+            get { return displayedImage; }
+            set
+            {
+                displayedImage = value;
+                OnPropertyChanged("DisplayedImage");
+            }
+        }
 
         #endregion
 
@@ -25,31 +38,37 @@ namespace KnittingAssistant.ViewModel
                 return loadMainImageByClickCommand ??
                     (loadMainImageByClickCommand = new RelayCommand(obj =>
                     {
-                        bool loadNewImage = mainImageParams.LoadMainImageByClick(userControlParams);
+                        bool loadNewImage = imageProcessor.LoadMainImageByClick();
                         if (loadNewImage)
-                            propertyAreaViewModel.UpdateForNewImage(mainImageParams.MainImageRatio);
+                            propertyAreaViewModel.UpdateForNewImage(imageProcessor.MainImageRatio);
                     }));
             }
         }
 
         #endregion
 
-        public ImageAreaViewModel(MainImageParams mainImageParams,
-            UserControlParams userControlParams, PropertyAreaViewModel propertyAreaViewModel)
+        public ImageAreaViewModel(PropertyAreaViewModel propertyAreaViewModel, ImageProcessor imageProcessor)
         {
-            this.mainImageParams = mainImageParams;
-            this.userControlParams = userControlParams;
             this.propertyAreaViewModel = propertyAreaViewModel;
+            this.imageProcessor = imageProcessor;
+            imageProcessor.UpdateImageNotify += UpdateImage;
+
+            DisplayedImage = imageProcessor.UpdateMainImage(DefaultFilename, en_ImageStates.emptyImage);
         }
 
         public void LoadMainImageByDropCommand(object sender, DragEventArgs e)
         {
             string imageFilename = ((string[])e.Data.GetData(DataFormats.FileDrop))[0];
-            if (mainImageParams.ImageLoader.IsSupportedFormat(imageFilename))
+            if (imageProcessor.ImageLoader.IsSupportedFormat(imageFilename))
             {
-                mainImageParams.LoadImageOnForm(imageFilename, userControlParams);
-                propertyAreaViewModel.UpdateForNewImage(mainImageParams.MainImageRatio);
+                imageProcessor.LoadImageOnForm(imageFilename);
+                propertyAreaViewModel.UpdateForNewImage(imageProcessor.MainImageRatio);
             }
+        }
+
+        private void UpdateImage(WriteableBitmap wbImage)
+        {
+            DisplayedImage = wbImage;
         }
     }
 }
