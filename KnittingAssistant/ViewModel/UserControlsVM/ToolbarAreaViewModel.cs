@@ -10,24 +10,24 @@ namespace KnittingAssistant.ViewModel
 
         #region Dependency Property
 
-        private string m_SwitchGridIconFilename;
+        private string switchGridIconFilename;
         public string SwitchGridIconFilename
         {
-            get { return m_SwitchGridIconFilename; }
+            get { return switchGridIconFilename; }
             set
             {
-                m_SwitchGridIconFilename = value;
+                switchGridIconFilename = value;
                 OnPropertyChanged("SwitchGridIconFilename");
             }
         }
 
-        private string m_SwitchGridIconToolTip;
+        private string switchGridIconToolTip;
         public string SwitchGridIconToolTip
         {
-            get { return m_SwitchGridIconToolTip; }
+            get { return switchGridIconToolTip; }
             set
             {
-                m_SwitchGridIconToolTip = value;
+                switchGridIconToolTip = value;
                 OnPropertyChanged("SwitchGridIconToolTip");
             }
         }
@@ -75,26 +75,18 @@ namespace KnittingAssistant.ViewModel
                     {
                         if (imageProcessor.GridLinesVis != null)
                         {
-                            //Image splittedImage = new Image();
                             if ((bool)imageProcessor.GridLinesVis)
                             {
                                 imageProcessor.CallUpdateImageNotify(imageProcessor.ImageSplitter.SplittedBitmapImage);
-                                //imageAreaViewModel.DisplayedImage = imageProcessor.ImageSplitter.SplittedBitmapImage;
-                                //splittedImage.Source = imageProcessor.ImageSplitter.SplittedBitmapImage;
                                 SwitchGridIconFilename = "../resources/grid_on_icon_1.png";
                                 SwitchGridIconToolTip = "Показать сетку";
                             }
                             else
                             {
                                 imageProcessor.CallUpdateImageNotify(imageProcessor.ImageSplitter.GridBitmapImage);
-                                //imageAreaViewModel.DisplayedImage = imageProcessor.ImageSplitter.GridBitmapImage;
-                                //splittedImage.Source = imageProcessor.ImageSplitter.GridBitmapImage;
                                 SwitchGridIconFilename = "../resources/grid_off_icon_1.png";
                                 SwitchGridIconToolTip = "Скрыть сетку";
                             }
-                            //Grid.SetColumn(splittedImage, 0);
-                            //Grid.SetRow(splittedImage, 0);
-                            //userControlParams.ImageArea.mainImageContainer.Children.Add(splittedImage);
                             imageProcessor.GridLinesVis = !imageProcessor.GridLinesVis;
                         }
                     }));

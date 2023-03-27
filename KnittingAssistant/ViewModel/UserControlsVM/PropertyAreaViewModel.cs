@@ -2,8 +2,6 @@
 using System;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace KnittingAssistant.ViewModel
 {
@@ -169,9 +167,9 @@ namespace KnittingAssistant.ViewModel
                         BackgroundWorker worker = new BackgroundWorker();
                         worker.WorkerReportsProgress = true;
                         worker.WorkerSupportsCancellation = true;
-                        worker.DoWork += worker_DoWork;
-                        worker.ProgressChanged += worker_ProgressChanged;
-                        worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+                        worker.DoWork += worker_Splitting;
+                        worker.ProgressChanged += worker_SplittingProgressChanged;
+                        worker.RunWorkerCompleted += worker_SplittingCompleted;
                         worker.RunWorkerAsync(imageProcessor.ImageSplitter);
                     }));
             }
@@ -316,7 +314,7 @@ namespace KnittingAssistant.ViewModel
             Fragmentation fragmentation = new Fragmentation();
             int fragmentCount = (int)Math.Round(imageSizeInput * mainImageRatio / fragmentSizeInput);
             int fragmentSizePxInt = (int)Math.Round(fragmentSizePx);
-            int deltaCount = (int)(fragmentCount * fragmentSizePxInt - imageSizePx/* - fragmentSizePxInt*/);
+            int deltaCount = (int)(fragmentCount * fragmentSizePxInt - imageSizePx);
 
             fragmentation.mainCount = fragmentCount - Math.Abs(deltaCount);
             fragmentation.secondaryCount = Math.Abs(deltaCount);
@@ -326,7 +324,7 @@ namespace KnittingAssistant.ViewModel
             return fragmentation;
         }
 
-        private void worker_DoWork(object sender, DoWorkEventArgs e)
+        private void worker_Splitting(object sender, DoWorkEventArgs e)
         {
             imageProcessor.ImageSplitter = (ImageSplitter)e.Argument;
 
@@ -348,17 +346,16 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
-        private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void worker_SplittingProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             SplittingProcessValue = e.ProgressPercentage;
             if (SplittingProcessValue == 99)
                 SplittingProcessName = "Подготовка изображения...";
         }
 
-        private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void worker_SplittingCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             imageProcessor.CallUpdateImageNotify(imageProcessor.ImageSplitter.GridBitmapImage);
-            //imageAreaViewModel.DisplayedImage = imageProcessor.ImageSplitter.GridBitmapImage;
             imageProcessor.GridLinesVis = true;
             imageProcessor.CurrentImageState = en_ImageStates.resultImageNotSaved;
 
