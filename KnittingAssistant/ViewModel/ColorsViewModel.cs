@@ -14,68 +14,68 @@ namespace KnittingAssistant.ViewModel
     {
         #region Dependency Properties
 
-        private Grid m_AddedColors;
+        private Grid addedColors;
         public Grid AddedColors
         {
-            get { return m_AddedColors; }
+            get { return addedColors; }
             set
             {
-                m_AddedColors = value;
+                addedColors = value;
                 OnPropertyChanged("AddedColors");
             }
         }
 
-        private double m_BlueSelectedColorValue;
+        private double blueSelectedColorValue;
         public double BlueSelectedColorValue
         {
-            get { return m_BlueSelectedColorValue; }
+            get { return blueSelectedColorValue; }
             set
             {
-                m_BlueSelectedColorValue = value;
+                blueSelectedColorValue = value;
                 OnPropertyChanged("BlueSelectedColorValue");
             }
         }
 
-        private double m_GreenSelectedColorValue;
+        private double greenSelectedColorValue;
         public double GreenSelectedColorValue
         {
-            get { return m_GreenSelectedColorValue; }
+            get { return greenSelectedColorValue; }
             set
             {
-                m_GreenSelectedColorValue = value;
+                greenSelectedColorValue = value;
                 OnPropertyChanged("GreenSelectedColorValue");
             }
         }
 
-        private double m_RedSelectedColorValue;
+        private double redSelectedColorValue;
         public double RedSelectedColorValue
         {
-            get { return m_RedSelectedColorValue; }
+            get { return redSelectedColorValue; }
             set
             {
-                m_RedSelectedColorValue = value;
+                redSelectedColorValue = value;
                 OnPropertyChanged("RedSelectedColorValue");
             }
         }
 
-        private bool m_IsColorAdding;
+        private bool isColorAdding;
         public bool IsColorAdding
         {
-            get { return m_IsColorAdding; }
+            get { return isColorAdding; }
             set
             {
-                m_IsColorAdding = value;
+                isColorAdding = value;
                 OnPropertyChanged("IsColorAdding");
             }
         }
 
-        private bool m_IsColorRemoving;
+        private bool isColorRemoving;
         public bool IsColorRemoving
         {
-            get { return m_IsColorRemoving; }
+            get { return isColorRemoving; }
             set
             {
-                m_IsColorRemoving = value;
+                isColorRemoving = value;
                 OnPropertyChanged("IsColorRemoving");
             }
         }
@@ -170,7 +170,7 @@ namespace KnittingAssistant.ViewModel
                 return notSaveColorsCommand ??
                     (notSaveColorsCommand = new RelayCommand(obj =>
                     {
-                        
+
                     }));
             }
         }
@@ -184,6 +184,7 @@ namespace KnittingAssistant.ViewModel
         private int selectedColorIndex;
         private LinkedListNode<Color> selectedLinkedListNode;
         private ArrayToGridIndexConverter arrayToGridIndexConverter;
+
         public Image PaletteAreaImage { get; set; }
         public Border SelectedColor { get; set; }
 
