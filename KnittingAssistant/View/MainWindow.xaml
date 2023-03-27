@@ -8,9 +8,6 @@
         xmlns:usercontrols="clr-namespace:KnittingAssistant.View.userControls"
         mc:Ignorable="d"
         Title="KnittingAsstistant" Height="768" Width="1024" >
-    <Window.DataContext>
-        <viewmodel:MainViewModel/>
-    </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MinWidth="160" MaxWidth="750"/>
