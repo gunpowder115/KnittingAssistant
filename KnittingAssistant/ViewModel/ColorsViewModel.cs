@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace KnittingAssistant.ViewModel
 {
@@ -21,6 +22,7 @@ namespace KnittingAssistant.ViewModel
         private int selectedColorIndex;
         private LinkedListNode<Color> selectedLinkedListNode;
         private ArrayToGridIndexConverter arrayToGridIndexConverter;
+        private Point disableCircleCenterPoint;
 
         #region Dependency Properties
 
@@ -120,6 +122,39 @@ namespace KnittingAssistant.ViewModel
             {
                 selectedColorBackground = value;
                 OnPropertyChanged("SelectedColorBackground");
+            }
+        }
+
+        private Visibility circleVisibility;
+        public Visibility CircleVisibility
+        {
+            get { return circleVisibility; }
+            set
+            {
+                circleVisibility = value;
+                OnPropertyChanged("CircleVisibility");
+            }
+        }
+
+        private Point circleCenterPoint;
+        public Point CircleCenterPoint
+        {
+            get { return circleCenterPoint; }
+            set
+            {
+                circleCenterPoint = value;
+                OnPropertyChanged("CircleCenterPoint");
+            }
+        }
+
+        private SolidColorBrush circleFillColor;
+        public SolidColorBrush CircleFillColor
+        {
+            get { return circleFillColor; }
+            set
+            {
+                circleFillColor = value;
+                OnPropertyChanged("CircleFillColor");
             }
         }
 
@@ -229,6 +264,7 @@ namespace KnittingAssistant.ViewModel
                         selectedColorForAdding = Color.FromRgb((byte)RedSelectedColorValue,
                             (byte)GreenSelectedColorValue, (byte)BlueSelectedColorValue);
                         ShowSelectedColor(selectedColorForAdding);
+                        DisablePaletteCircle();
                         IsColorAdding = true;
                         IsColorRemoving = false;
                     }));
@@ -241,6 +277,10 @@ namespace KnittingAssistant.ViewModel
         {
             PaletteAreaImage = SetWriteableBitmap(DefaultPaletteFilename);
             SelectedColorImage = SetWriteableBitmap(EmptySelectedColorFilename);
+            CircleVisibility = Visibility.Collapsed;
+            CircleCenterPoint = new Point();
+            disableCircleCenterPoint = new Point(-10, -10);
+            CircleFillColor = new SolidColorBrush();
             RedSelectedColorValue = 0;
             GreenSelectedColorValue = 0;
             BlueSelectedColorValue = 0;
@@ -278,6 +318,7 @@ namespace KnittingAssistant.ViewModel
                     (byte)BlueSelectedColorValue);
 
                 ShowSelectedColor(selectedColorForAdding);
+                ShowPaletteCircle(position, selectedColorForAdding);
 
                 IsColorAdding = true;
                 IsColorRemoving = false;
@@ -291,6 +332,7 @@ namespace KnittingAssistant.ViewModel
             selectedLinkedListNode = colorStorage.GetNodeByIndex(selectedColorIndex);
 
             ShowSelectedColor(selectedLinkedListNode);
+            DisablePaletteCircle();
 
             IsColorAdding = false;
             IsColorRemoving = true;
@@ -377,6 +419,18 @@ namespace KnittingAssistant.ViewModel
             WriteableBitmap wbImage = new WriteableBitmap((BitmapSource)image.Source);
 
             return wbImage;
+        }
+
+        private void ShowPaletteCircle(Point position, Color selectedColorForAdding)
+        {
+            CircleVisibility = Visibility.Visible;
+            CircleCenterPoint = position;
+            CircleFillColor = new SolidColorBrush(selectedColorForAdding);
+        }
+
+        private void DisablePaletteCircle()
+        {
+            CircleVisibility = Visibility.Collapsed;
         }
     }
 

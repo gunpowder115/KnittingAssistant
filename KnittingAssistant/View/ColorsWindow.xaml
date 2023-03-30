@@ -35,16 +35,32 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Border BorderBrush="Gray" BorderThickness="2" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Margin="10">
-                <Image x:Name="paletteAreaImage" Source="{Binding PaletteAreaImage, Mode=TwoWay}">
-                    <Image.InputBindings>
-                        <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding AddColorCommand}"/>
-                    </Image.InputBindings>
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                            <i:CallMethodAction MethodName="SetSelectedColorForAddingCommand" TargetObject="{Binding}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </Image>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition MaxHeight="{Binding ActualHeight, ElementName=paletteAreaImage}"/>
+                    </Grid.RowDefinitions>
+                    <Image x:Name="paletteAreaImage" Source="{Binding PaletteAreaImage, Mode=TwoWay}">
+                        <Image.InputBindings>
+                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding AddColorCommand}"/>
+                        </Image.InputBindings>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                <i:CallMethodAction MethodName="SetSelectedColorForAddingCommand" TargetObject="{Binding}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Image>
+                    <Path Stroke="Black" StrokeThickness="1" Visibility="{Binding CircleVisibility}">
+                        <Path.Data>
+                            <EllipseGeometry Center="{Binding CircleCenterPoint}" RadiusX="7" RadiusY="7"/>
+                        </Path.Data>
+                    </Path>
+                    <Path Stroke="White" StrokeThickness="1" Fill="{Binding CircleFillColor, FallbackValue=Red}"
+                           Visibility="{Binding CircleVisibility}">
+                        <Path.Data>
+                            <EllipseGeometry Center="{Binding CircleCenterPoint}" RadiusX="6" RadiusY="6"/>
+                        </Path.Data>
+                    </Path>
+                </Grid>
             </Border>
             <Border x:Name="selectedColor" BorderBrush="Gray" BorderThickness="2" Grid.Column="1" 
                     Grid.Row="0" Height="80" Width="80" Margin="10" Background="{Binding SelectedColorBackground}">
