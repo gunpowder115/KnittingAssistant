@@ -12,6 +12,16 @@ namespace KnittingAssistant.ViewModel
 {
     public class ColorsViewModel : ViewModelBase
     {
+        private const int addedColorsGridWidth = 11;
+        private const int addedColorsGridHeight = 3;
+        private const string DefaultPaletteFilename = "D:/Development/KnittingAssistant/KnittingAssistant/View/resources/square_palette_image_full.png";
+        private const string EmptySelectedColorFilename = "D:/Development/KnittingAssistant/KnittingAssistant/View/resources/large_empty_image.png";
+        private ColorStorage colorStorage;
+        private Color selectedColorForAdding;
+        private int selectedColorIndex;
+        private LinkedListNode<Color> selectedLinkedListNode;
+        private ArrayToGridIndexConverter arrayToGridIndexConverter;
+
         #region Dependency Properties
 
         private Grid addedColors;
@@ -77,6 +87,39 @@ namespace KnittingAssistant.ViewModel
             {
                 isColorRemoving = value;
                 OnPropertyChanged("IsColorRemoving");
+            }
+        }
+
+        private WriteableBitmap paletteAreaImage;
+        public WriteableBitmap PaletteAreaImage
+        {
+            get { return paletteAreaImage; }
+            set
+            {
+                paletteAreaImage = value;
+                OnPropertyChanged("PaletteAreaImage");
+            }
+        }
+
+        private WriteableBitmap selectedColorImage;
+        public WriteableBitmap SelectedColorImage
+        {
+            get { return selectedColorImage; }
+            set
+            {
+                selectedColorImage = value;
+                OnPropertyChanged("SelectedColorImage");
+            }
+        }
+
+        private SolidColorBrush selectedColorBackground;
+        public SolidColorBrush SelectedColorBackground
+        {
+            get { return selectedColorBackground; }
+            set
+            {
+                selectedColorBackground = value;
+                OnPropertyChanged("SelectedColorBackground");
             }
         }
 
@@ -177,17 +220,6 @@ namespace KnittingAssistant.ViewModel
 
         #endregion
 
-        private const int addedColorsGridWidth = 11;
-        private const int addedColorsGridHeight = 3;
-        private ColorStorage colorStorage;
-        private Color selectedColorForAdding;
-        private int selectedColorIndex;
-        private LinkedListNode<Color> selectedLinkedListNode;
-        private ArrayToGridIndexConverter arrayToGridIndexConverter;
-
-        public Image PaletteAreaImage { get; set; }
-        public Border SelectedColor { get; set; }
-
         public ColorsViewModel()
         {
             RedSelectedColorValue = 0;
@@ -203,24 +235,23 @@ namespace KnittingAssistant.ViewModel
             colorStorage.ReadColorsFromFile();
 
             AddedColors = CreateColorGrid(colorStorage.ColorList);
+            PaletteAreaImage = SetWriteableBitmap(DefaultPaletteFilename);
+            SelectedColorImage = SetWriteableBitmap(EmptySelectedColorFilename);
         }
 
         public void SetSelectedColorForAddingCommand(object sender, MouseButtonEventArgs e)
         {
-            PaletteAreaImage.Source = new BitmapImage(new Uri("D:/Development/KnittingAssistant/KnittingAssistant/View/resources/square_palette_image.png"));
+            WriteableBitmap bitmapPalette = new WriteableBitmap(PaletteAreaImage.PixelWidth, PaletteAreaImage.PixelHeight,
+                PaletteAreaImage.DpiX, PaletteAreaImage.DpiY,
+                PaletteAreaImage.Format, PaletteAreaImage.Palette);
 
-            BitmapImage tempBitmap = (BitmapImage)PaletteAreaImage.Source;
-            WriteableBitmap bitmapPalette = new WriteableBitmap(tempBitmap.PixelWidth, tempBitmap.PixelHeight,
-                tempBitmap.DpiX, tempBitmap.DpiY,
-                tempBitmap.Format, tempBitmap.Palette);
-
-            Point position = e.GetPosition(PaletteAreaImage);
+            Point position = e.GetPosition(null);
             if (position.X <= bitmapPalette.PixelWidth && position.X >= 0 && position.Y <= bitmapPalette.PixelHeight && position.Y >= 0)
             {
                 int stride = (int)bitmapPalette.PixelWidth * bitmapPalette.Format.BitsPerPixel / 8;
 
                 byte[] currentPixel = new byte[4];
-                tempBitmap.CopyPixels(new Int32Rect((int)position.X, (int)position.Y, 1, 1), currentPixel, stride, 0);
+                PaletteAreaImage.CopyPixels(new Int32Rect((int)position.X, (int)position.Y, 1, 1), currentPixel, stride, 0);
 
                 BlueSelectedColorValue = currentPixel[0];
                 GreenSelectedColorValue = currentPixel[1];
@@ -249,13 +280,13 @@ namespace KnittingAssistant.ViewModel
 
         public void ShowSelectedColor(Color selectedColor)
         {
-            SelectedColor.Background = new SolidColorBrush(selectedColor);
+            SelectedColorBackground = new SolidColorBrush(selectedColor);
             BlueSelectedColorValue = selectedColor.B;
             GreenSelectedColorValue = selectedColor.G;
             RedSelectedColorValue = selectedColor.R;
 
-            if (SelectedColor.Child != null)
-                SelectedColor.Child = null;
+            if (SelectedColorImage != null)
+                SelectedColorImage = null;
         }
 
         public void ShowSelectedColor(LinkedListNode<Color> selectedColorNode)
@@ -264,9 +295,7 @@ namespace KnittingAssistant.ViewModel
                 ShowSelectedColor(selectedColorNode.Value);
             else
             {
-                Image emptyColorImage = new Image();
-                emptyColorImage.Source = new BitmapImage(new Uri("D:/Development/KnittingAssistant/KnittingAssistant/View/resources/large_empty_image.png"));
-                SelectedColor.Child = emptyColorImage;
+                SelectedColorImage = SetWriteableBitmap(EmptySelectedColorFilename);
                 BlueSelectedColorValue = GreenSelectedColorValue = RedSelectedColorValue = 0;
             }
         }
@@ -321,6 +350,15 @@ namespace KnittingAssistant.ViewModel
             }
 
             return addedColors;
+        }
+
+        private WriteableBitmap SetWriteableBitmap(string imageFilename)
+        {
+            Image image = new Image();
+            image.Source = new BitmapImage(new Uri(imageFilename));
+            WriteableBitmap wbImage = new WriteableBitmap((BitmapSource)image.Source);
+
+            return wbImage;
         }
     }
 
