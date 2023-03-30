@@ -222,42 +222,43 @@ namespace KnittingAssistant.ViewModel
 
         public ColorsViewModel()
         {
+            PaletteAreaImage = SetWriteableBitmap(DefaultPaletteFilename);
+            SelectedColorImage = SetWriteableBitmap(EmptySelectedColorFilename);
             RedSelectedColorValue = 0;
             GreenSelectedColorValue = 0;
             BlueSelectedColorValue = 0;
 
-            IsColorAdding = false;
-            IsColorRemoving = false;
-
             arrayToGridIndexConverter = new ArrayToGridIndexConverter(addedColorsGridWidth, addedColorsGridHeight);
-
             colorStorage = new ColorStorage();
             colorStorage.ReadColorsFromFile();
-
             AddedColors = CreateColorGrid(colorStorage.ColorList);
-            PaletteAreaImage = SetWriteableBitmap(DefaultPaletteFilename);
-            SelectedColorImage = SetWriteableBitmap(EmptySelectedColorFilename);
+
+            IsColorAdding = false;
+            IsColorRemoving = false;
         }
 
         public void SetSelectedColorForAddingCommand(object sender, MouseButtonEventArgs e)
         {
-            WriteableBitmap bitmapPalette = new WriteableBitmap(PaletteAreaImage.PixelWidth, PaletteAreaImage.PixelHeight,
-                PaletteAreaImage.DpiX, PaletteAreaImage.DpiY,
-                PaletteAreaImage.Format, PaletteAreaImage.Palette);
+            Image senderImage = sender as Image;
+            WriteableBitmap senderBitmap = (WriteableBitmap)((sender as Image)?.Source);
+            int pixelWidth = senderBitmap.PixelWidth;
+            int pixelHeight = senderBitmap.PixelHeight;
+            byte[] pixels = new byte[pixelWidth * pixelHeight * 4];
+            senderBitmap.CopyPixels(pixels, pixelWidth * 4, 0);
 
-            Point position = e.GetPosition(null);
-            if (position.X <= bitmapPalette.PixelWidth && position.X >= 0 && position.Y <= bitmapPalette.PixelHeight && position.Y >= 0)
+            Point position = e.GetPosition((IInputElement)sender);
+
+            if (position.X <= pixelWidth && position.Y <= pixelHeight)
             {
-                int stride = (int)bitmapPalette.PixelWidth * bitmapPalette.Format.BitsPerPixel / 8;
+                int offset = ((int)position.Y * pixelWidth + (int)position.X) * 4;
+                RedSelectedColorValue = pixels[offset + 2];
+                GreenSelectedColorValue = pixels[offset + 1];
+                BlueSelectedColorValue = pixels[offset + 0];
 
-                byte[] currentPixel = new byte[4];
-                PaletteAreaImage.CopyPixels(new Int32Rect((int)position.X, (int)position.Y, 1, 1), currentPixel, stride, 0);
-
-                BlueSelectedColorValue = currentPixel[0];
-                GreenSelectedColorValue = currentPixel[1];
-                RedSelectedColorValue = currentPixel[2];
-
-                selectedColorForAdding = Color.FromRgb((byte)RedSelectedColorValue, (byte)GreenSelectedColorValue, (byte)BlueSelectedColorValue);
+                selectedColorForAdding = Color.FromArgb(pixels[offset + 3],
+                    (byte)RedSelectedColorValue,
+                    (byte)GreenSelectedColorValue,
+                    (byte)BlueSelectedColorValue);
 
                 ShowSelectedColor(selectedColorForAdding);
 
