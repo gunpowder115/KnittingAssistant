@@ -218,6 +218,23 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private RelayCommand sliderRgbValueChangedCommand;
+        public RelayCommand SliderRgbValueChangedCommand
+        {
+            get
+            {
+                return sliderRgbValueChangedCommand ??
+                    (sliderRgbValueChangedCommand = new RelayCommand(obj =>
+                    {
+                        selectedColorForAdding = Color.FromRgb((byte)RedSelectedColorValue,
+                            (byte)GreenSelectedColorValue, (byte)BlueSelectedColorValue);
+                        ShowSelectedColor(selectedColorForAdding);
+                        IsColorAdding = true;
+                        IsColorRemoving = false;
+                    }));
+            }
+        }
+
         #endregion
 
         public ColorsViewModel()

@@ -19,6 +19,7 @@
         </Style>
         <Style TargetType="Slider">
             <Setter Property="Width" Value="120"/>
+            <Setter Property="Maximum" Value="255"/>
         </Style>
         <converters:StringToPropertyValue x:Key="stringToPropertyValue"/>
     </Window.Resources>
@@ -55,7 +56,13 @@
             <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <StackPanel Orientation="Horizontal" Margin="5">
                     <TextBlock Text="R: " Width="15"/>
-                    <Slider/>
+                    <Slider Value="{Binding RedSelectedColorValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="ValueChanged">
+                                <i:InvokeCommandAction Command="{Binding SliderRgbValueChangedCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Slider>
                     <TextBox x:Name="RedSelectedColorValueTextBox" Width="40">
                         <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged" ConverterParameter="0">
                             <Binding Path="RedSelectedColorValue"/>
@@ -65,7 +72,13 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="5">
                     <TextBlock Text="G: " Width="15"/>
-                    <Slider/>
+                    <Slider Value="{Binding GreenSelectedColorValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="ValueChanged">
+                                <i:InvokeCommandAction Command="{Binding SliderRgbValueChangedCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Slider>
                     <TextBox x:Name="GreenSelectedColorValueTextBox" Width="40">
                         <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged" ConverterParameter="0">
                             <Binding Path="GreenSelectedColorValue"/>
@@ -75,7 +88,13 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="5">
                     <TextBlock Text="B: " Width="15"/>
-                    <Slider/>
+                    <Slider Value="{Binding BlueSelectedColorValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="ValueChanged">
+                                <i:InvokeCommandAction Command="{Binding SliderRgbValueChangedCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Slider>
                     <TextBox x:Name="BlueSelectedColorValueTextBox" Width="40">
                         <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged" ConverterParameter="0">
                             <Binding Path="BlueSelectedColorValue"/>
