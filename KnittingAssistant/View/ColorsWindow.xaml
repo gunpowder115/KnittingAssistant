@@ -49,15 +49,16 @@
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </Image>
-                    <Path Stroke="Black" StrokeThickness="1" Visibility="{Binding CircleVisibility}">
+                    <Path Visibility="{Binding CircleVisibility}" Stroke="Blue" StrokeThickness="1.5"
+                          StrokeDashArray="3, 3">
                         <Path.Data>
                             <EllipseGeometry Center="{Binding CircleCenterPoint}" RadiusX="7" RadiusY="7"/>
                         </Path.Data>
                     </Path>
-                    <Path Stroke="White" StrokeThickness="1" Fill="{Binding CircleFillColor, FallbackValue=Red}"
-                           Visibility="{Binding CircleVisibility}">
+                    <Path Fill="{Binding CircleFillColor, FallbackValue=Red}" Visibility="{Binding CircleVisibility}"
+                          Stroke="Yellow" StrokeThickness="1.5" StrokeDashArray="3, 3" StrokeDashOffset="3">
                         <Path.Data>
-                            <EllipseGeometry Center="{Binding CircleCenterPoint}" RadiusX="6" RadiusY="6"/>
+                            <EllipseGeometry Center="{Binding CircleCenterPoint}" RadiusX="7" RadiusY="7"/>
                         </Path.Data>
                     </Path>
                 </Grid>
