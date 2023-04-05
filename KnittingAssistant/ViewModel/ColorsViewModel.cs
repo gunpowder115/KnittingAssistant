@@ -379,11 +379,11 @@ namespace KnittingAssistant.ViewModel
             selectedColorBorder.Width = selectedColorBorder.Height = BigBorderSize;
             lastSelectedColorBorder = selectedColorBorder;
 
+            selectedColorMode = SelectedColorModes.forRemoving;
             ignoreRgbChanged = true;
             ShowSelectedColor(selectedLinkedListNode);
             ignoreRgbChanged = false;
             DisablePaletteCircle();
-            selectedColorMode = SelectedColorModes.forRemoving;
             SetButtonsEnabling();
         }
 
