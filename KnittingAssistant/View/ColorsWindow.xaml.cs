@@ -17,8 +17,9 @@ namespace KnittingAssistant.View
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            (DataContext as ColorsViewModel).PaletteAreaImage = paletteAreaImage;
-            (DataContext as ColorsViewModel).SelectedColor = selectedColor;
+            DataContext = new ColorsViewModel();
+
+            (DataContext as ColorsViewModel).CloseHandler += (sender, args) => this.Close();
         }
     }
 }

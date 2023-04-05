@@ -14,8 +14,10 @@
     <None Remove="load_image_icon_2.jpg" />
     <None Remove="palette_icon_1.png" />
     <None Remove="save_image_icon_1.jpg" />
+    <None Remove="View\resources\circle_palette_image.png" />
     <None Remove="View\resources\large_empty_image.png" />
     <None Remove="View\resources\square_palette_image.png" />
+    <None Remove="View\resources\square_palette_image_full.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="View\resources\circle_palette_image.png" />
     <Resource Include="View\resources\default_image.png" />
     <Resource Include="View\resources\grid_off_icon_1.png" />
     <Resource Include="View\resources\grid_on_icon_1.png" />
@@ -33,6 +36,7 @@
     <Resource Include="View\resources\palette_icon_1.png" />
     <Resource Include="View\resources\save_image_icon_1.jpg" />
     <Resource Include="View\resources\square_palette_image.png" />
+    <Resource Include="View\resources\square_palette_image_full.png" />
   </ItemGroup>
 
 </Project>

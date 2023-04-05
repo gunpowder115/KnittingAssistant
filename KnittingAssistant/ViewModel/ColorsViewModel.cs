@@ -12,6 +12,24 @@ namespace KnittingAssistant.ViewModel
 {
     public class ColorsViewModel : ViewModelBase
     {
+        public EventHandler CloseHandler;
+
+        private const int addedColorsGridWidth = 11;
+        private const int addedColorsGridHeight = 3;
+        private const string DefaultPaletteFilename = "D:/Development/KnittingAssistant/KnittingAssistant/View/resources/square_palette_image_full.png";
+        private const string EmptySelectedColorFilename = "D:/Development/KnittingAssistant/KnittingAssistant/View/resources/large_empty_image.png";
+        private const double BigBorderSize = 30;
+        private const double NormalBorderSize = 20;
+
+        private ColorStorage colorStorage;
+        private Color selectedColorForAdding;
+        private int selectedColorIndex;
+        private LinkedListNode<Color> selectedLinkedListNode;
+        private ArrayToGridIndexConverter arrayToGridIndexConverter;
+        private Border lastSelectedColorBorder;
+        private bool ignoreRgbChanged;
+        private SelectedColorModes selectedColorMode;
+
         #region Dependency Properties
 
         private Grid addedColors;
@@ -80,6 +98,83 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private bool clearingColorsIsEnabled;
+        public bool ClearingColorsIsEnabled
+        {
+            get { return clearingColorsIsEnabled; }
+            set
+            {
+                clearingColorsIsEnabled = value;
+                OnPropertyChanged("ClearingColorsIsEnabled");
+            }
+        }
+
+        private WriteableBitmap paletteAreaImage;
+        public WriteableBitmap PaletteAreaImage
+        {
+            get { return paletteAreaImage; }
+            set
+            {
+                paletteAreaImage = value;
+                OnPropertyChanged("PaletteAreaImage");
+            }
+        }
+
+        private WriteableBitmap selectedColorImage;
+        public WriteableBitmap SelectedColorImage
+        {
+            get { return selectedColorImage; }
+            set
+            {
+                selectedColorImage = value;
+                OnPropertyChanged("SelectedColorImage");
+            }
+        }
+
+        private SolidColorBrush selectedColorBackground;
+        public SolidColorBrush SelectedColorBackground
+        {
+            get { return selectedColorBackground; }
+            set
+            {
+                selectedColorBackground = value;
+                OnPropertyChanged("SelectedColorBackground");
+            }
+        }
+
+        private Visibility circleVisibility;
+        public Visibility CircleVisibility
+        {
+            get { return circleVisibility; }
+            set
+            {
+                circleVisibility = value;
+                OnPropertyChanged("CircleVisibility");
+            }
+        }
+
+        private Point circleCenterPoint;
+        public Point CircleCenterPoint
+        {
+            get { return circleCenterPoint; }
+            set
+            {
+                circleCenterPoint = value;
+                OnPropertyChanged("CircleCenterPoint");
+            }
+        }
+
+        private SolidColorBrush circleFillColor;
+        public SolidColorBrush CircleFillColor
+        {
+            get { return circleFillColor; }
+            set
+            {
+                circleFillColor = value;
+                OnPropertyChanged("CircleFillColor");
+            }
+        }
+
         #endregion
 
         #region Relay Commands
@@ -94,6 +189,7 @@ namespace KnittingAssistant.ViewModel
                     {
                         colorStorage.AddColor(selectedColorForAdding);
                         AddedColors = CreateColorGrid(colorStorage.ColorList);
+                        ClearingColorsIsEnabled = true;
                     }));
             }
         }
@@ -108,15 +204,18 @@ namespace KnittingAssistant.ViewModel
                     {
                         LinkedListNode<Color> nextSelectedColorLinkedListNode;
 
-                        if (selectedColorIndex == colorStorage.ColorsCount - 1)
-                        {
-                            selectedColorIndex--;
-                            nextSelectedColorLinkedListNode = selectedLinkedListNode.Previous;
-                        }
-                        else if (selectedColorIndex == 0 && colorStorage.ColorsCount == 1)
+                        if (selectedColorIndex == 0 && colorStorage.ColorsCount == 1)
                         {
                             selectedColorIndex = -1;
                             nextSelectedColorLinkedListNode = null;
+                            ClearingColorsIsEnabled = false;
+                            selectedColorMode = SelectedColorModes.notSelected;
+                            SetButtonsEnabling();
+                        }
+                        else if (selectedColorIndex == colorStorage.ColorsCount - 1)
+                        {
+                            selectedColorIndex--;
+                            nextSelectedColorLinkedListNode = selectedLinkedListNode.Previous;
                         }
                         else
                         {
@@ -128,7 +227,9 @@ namespace KnittingAssistant.ViewModel
 
                         selectedLinkedListNode = nextSelectedColorLinkedListNode;
 
+                        ignoreRgbChanged = true;
                         ShowSelectedColor(selectedLinkedListNode);
+                        ignoreRgbChanged = false;
                     }));
             }
         }
@@ -144,7 +245,14 @@ namespace KnittingAssistant.ViewModel
                         colorStorage.ClearColors();
                         AddedColors = CreateColorGrid(colorStorage.ColorList);
                         selectedLinkedListNode = null;
-                        ShowSelectedColor(selectedLinkedListNode);
+                        if (isColorRemoving)
+                        {
+                            selectedColorMode = SelectedColorModes.notSelected;
+                            ignoreRgbChanged = true;
+                            ShowSelectedColor(selectedLinkedListNode);
+                            ignoreRgbChanged = false;
+                        }
+                        ClearingColorsIsEnabled = false;
                     }));
             }
         }
@@ -158,6 +266,7 @@ namespace KnittingAssistant.ViewModel
                     (saveColorsCommand = new RelayCommand(obj =>
                     {
                         colorStorage.WriteColorsToFile();
+                        CloseColorsWindow();
                     }));
             }
         }
@@ -170,68 +279,93 @@ namespace KnittingAssistant.ViewModel
                 return notSaveColorsCommand ??
                     (notSaveColorsCommand = new RelayCommand(obj =>
                     {
+                        CloseColorsWindow();
+                    }));
+            }
+        }
 
+        private RelayCommand sliderRgbValueChangedCommand;
+        public RelayCommand SliderRgbValueChangedCommand
+        {
+            get
+            {
+                return sliderRgbValueChangedCommand ??
+                    (sliderRgbValueChangedCommand = new RelayCommand(obj =>
+                    {
+                        if (!ignoreRgbChanged)
+                        {
+                            selectedColorForAdding = Color.FromRgb((byte)RedSelectedColorValue,
+                                (byte)GreenSelectedColorValue, (byte)BlueSelectedColorValue);
+                            selectedColorMode = SelectedColorModes.forAdding;
+                            ShowSelectedColor(selectedColorForAdding);
+                            DisablePaletteCircle();
+                            SetButtonsEnabling();
+
+                            lastSelectedColorBorder.Width = lastSelectedColorBorder.Height = NormalBorderSize;
+                            //if (!ignoreRgbChanged)
+                            //{
+                            //    lastSelectedColorBorder.Width = lastSelectedColorBorder.Height = NormalBorderSize;
+                            //}
+                        }
                     }));
             }
         }
 
         #endregion
 
-        private const int addedColorsGridWidth = 11;
-        private const int addedColorsGridHeight = 3;
-        private ColorStorage colorStorage;
-        private Color selectedColorForAdding;
-        private int selectedColorIndex;
-        private LinkedListNode<Color> selectedLinkedListNode;
-        private ArrayToGridIndexConverter arrayToGridIndexConverter;
-
-        public Image PaletteAreaImage { get; set; }
-        public Border SelectedColor { get; set; }
-
         public ColorsViewModel()
         {
+            PaletteAreaImage = SetWriteableBitmap(DefaultPaletteFilename);
+            SelectedColorImage = SetWriteableBitmap(EmptySelectedColorFilename);
+            CircleVisibility = Visibility.Collapsed;
+            CircleCenterPoint = new Point();
+            CircleFillColor = new SolidColorBrush();
             RedSelectedColorValue = 0;
             GreenSelectedColorValue = 0;
             BlueSelectedColorValue = 0;
+            selectedColorMode = SelectedColorModes.notSelected;
 
-            IsColorAdding = false;
-            IsColorRemoving = false;
-
+            selectedColorIndex = -1;
+            lastSelectedColorBorder = new Border();
             arrayToGridIndexConverter = new ArrayToGridIndexConverter(addedColorsGridWidth, addedColorsGridHeight);
-
             colorStorage = new ColorStorage();
             colorStorage.ReadColorsFromFile();
-
             AddedColors = CreateColorGrid(colorStorage.ColorList);
+            ClearingColorsIsEnabled = !(colorStorage.ColorsCount == 0);
+
+            SetButtonsEnabling();
         }
 
         public void SetSelectedColorForAddingCommand(object sender, MouseButtonEventArgs e)
         {
-            PaletteAreaImage.Source = new BitmapImage(new Uri("D:/Development/KnittingAssistant/KnittingAssistant/View/resources/square_palette_image.png"));
+            Image senderImage = sender as Image;
+            WriteableBitmap senderBitmap = (WriteableBitmap)((sender as Image)?.Source);
+            int pixelWidth = senderBitmap.PixelWidth;
+            int pixelHeight = senderBitmap.PixelHeight;
+            byte[] pixels = new byte[pixelWidth * pixelHeight * 4];
+            senderBitmap.CopyPixels(pixels, pixelWidth * 4, 0);
 
-            BitmapImage tempBitmap = (BitmapImage)PaletteAreaImage.Source;
-            WriteableBitmap bitmapPalette = new WriteableBitmap(tempBitmap.PixelWidth, tempBitmap.PixelHeight,
-                tempBitmap.DpiX, tempBitmap.DpiY,
-                tempBitmap.Format, tempBitmap.Palette);
+            Point position = e.GetPosition((IInputElement)sender);
 
-            Point position = e.GetPosition(PaletteAreaImage);
-            if (position.X <= bitmapPalette.PixelWidth && position.X >= 0 && position.Y <= bitmapPalette.PixelHeight && position.Y >= 0)
+            if (position.X <= pixelWidth && position.Y <= pixelHeight)
             {
-                int stride = (int)bitmapPalette.PixelWidth * bitmapPalette.Format.BitsPerPixel / 8;
+                int offset = ((int)position.Y * pixelWidth + (int)position.X) * 4;
+                RedSelectedColorValue = pixels[offset + 2];
+                GreenSelectedColorValue = pixels[offset + 1];
+                BlueSelectedColorValue = pixels[offset + 0];
 
-                byte[] currentPixel = new byte[4];
-                tempBitmap.CopyPixels(new Int32Rect((int)position.X, (int)position.Y, 1, 1), currentPixel, stride, 0);
+                selectedColorForAdding = Color.FromArgb(pixels[offset + 3],
+                    (byte)RedSelectedColorValue,
+                    (byte)GreenSelectedColorValue,
+                    (byte)BlueSelectedColorValue);
 
-                BlueSelectedColorValue = currentPixel[0];
-                GreenSelectedColorValue = currentPixel[1];
-                RedSelectedColorValue = currentPixel[2];
-
-                selectedColorForAdding = Color.FromRgb((byte)RedSelectedColorValue, (byte)GreenSelectedColorValue, (byte)BlueSelectedColorValue);
-
+                lastSelectedColorBorder = new Border();
+                selectedColorMode = SelectedColorModes.forAdding;
+                ignoreRgbChanged = true;
                 ShowSelectedColor(selectedColorForAdding);
-
-                IsColorAdding = true;
-                IsColorRemoving = false;
+                ignoreRgbChanged = false;
+                ShowPaletteCircle(position, selectedColorForAdding);
+                SetButtonsEnabling();
             }
         }
 
@@ -241,21 +375,27 @@ namespace KnittingAssistant.ViewModel
             selectedColorIndex = (selectedColorBorder.Parent as Grid).Children.IndexOf(selectedColorBorder);
             selectedLinkedListNode = colorStorage.GetNodeByIndex(selectedColorIndex);
 
-            ShowSelectedColor(selectedLinkedListNode);
+            lastSelectedColorBorder.Width = lastSelectedColorBorder.Height = NormalBorderSize;
+            selectedColorBorder.Width = selectedColorBorder.Height = BigBorderSize;
+            lastSelectedColorBorder = selectedColorBorder;
 
-            IsColorAdding = false;
-            IsColorRemoving = true;
+            selectedColorMode = SelectedColorModes.forRemoving;
+            ignoreRgbChanged = true;
+            ShowSelectedColor(selectedLinkedListNode);
+            ignoreRgbChanged = false;
+            DisablePaletteCircle();
+            SetButtonsEnabling();
         }
 
         public void ShowSelectedColor(Color selectedColor)
         {
-            SelectedColor.Background = new SolidColorBrush(selectedColor);
+            SelectedColorBackground = new SolidColorBrush(selectedColor);
             BlueSelectedColorValue = selectedColor.B;
             GreenSelectedColorValue = selectedColor.G;
             RedSelectedColorValue = selectedColor.R;
 
-            if (SelectedColor.Child != null)
-                SelectedColor.Child = null;
+            if (SelectedColorImage != null && selectedColorMode != SelectedColorModes.notSelected)
+                SelectedColorImage = null;
         }
 
         public void ShowSelectedColor(LinkedListNode<Color> selectedColorNode)
@@ -264,11 +404,19 @@ namespace KnittingAssistant.ViewModel
                 ShowSelectedColor(selectedColorNode.Value);
             else
             {
-                Image emptyColorImage = new Image();
-                emptyColorImage.Source = new BitmapImage(new Uri("D:/Development/KnittingAssistant/KnittingAssistant/View/resources/large_empty_image.png"));
-                SelectedColor.Child = emptyColorImage;
+                SelectedColorImage = SetWriteableBitmap(EmptySelectedColorFilename);
                 BlueSelectedColorValue = GreenSelectedColorValue = RedSelectedColorValue = 0;
             }
+        }
+
+        public void AddColorByDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            AddColorCommand.Execute(e);
+        }
+
+        public void CloseColorsWindow()
+        {
+            CloseHandler?.Invoke(this, EventArgs.Empty);
         }
 
         private Grid CreateColorGrid(LinkedList<Color> colorList)
@@ -300,7 +448,17 @@ namespace KnittingAssistant.ViewModel
                 for (int j = 0; j < columnCount; j++)
                 {
                     addedColorBorder = new Border();
-                    addedColorBorder.Width = addedColorBorder.Height = 20;
+                    if (colorIndex == selectedColorIndex && 
+                        selectedColorMode == SelectedColorModes.forRemoving)
+                    {
+                        addedColorBorder.Width = addedColorBorder.Height = BigBorderSize;
+                        lastSelectedColorBorder = addedColorBorder;
+                    }
+                    else
+                    {
+                        addedColorBorder.Width = addedColorBorder.Height = NormalBorderSize;
+                    }
+
                     if (colorIndex < colorList.Count)
                     {
                         addedColorBorder.BorderBrush = Brushes.Gray;
@@ -321,6 +479,33 @@ namespace KnittingAssistant.ViewModel
             }
 
             return addedColors;
+        }
+
+        private WriteableBitmap SetWriteableBitmap(string imageFilename)
+        {
+            Image image = new Image();
+            image.Source = new BitmapImage(new Uri(imageFilename));
+            WriteableBitmap wbImage = new WriteableBitmap((BitmapSource)image.Source);
+
+            return wbImage;
+        }
+
+        private void ShowPaletteCircle(Point position, Color selectedColorForAdding)
+        {
+            CircleVisibility = Visibility.Visible;
+            CircleCenterPoint = position;
+            CircleFillColor = new SolidColorBrush(selectedColorForAdding);
+        }
+
+        private void DisablePaletteCircle()
+        {
+            CircleVisibility = Visibility.Collapsed;
+        }
+
+        private void SetButtonsEnabling()
+        {
+            IsColorAdding = selectedColorMode == SelectedColorModes.forAdding;
+            IsColorRemoving = selectedColorMode == SelectedColorModes.forRemoving;
         }
     }
 
@@ -363,5 +548,12 @@ namespace KnittingAssistant.ViewModel
     {
         public int column;
         public int row;
+    }
+
+    enum SelectedColorModes
+    {
+        notSelected,
+        forAdding,
+        forRemoving
     }
 }

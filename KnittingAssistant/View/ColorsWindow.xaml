@@ -9,16 +9,17 @@
         xmlns:converters="clr-namespace:KnittingAssistant.View.Converters"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="Управление цветами пряжи" Height="600" Width="400" SizeToContent="Height"
+        Title="Управление цветами пряжи" Height="600" Width="500" SizeToContent="Height"
         ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen">
-    <Window.DataContext>
-        <viewmodel:ColorsViewModel/>
-    </Window.DataContext>
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Width" Value="100"/>
             <Setter Property="Height" Value="30"/>
             <Setter Property="Margin" Value="10"/>
+        </Style>
+        <Style TargetType="Slider">
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Maximum" Value="255"/>
         </Style>
         <converters:StringToPropertyValue x:Key="stringToPropertyValue"/>
     </Window.Resources>
@@ -30,30 +31,61 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1.5*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Border BorderBrush="Gray" BorderThickness="2" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Margin="10">
-                <Border.InputBindings>
-                    <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding AddColorCommand}"/>
-                </Border.InputBindings>
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                        <i:CallMethodAction MethodName="SetSelectedColorForAddingCommand" TargetObject="{Binding}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-                <Image x:Name="paletteAreaImage" Source="resources/square_palette_image.png"  />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition MaxHeight="{Binding ActualHeight, ElementName=paletteAreaImage}"/>
+                    </Grid.RowDefinitions>
+                    <Image x:Name="paletteAreaImage" Source="{Binding PaletteAreaImage, Mode=TwoWay}">
+                        <Image.InputBindings>
+                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding AddColorCommand}"/>
+                        </Image.InputBindings>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                <i:CallMethodAction MethodName="SetSelectedColorForAddingCommand" TargetObject="{Binding}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Image>
+                    <Path Visibility="{Binding CircleVisibility}" Stroke="Blue" StrokeThickness="1.5"
+                          StrokeDashArray="3, 3">
+                        <Path.Data>
+                            <EllipseGeometry Center="{Binding CircleCenterPoint}" RadiusX="7" RadiusY="7"/>
+                        </Path.Data>
+                    </Path>
+                    <Path Fill="{Binding CircleFillColor, FallbackValue=Red}" Visibility="{Binding CircleVisibility}"
+                          Stroke="Yellow" StrokeThickness="1.5" StrokeDashArray="3, 3" StrokeDashOffset="3">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                <i:CallMethodAction MethodName="AddColorByDoubleClick" TargetObject="{Binding}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <Path.Data>
+                            <EllipseGeometry Center="{Binding CircleCenterPoint}" RadiusX="7" RadiusY="7"/>
+                        </Path.Data>
+                    </Path>
+                </Grid>
             </Border>
-            <Border x:Name="selectedColor" BorderBrush="Gray" BorderThickness="2" Grid.Column="1" Grid.Row="0" Height="80" Width="80" Margin="10">
+            <Border x:Name="selectedColor" BorderBrush="Gray" BorderThickness="2" Grid.Column="1" 
+                    Grid.Row="0" Height="80" Width="80" Margin="10" Background="{Binding SelectedColorBackground}">
                 <Border.ToolTip>
                     <ToolTip Content="Выбранный цвет"/>
                 </Border.ToolTip>
-                <Image Source="resources/large_empty_image.png" />
+                <Image Source="{Binding SelectedColorImage, Mode=TwoWay}" />
             </Border>
             <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <StackPanel Orientation="Horizontal" Margin="5">
                     <TextBlock Text="R: " Width="15"/>
-                    <TextBox x:Name="RedSelectedColorValueTextBox" Width="50">
+                    <Slider Value="{Binding RedSelectedColorValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="ValueChanged">
+                                <i:InvokeCommandAction Command="{Binding SliderRgbValueChangedCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Slider>
+                    <TextBox x:Name="RedSelectedColorValueTextBox" Width="40">
                         <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged" ConverterParameter="0">
                             <Binding Path="RedSelectedColorValue"/>
                             <Binding Path="Text" ElementName="RedSelectedColorValueTextBox"/>
@@ -62,7 +94,14 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="5">
                     <TextBlock Text="G: " Width="15"/>
-                    <TextBox x:Name="GreenSelectedColorValueTextBox" Width="50">
+                    <Slider Value="{Binding GreenSelectedColorValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="ValueChanged">
+                                <i:InvokeCommandAction Command="{Binding SliderRgbValueChangedCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Slider>
+                    <TextBox x:Name="GreenSelectedColorValueTextBox" Width="40">
                         <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged" ConverterParameter="0">
                             <Binding Path="GreenSelectedColorValue"/>
                             <Binding Path="Text" ElementName="GreenSelectedColorValueTextBox"/>
@@ -71,7 +110,14 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="5">
                     <TextBlock Text="B: " Width="15"/>
-                    <TextBox x:Name="BlueSelectedColorValueTextBox" Width="50">
+                    <Slider Value="{Binding BlueSelectedColorValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="ValueChanged">
+                                <i:InvokeCommandAction Command="{Binding SliderRgbValueChangedCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Slider>
+                    <TextBox x:Name="BlueSelectedColorValueTextBox" Width="40">
                         <MultiBinding Converter="{StaticResource stringToPropertyValue}" UpdateSourceTrigger="PropertyChanged" ConverterParameter="0">
                             <Binding Path="BlueSelectedColorValue"/>
                             <Binding Path="Text" ElementName="BlueSelectedColorValueTextBox"/>
@@ -80,15 +126,42 @@
                 </StackPanel>
             </StackPanel>
         </Grid>
-        <TextBlock Text="Добавленные цвета:" Margin="10 10 10 0"/>
-        <Border Height="95" Margin="10" BorderThickness="2" BorderBrush="LightGray">
-            <ScrollViewer Content="{Binding AddedColors}" />
-        </Border>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="3.2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Добавленные цвета:" Margin="10 10 10 0" Grid.Column="0" Grid.Row="0"
+                       VerticalAlignment="Bottom"/>
+            <Border Height="95" Margin="10" BorderThickness="2" BorderBrush="LightGray"
+                    Grid.Column="0" Grid.Row="1" Grid.RowSpan="2">
+                <Border.ToolTip>
+                    <ToolTip Content="Оставьте пустым, чтобы цвета были определены автоматически"/>
+                </Border.ToolTip>
+                <ScrollViewer Content="{Binding AddedColors}"/>
+            </Border>
+            <Button Grid.Column="2" Grid.Row="0" Content="Очистить цвета" 
+                    Margin="5" Background="Coral" HorizontalAlignment="Left"
+                    IsEnabled="{Binding ClearingColorsIsEnabled}"
+                    Command="{Binding ClearColorsCommand}"/>
+            <Button Grid.Column="2" Grid.Row="1" Content="Добавить цвет" 
+                    Margin="5" HorizontalAlignment="Left" IsEnabled="{Binding IsColorAdding}"
+                    Command="{Binding AddColorCommand}"/>
+            <Button Grid.Column="2" Grid.Row="2" Content="Удалить цвет" 
+                    Margin="5" HorizontalAlignment="Left" IsEnabled="{Binding IsColorRemoving}"
+                    Command="{Binding RemoveColorCommand}"/>
+        </Grid>
+        <Grid HorizontalAlignment="Right">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition/>
@@ -96,17 +169,17 @@
             </Grid.RowDefinitions>
             <Button Grid.Column="2" Grid.Row="0" Content="Очистить цвета" 
                     Margin="10" Background="Coral" HorizontalAlignment="Right"
-                    Command="{Binding ClearColorsCommand}"/>
+                    Command="{Binding ClearColorsCommand}" Visibility="Collapsed"/>
             <Button Grid.Column="0" Grid.Row="0" Content="Добавить цвет" 
                     Margin="10" HorizontalAlignment="Left" IsEnabled="{Binding IsColorAdding}"
-                    Command="{Binding AddColorCommand}"/>
+                    Command="{Binding AddColorCommand}" Visibility="Collapsed"/>
             <Button Grid.Column="1" Grid.Row="0" Content="Удалить цвет" 
                     Margin="10" HorizontalAlignment="Center" IsEnabled="{Binding IsColorRemoving}"
-                    Command="{Binding RemoveColorCommand}"/>
-            <Button Grid.Column="2" Grid.Row="1" Content="OK"
+                    Command="{Binding RemoveColorCommand}" Visibility="Collapsed"/>
+            <Button Grid.Column="3" Grid.Row="1" Content="OK"
                     Margin="10" HorizontalAlignment="Right"
                     Command="{Binding SaveColorsCommand}"/>
-            <Button Grid.Column="1" Grid.Row="1" Content="Отмена"
+            <Button Grid.Column="2" Grid.Row="1" Content="Отмена"
                     Margin="10" HorizontalAlignment="Center"
                     Command="{Binding NotSaveColorsCommand}"/>
         </Grid>
