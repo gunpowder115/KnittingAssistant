@@ -17,7 +17,9 @@ namespace KnittingAssistant.View
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            DataContext = new  ColorsViewModel();
+            DataContext = new ColorsViewModel();
+
+            (DataContext as ColorsViewModel).CloseHandler += (sender, args) => this.Close();
         }
     }
 }

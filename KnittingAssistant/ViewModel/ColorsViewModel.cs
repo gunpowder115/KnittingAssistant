@@ -12,6 +12,8 @@ namespace KnittingAssistant.ViewModel
 {
     public class ColorsViewModel : ViewModelBase
     {
+        public EventHandler CloseHandler;
+
         private const int addedColorsGridWidth = 11;
         private const int addedColorsGridHeight = 3;
         private const string DefaultPaletteFilename = "D:/Development/KnittingAssistant/KnittingAssistant/View/resources/square_palette_image_full.png";
@@ -263,6 +265,7 @@ namespace KnittingAssistant.ViewModel
                     (saveColorsCommand = new RelayCommand(obj =>
                     {
                         colorStorage.WriteColorsToFile();
+                        CloseColorsWindow();
                     }));
             }
         }
@@ -275,7 +278,7 @@ namespace KnittingAssistant.ViewModel
                 return notSaveColorsCommand ??
                     (notSaveColorsCommand = new RelayCommand(obj =>
                     {
-
+                        CloseColorsWindow();
                     }));
             }
         }
@@ -404,6 +407,11 @@ namespace KnittingAssistant.ViewModel
         public void AddColorByDoubleClick(object sender, MouseButtonEventArgs e)
         {
             AddColorCommand.Execute(e);
+        }
+
+        public void CloseColorsWindow()
+        {
+            CloseHandler?.Invoke(this, EventArgs.Empty);
         }
 
         private Grid CreateColorGrid(LinkedList<Color> colorList)
