@@ -398,6 +398,11 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        public void AddColorByDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            AddColorCommand.Execute(e);
+        }
+
         private Grid CreateColorGrid(LinkedList<Color> colorList)
         {
             GridIndex gridSize = arrayToGridIndexConverter.GetGridSize(colorStorage.ColorList.Count);

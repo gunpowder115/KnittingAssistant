@@ -57,6 +57,11 @@
                     </Path>
                     <Path Fill="{Binding CircleFillColor, FallbackValue=Red}" Visibility="{Binding CircleVisibility}"
                           Stroke="Yellow" StrokeThickness="1.5" StrokeDashArray="3, 3" StrokeDashOffset="3">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                <i:CallMethodAction MethodName="AddColorByDoubleClick" TargetObject="{Binding}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                         <Path.Data>
                             <EllipseGeometry Center="{Binding CircleCenterPoint}" RadiusX="7" RadiusY="7"/>
                         </Path.Data>
