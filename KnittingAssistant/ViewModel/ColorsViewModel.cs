@@ -7,7 +7,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace KnittingAssistant.ViewModel
 {
@@ -96,6 +95,17 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private bool clearingColorsIsEnabled;
+        public bool ClearingColorsIsEnabled
+        {
+            get { return clearingColorsIsEnabled; }
+            set
+            {
+                clearingColorsIsEnabled = value;
+                OnPropertyChanged("ClearingColorsIsEnabled");
+            }
+        }
+
         private WriteableBitmap paletteAreaImage;
         public WriteableBitmap PaletteAreaImage
         {
@@ -176,6 +186,7 @@ namespace KnittingAssistant.ViewModel
                     {
                         colorStorage.AddColor(selectedColorForAdding);
                         AddedColors = CreateColorGrid(colorStorage.ColorList);
+                        ClearingColorsIsEnabled = true;
                     }));
             }
         }
@@ -190,15 +201,16 @@ namespace KnittingAssistant.ViewModel
                     {
                         LinkedListNode<Color> nextSelectedColorLinkedListNode;
 
-                        if (selectedColorIndex == colorStorage.ColorsCount - 1)
-                        {
-                            selectedColorIndex--;
-                            nextSelectedColorLinkedListNode = selectedLinkedListNode.Previous;
-                        }
-                        else if (selectedColorIndex == 0 && colorStorage.ColorsCount == 1)
+                        if (selectedColorIndex == 0 && colorStorage.ColorsCount == 1)
                         {
                             selectedColorIndex = -1;
                             nextSelectedColorLinkedListNode = null;
+                            ClearingColorsIsEnabled = false;
+                        }
+                        else if (selectedColorIndex == colorStorage.ColorsCount - 1)
+                        {
+                            selectedColorIndex--;
+                            nextSelectedColorLinkedListNode = selectedLinkedListNode.Previous;
                         }
                         else
                         {
@@ -231,6 +243,7 @@ namespace KnittingAssistant.ViewModel
                         ignoreRgbChanged = true;
                         ShowSelectedColor(selectedLinkedListNode);
                         ignoreRgbChanged = false;
+                        ClearingColorsIsEnabled = false;
                     }));
             }
         }
@@ -302,6 +315,7 @@ namespace KnittingAssistant.ViewModel
             colorStorage = new ColorStorage();
             colorStorage.ReadColorsFromFile();
             AddedColors = CreateColorGrid(colorStorage.ColorList);
+            ClearingColorsIsEnabled = !(colorStorage.ColorsCount == 0);
 
             IsColorAdding = false;
             IsColorRemoving = false;
@@ -506,5 +520,12 @@ namespace KnittingAssistant.ViewModel
     {
         public int column;
         public int row;
+    }
+
+    enum SelectedColorModes
+    {
+        notSelected,
+        forAdding,
+        forRemoving
     }
 }
