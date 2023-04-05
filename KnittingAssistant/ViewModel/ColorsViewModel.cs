@@ -296,6 +296,7 @@ namespace KnittingAssistant.ViewModel
                         ShowSelectedColor(selectedColorForAdding);
                         DisablePaletteCircle();
                         SetButtonsEnabling();
+
                         if (!ignoreRgbChanged)
                         {
                             lastSelectedColorBorder.Width = lastSelectedColorBorder.Height = NormalBorderSize;
@@ -352,6 +353,7 @@ namespace KnittingAssistant.ViewModel
                     (byte)GreenSelectedColorValue,
                     (byte)BlueSelectedColorValue);
 
+                lastSelectedColorBorder = new Border();
                 selectedColorMode = SelectedColorModes.forAdding;
                 ignoreRgbChanged = true;
                 ShowSelectedColor(selectedColorForAdding);
@@ -367,12 +369,9 @@ namespace KnittingAssistant.ViewModel
             selectedColorIndex = (selectedColorBorder.Parent as Grid).Children.IndexOf(selectedColorBorder);
             selectedLinkedListNode = colorStorage.GetNodeByIndex(selectedColorIndex);
 
-            if (selectedColorBorder != lastSelectedColorBorder)
-            {
-                lastSelectedColorBorder.Width = lastSelectedColorBorder.Height = NormalBorderSize;
-                selectedColorBorder.Width = selectedColorBorder.Height = BigBorderSize;
-                lastSelectedColorBorder = selectedColorBorder;
-            }
+            lastSelectedColorBorder.Width = lastSelectedColorBorder.Height = NormalBorderSize;
+            selectedColorBorder.Width = selectedColorBorder.Height = BigBorderSize;
+            lastSelectedColorBorder = selectedColorBorder;
 
             ignoreRgbChanged = true;
             ShowSelectedColor(selectedLinkedListNode);
