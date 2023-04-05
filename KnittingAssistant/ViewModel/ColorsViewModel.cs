@@ -17,12 +17,16 @@ namespace KnittingAssistant.ViewModel
         private const int addedColorsGridHeight = 3;
         private const string DefaultPaletteFilename = "D:/Development/KnittingAssistant/KnittingAssistant/View/resources/square_palette_image_full.png";
         private const string EmptySelectedColorFilename = "D:/Development/KnittingAssistant/KnittingAssistant/View/resources/large_empty_image.png";
+        private const double BigBorderSize = 30;
+        private const double NormalBorderSize = 20;
+
         private ColorStorage colorStorage;
         private Color selectedColorForAdding;
         private int selectedColorIndex;
         private LinkedListNode<Color> selectedLinkedListNode;
         private ArrayToGridIndexConverter arrayToGridIndexConverter;
-        private Point disableCircleCenterPoint;
+        private Border lastSelectedColorBorder;
+        private bool ignoreRgbChanged;
 
         #region Dependency Properties
 
@@ -206,7 +210,9 @@ namespace KnittingAssistant.ViewModel
 
                         selectedLinkedListNode = nextSelectedColorLinkedListNode;
 
+                        ignoreRgbChanged = true;
                         ShowSelectedColor(selectedLinkedListNode);
+                        ignoreRgbChanged = false;
                     }));
             }
         }
@@ -222,7 +228,9 @@ namespace KnittingAssistant.ViewModel
                         colorStorage.ClearColors();
                         AddedColors = CreateColorGrid(colorStorage.ColorList);
                         selectedLinkedListNode = null;
+                        ignoreRgbChanged = true;
                         ShowSelectedColor(selectedLinkedListNode);
+                        ignoreRgbChanged = false;
                     }));
             }
         }
@@ -267,6 +275,10 @@ namespace KnittingAssistant.ViewModel
                         DisablePaletteCircle();
                         IsColorAdding = true;
                         IsColorRemoving = false;
+                        if (!ignoreRgbChanged)
+                        {
+                            lastSelectedColorBorder.Width = lastSelectedColorBorder.Height = NormalBorderSize;
+                        }
                     }));
             }
         }
@@ -279,12 +291,13 @@ namespace KnittingAssistant.ViewModel
             SelectedColorImage = SetWriteableBitmap(EmptySelectedColorFilename);
             CircleVisibility = Visibility.Collapsed;
             CircleCenterPoint = new Point();
-            disableCircleCenterPoint = new Point(-10, -10);
             CircleFillColor = new SolidColorBrush();
             RedSelectedColorValue = 0;
             GreenSelectedColorValue = 0;
             BlueSelectedColorValue = 0;
 
+            selectedColorIndex = -1;
+            lastSelectedColorBorder = new Border();
             arrayToGridIndexConverter = new ArrayToGridIndexConverter(addedColorsGridWidth, addedColorsGridHeight);
             colorStorage = new ColorStorage();
             colorStorage.ReadColorsFromFile();
@@ -317,7 +330,9 @@ namespace KnittingAssistant.ViewModel
                     (byte)GreenSelectedColorValue,
                     (byte)BlueSelectedColorValue);
 
+                ignoreRgbChanged = true;
                 ShowSelectedColor(selectedColorForAdding);
+                ignoreRgbChanged = false;
                 ShowPaletteCircle(position, selectedColorForAdding);
 
                 IsColorAdding = true;
@@ -331,7 +346,16 @@ namespace KnittingAssistant.ViewModel
             selectedColorIndex = (selectedColorBorder.Parent as Grid).Children.IndexOf(selectedColorBorder);
             selectedLinkedListNode = colorStorage.GetNodeByIndex(selectedColorIndex);
 
+            if (selectedColorBorder != lastSelectedColorBorder)
+            {
+                lastSelectedColorBorder.Width = lastSelectedColorBorder.Height = NormalBorderSize;
+                selectedColorBorder.Width = selectedColorBorder.Height = BigBorderSize;
+                lastSelectedColorBorder = selectedColorBorder;
+            }
+
+            ignoreRgbChanged = true;
             ShowSelectedColor(selectedLinkedListNode);
+            ignoreRgbChanged = false;
             DisablePaletteCircle();
 
             IsColorAdding = false;
@@ -389,7 +413,16 @@ namespace KnittingAssistant.ViewModel
                 for (int j = 0; j < columnCount; j++)
                 {
                     addedColorBorder = new Border();
-                    addedColorBorder.Width = addedColorBorder.Height = 20;
+                    if (colorIndex == selectedColorIndex && IsColorRemoving)
+                    {
+                        addedColorBorder.Width = addedColorBorder.Height = BigBorderSize;
+                        lastSelectedColorBorder = addedColorBorder;
+                    }
+                    else
+                    {
+                        addedColorBorder.Width = addedColorBorder.Height = NormalBorderSize;
+                    }
+
                     if (colorIndex < colorList.Count)
                     {
                         addedColorBorder.BorderBrush = Brushes.Gray;
