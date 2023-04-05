@@ -26,6 +26,7 @@ namespace KnittingAssistant.ViewModel
         private ArrayToGridIndexConverter arrayToGridIndexConverter;
         private Border lastSelectedColorBorder;
         private bool ignoreRgbChanged;
+        private SelectedColorModes selectedColorMode;
 
         #region Dependency Properties
 
@@ -206,6 +207,7 @@ namespace KnittingAssistant.ViewModel
                             selectedColorIndex = -1;
                             nextSelectedColorLinkedListNode = null;
                             ClearingColorsIsEnabled = false;
+                            selectedColorMode = SelectedColorModes.notSelected;
                         }
                         else if (selectedColorIndex == colorStorage.ColorsCount - 1)
                         {
@@ -240,9 +242,13 @@ namespace KnittingAssistant.ViewModel
                         colorStorage.ClearColors();
                         AddedColors = CreateColorGrid(colorStorage.ColorList);
                         selectedLinkedListNode = null;
-                        ignoreRgbChanged = true;
-                        ShowSelectedColor(selectedLinkedListNode);
-                        ignoreRgbChanged = false;
+                        if (isColorRemoving)
+                        {
+                            selectedColorMode = SelectedColorModes.notSelected;
+                            ignoreRgbChanged = true;
+                            ShowSelectedColor(selectedLinkedListNode);
+                            ignoreRgbChanged = false;
+                        }
                         ClearingColorsIsEnabled = false;
                     }));
             }
@@ -286,8 +292,7 @@ namespace KnittingAssistant.ViewModel
                             (byte)GreenSelectedColorValue, (byte)BlueSelectedColorValue);
                         ShowSelectedColor(selectedColorForAdding);
                         DisablePaletteCircle();
-                        IsColorAdding = true;
-                        IsColorRemoving = false;
+                        SetButtonsEnabling();
                         if (!ignoreRgbChanged)
                         {
                             lastSelectedColorBorder.Width = lastSelectedColorBorder.Height = NormalBorderSize;
@@ -308,6 +313,7 @@ namespace KnittingAssistant.ViewModel
             RedSelectedColorValue = 0;
             GreenSelectedColorValue = 0;
             BlueSelectedColorValue = 0;
+            selectedColorMode = SelectedColorModes.notSelected;
 
             selectedColorIndex = -1;
             lastSelectedColorBorder = new Border();
@@ -317,8 +323,7 @@ namespace KnittingAssistant.ViewModel
             AddedColors = CreateColorGrid(colorStorage.ColorList);
             ClearingColorsIsEnabled = !(colorStorage.ColorsCount == 0);
 
-            IsColorAdding = false;
-            IsColorRemoving = false;
+            SetButtonsEnabling();
         }
 
         public void SetSelectedColorForAddingCommand(object sender, MouseButtonEventArgs e)
@@ -344,13 +349,12 @@ namespace KnittingAssistant.ViewModel
                     (byte)GreenSelectedColorValue,
                     (byte)BlueSelectedColorValue);
 
+                selectedColorMode = SelectedColorModes.forAdding;
                 ignoreRgbChanged = true;
                 ShowSelectedColor(selectedColorForAdding);
                 ignoreRgbChanged = false;
                 ShowPaletteCircle(position, selectedColorForAdding);
-
-                IsColorAdding = true;
-                IsColorRemoving = false;
+                SetButtonsEnabling();
             }
         }
 
@@ -371,9 +375,8 @@ namespace KnittingAssistant.ViewModel
             ShowSelectedColor(selectedLinkedListNode);
             ignoreRgbChanged = false;
             DisablePaletteCircle();
-
-            IsColorAdding = false;
-            IsColorRemoving = true;
+            selectedColorMode = SelectedColorModes.forRemoving;
+            SetButtonsEnabling();
         }
 
         public void ShowSelectedColor(Color selectedColor)
@@ -383,7 +386,7 @@ namespace KnittingAssistant.ViewModel
             GreenSelectedColorValue = selectedColor.G;
             RedSelectedColorValue = selectedColor.R;
 
-            if (SelectedColorImage != null)
+            if (SelectedColorImage != null && selectedColorMode != SelectedColorModes.notSelected)
                 SelectedColorImage = null;
         }
 
@@ -432,7 +435,8 @@ namespace KnittingAssistant.ViewModel
                 for (int j = 0; j < columnCount; j++)
                 {
                     addedColorBorder = new Border();
-                    if (colorIndex == selectedColorIndex && IsColorRemoving)
+                    if (colorIndex == selectedColorIndex && 
+                        selectedColorMode == SelectedColorModes.forRemoving)
                     {
                         addedColorBorder.Width = addedColorBorder.Height = BigBorderSize;
                         lastSelectedColorBorder = addedColorBorder;
@@ -483,6 +487,12 @@ namespace KnittingAssistant.ViewModel
         private void DisablePaletteCircle()
         {
             CircleVisibility = Visibility.Collapsed;
+        }
+
+        private void SetButtonsEnabling()
+        {
+            IsColorAdding = selectedColorMode == SelectedColorModes.forAdding;
+            IsColorRemoving = selectedColorMode == SelectedColorModes.forRemoving;
         }
     }
 
