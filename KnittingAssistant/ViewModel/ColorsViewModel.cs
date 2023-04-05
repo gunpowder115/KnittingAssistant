@@ -210,6 +210,7 @@ namespace KnittingAssistant.ViewModel
                             nextSelectedColorLinkedListNode = null;
                             ClearingColorsIsEnabled = false;
                             selectedColorMode = SelectedColorModes.notSelected;
+                            SetButtonsEnabling();
                         }
                         else if (selectedColorIndex == colorStorage.ColorsCount - 1)
                         {
@@ -291,16 +292,20 @@ namespace KnittingAssistant.ViewModel
                 return sliderRgbValueChangedCommand ??
                     (sliderRgbValueChangedCommand = new RelayCommand(obj =>
                     {
-                        selectedColorForAdding = Color.FromRgb((byte)RedSelectedColorValue,
-                            (byte)GreenSelectedColorValue, (byte)BlueSelectedColorValue);
-                        selectedColorMode = SelectedColorModes.forAdding;
-                        ShowSelectedColor(selectedColorForAdding);
-                        DisablePaletteCircle();
-                        SetButtonsEnabling();
-
                         if (!ignoreRgbChanged)
                         {
+                            selectedColorForAdding = Color.FromRgb((byte)RedSelectedColorValue,
+                                (byte)GreenSelectedColorValue, (byte)BlueSelectedColorValue);
+                            selectedColorMode = SelectedColorModes.forAdding;
+                            ShowSelectedColor(selectedColorForAdding);
+                            DisablePaletteCircle();
+                            SetButtonsEnabling();
+
                             lastSelectedColorBorder.Width = lastSelectedColorBorder.Height = NormalBorderSize;
+                            //if (!ignoreRgbChanged)
+                            //{
+                            //    lastSelectedColorBorder.Width = lastSelectedColorBorder.Height = NormalBorderSize;
+                            //}
                         }
                     }));
             }
