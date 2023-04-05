@@ -293,6 +293,7 @@ namespace KnittingAssistant.ViewModel
                     {
                         selectedColorForAdding = Color.FromRgb((byte)RedSelectedColorValue,
                             (byte)GreenSelectedColorValue, (byte)BlueSelectedColorValue);
+                        selectedColorMode = SelectedColorModes.forAdding;
                         ShowSelectedColor(selectedColorForAdding);
                         DisablePaletteCircle();
                         SetButtonsEnabling();
