@@ -8,20 +8,37 @@
              mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="1024"
              HorizontalAlignment="Center" VerticalAlignment="Center" AllowDrop="True">
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-            <i:InvokeCommandAction Command="{Binding LoadMainImageByClickCommand}"/>
-        </i:EventTrigger>
-        <i:EventTrigger EventName="PreviewDrop">
-            <i:CallMethodAction MethodName="LoadMainImageByDropCommand" TargetObject="{Binding}"/>
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
     <Grid x:Name="mainImageContainer">
-        <Image x:Name="mainImage" Source="{Binding DisplayedImage, Mode=TwoWay}"  Cursor="Hand" 
+        <Image x:Name="mainImage" Source="{Binding DisplayedImage, Mode=TwoWay}" Cursor="Hand" 
                AllowDrop="True" Stretch="Uniform">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                    <i:InvokeCommandAction Command="{Binding LoadMainImageByClickCommand}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="PreviewDrop">
+                    <i:CallMethodAction MethodName="LoadMainImageByDropCommand" TargetObject="{Binding}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <Image.ToolTip>
                 <ToolTip Content="Загрузить изображение"/>
             </Image.ToolTip>
         </Image>
+        <Grid Visibility="{Binding ImageSwitchingVisibility}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.15*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="0.15*"/>
+            </Grid.ColumnDefinitions>
+            <Button Content="Left" Background="Transparent" BorderBrush="Transparent" Command="{Binding SwitchImageCommand}">
+                <Button.ToolTip>
+                    <ToolTip Content="{Binding ButtonImageSwitchingToolTip}"/>
+                </Button.ToolTip>
+            </Button>
+            <Button Grid.Column="2" Content="Right" Background="Transparent" BorderBrush="Transparent" Command="{Binding SwitchImageCommand}">
+                <Button.ToolTip>
+                    <ToolTip Content="{Binding ButtonImageSwitchingToolTip}"/>
+                </Button.ToolTip>
+            </Button>
+        </Grid>
     </Grid>
 </UserControl>

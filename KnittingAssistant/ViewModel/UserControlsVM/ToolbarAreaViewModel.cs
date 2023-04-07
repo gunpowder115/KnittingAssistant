@@ -77,13 +77,13 @@ namespace KnittingAssistant.ViewModel
                         {
                             if ((bool)imageProcessor.GridLinesVis)
                             {
-                                imageProcessor.CallUpdateImageNotify(imageProcessor.ImageSplitter.SplittedBitmapImage);
+                                imageProcessor.CallUpdateImageNotify(imageProcessor.ImageSplitter.SplittedBitmapImage, imageWasBroken: true);
                                 SwitchGridIconFilename = "../resources/grid_on_icon_1.png";
                                 SwitchGridIconToolTip = "Показать сетку";
                             }
                             else
                             {
-                                imageProcessor.CallUpdateImageNotify(imageProcessor.ImageSplitter.GridBitmapImage);
+                                imageProcessor.CallUpdateImageNotify(imageProcessor.ImageSplitter.GridBitmapImage, imageWasBroken: true);
                                 SwitchGridIconFilename = "../resources/grid_off_icon_1.png";
                                 SwitchGridIconToolTip = "Скрыть сетку";
                             }

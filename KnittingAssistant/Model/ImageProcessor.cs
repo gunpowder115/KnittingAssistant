@@ -55,29 +55,17 @@ namespace KnittingAssistant.Model
             if (loadNewImage)
             {
                 WriteableBitmap displayedImage = UpdateMainImage(imageFilename, en_ImageStates.mainImageLoaded);
-                CallUpdateImageNotify(displayedImage);
-                //DisplayedImage = UpdateMainImage(imageFilename, en_ImageStates.mainImageLoaded);
+                CallUpdateImageNotify(displayedImage, imageWasBroken: false);
                 MainImageWidth = displayedImage.PixelWidth;
                 MainImageHeight = displayedImage.PixelHeight;
                 GridLinesVis = null;
-
-                //old code
-                //MainImage.Source = new BitmapImage(new Uri(imageFilename));
-                //MainImageWidth = (MainImage.Source as BitmapSource).PixelWidth;
-                //MainImageHeight = (MainImage.Source as BitmapSource).PixelHeight;
-
-                //userControlParams.ImageArea.mainImageContainer.Children.Clear();
-                //Grid.SetColumn(MainImage, 0);
-                //Grid.SetRow(MainImage, 0);
-                //userControlParams.ImageArea.mainImageContainer.Children.Add(MainImage);
-                //end old code
             }
         }
 
-        public void CallUpdateImageNotify(WriteableBitmap wbImage)
+        public void CallUpdateImageNotify(WriteableBitmap wbImage, bool imageWasBroken)
         {
             DisplayedImage = wbImage;
-            UpdateImageNotify?.Invoke(wbImage);
+            UpdateImageNotify?.Invoke(wbImage, imageWasBroken);
         }
 
         public bool LoadMainImageByClick()
@@ -91,6 +79,6 @@ namespace KnittingAssistant.Model
             return false;
         }
 
-        public delegate void ImageHandler(WriteableBitmap wbImage);
+        public delegate void ImageHandler(WriteableBitmap wbImage, bool imageWasBroken);
     }
 }
