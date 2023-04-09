@@ -355,6 +355,7 @@ namespace KnittingAssistant.ViewModel
 
         private void worker_SplittingCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            imageProcessor.ImageSplitter.DrawSplittedImage();
             imageProcessor.CallUpdateImageNotify(imageProcessor.ImageSplitter.GridBitmapImage, imageWasBroken: true);
             imageProcessor.GridLinesVis = true;
             imageProcessor.CurrentImageState = en_ImageStates.resultImageNotSaved;

@@ -3,21 +3,26 @@ using System.Windows.Media.Imaging;
 using System.Windows;
 using System.Windows.Media;
 using KnittingAssistant.ViewModel;
+using System;
 
 namespace KnittingAssistant.Model
 {
     public class ImageSplitter
     {
-        public ImageFragment[,] imageFragments { get; }
-        private WriteableBitmap mainBitmapImage;
-        public WriteableBitmap SplittedBitmapImage { get; }
-        public WriteableBitmap GridBitmapImage { get; }
         private int fragmentWidthMain, fragmentHeightMain;
         private int fragmentWidthSecondary, fragmentHeightSecondary;
         private int fragmentCountWidthMain, fragmentCountHeightMain;
         private int fragmentCountWidthSecondary, fragmentCountHeightSecondary;
         private bool keepMainImageRatio;
-        public bool isAverageColor => ImageFragment.isAverageColor;
+        private WriteableBitmap mainBitmapImage;
+
+        private Color[,] resultFragmentColors;
+        private int sumR, sumG, sumB;
+
+        public ImageFragment[,] imageFragments { get; }
+        public WriteableBitmap SplittedBitmapImage { get; }
+        public WriteableBitmap GridBitmapImage { get; }
+        public bool isAverageColor => ImageFragment.IsAverageColor;
 
         public ImageSplitter(WriteableBitmap mainImage, Fragmentation widthFragmentation, Fragmentation heightFragmentation)
         {
@@ -45,6 +50,70 @@ namespace KnittingAssistant.Model
                 mainBitmapImage.DpiX, mainBitmapImage.DpiY, mainBitmapImage.Format, mainBitmapImage.Palette);
 
             keepMainImageRatio = fragmentWidthMain == 1 && fragmentHeightMain == 1;
+            resultFragmentColors = new Color[fragmentCountWidthMain + fragmentCountWidthSecondary,
+                fragmentCountHeightMain + fragmentCountHeightSecondary];
+            sumR = sumG = sumB = 0;
+        }
+
+        public void SplitImage(int currentWidthFragment, int currentHeightFragment)
+        {
+            int fragmentPixelWidth = currentWidthFragment < fragmentCountWidthMain ? fragmentWidthMain : fragmentWidthSecondary;
+            int fragmentPixelHeight = currentHeightFragment < fragmentCountHeightMain ? fragmentHeightMain : fragmentHeightSecondary;
+
+            //временный bitmap для фрагмента
+            WriteableBitmap tempBitmapFragment = new WriteableBitmap(fragmentPixelWidth, fragmentPixelHeight,
+                mainBitmapImage.DpiX, mainBitmapImage.DpiY, mainBitmapImage.Format, mainBitmapImage.Palette);
+
+            //шаг и размер массива
+            int stride = (int)tempBitmapFragment.PixelWidth * tempBitmapFragment.Format.BitsPerPixel / 8;
+            byte[] fragmentPixels = new byte[tempBitmapFragment.PixelHeight * stride];
+
+            Int32Rect pixelsRect = new Int32Rect(currentWidthFragment < fragmentCountWidthMain ? currentWidthFragment * fragmentPixelWidth : 
+                fragmentCountWidthMain * fragmentWidthMain + (currentWidthFragment - fragmentCountWidthMain) * fragmentPixelWidth,
+                currentHeightFragment < fragmentCountHeightMain ? currentHeightFragment * fragmentPixelHeight :
+                fragmentCountHeightMain * fragmentHeightMain + (currentHeightFragment - fragmentCountHeightMain) * fragmentPixelHeight,
+                fragmentPixelWidth, fragmentPixelHeight);
+
+            //копировать пиксели прямоугольника-фрагмента в массив byte[]
+            mainBitmapImage.CopyPixels(pixelsRect, fragmentPixels, stride, 0);
+
+            //записать пиксели фрагмента в временный bitmap для фрагмента
+            tempBitmapFragment.WritePixels(new Int32Rect(0, 0, fragmentPixelWidth, fragmentPixelHeight), fragmentPixels, stride, 0);
+
+            //создать новый ImageFragment
+            imageFragments[currentWidthFragment, currentHeightFragment] = new ImageFragment(tempBitmapFragment);
+
+            resultFragmentColors[currentWidthFragment, currentHeightFragment] = imageFragments[currentWidthFragment, currentHeightFragment].GetResultFragmentColor();
+            sumR += imageFragments[currentWidthFragment, currentHeightFragment].AverageColor.R;
+            sumG += imageFragments[currentWidthFragment, currentHeightFragment].AverageColor.G;
+            sumB += imageFragments[currentWidthFragment, currentHeightFragment].AverageColor.B;
+        }
+
+        public void DrawSplittedImage()
+        {
+            Color gridColor = SelectGridColor();
+            for(int i = 0; i < fragmentCountWidthMain + fragmentCountWidthSecondary; i++)
+            {
+                for(int j = 0; j < fragmentCountHeightMain + fragmentCountHeightSecondary; j++)
+                {
+                    DrawFragmentOnSplittedImage(resultFragmentColors[i, j], gridColor, i, j, fragmentWidthMain, fragmentHeightMain);
+                }
+            }
+        }
+
+        private Color SelectGridColor()
+        {
+            int fragmentCount = (fragmentCountWidthMain + fragmentCountWidthSecondary) * (fragmentCountHeightMain + fragmentCountHeightSecondary);
+            return SelectNegativeRgbColor(Color.FromArgb(0, (byte)(sumR / fragmentCount), (byte)(sumG / fragmentCount), (byte)(sumB / fragmentCount)));
+        }
+
+        private Color SelectNegativeRgbColor(Color color)
+        {
+            Color negativeColor;
+            negativeColor.R = (byte)(255 - color.R);
+            negativeColor.G = (byte)(255 - color.G);
+            negativeColor.B = (byte)(255 - color.B);
+            return negativeColor;
         }
 
         private void DrawFragmentOnSplittedImage(Color fragmentColor, Color gridColor, int currentWidthFragment, int currentHeightFragment, int width, int height)
@@ -82,40 +151,6 @@ namespace KnittingAssistant.Model
 
             SplittedBitmapImage.WritePixels(rect, colorData, stride, 0);
             GridBitmapImage.WritePixels(rect, gridColorData, stride, 0);
-        }
-
-        public void SplitImage(int currentWidthFragment, int currentHeightFragment)
-        {
-            int fragmentPixelWidth = currentWidthFragment < fragmentCountWidthMain ? fragmentWidthMain : fragmentWidthSecondary;
-            int fragmentPixelHeight = currentHeightFragment < fragmentCountHeightMain ? fragmentHeightMain : fragmentHeightSecondary;
-
-            //временный bitmap для фрагмента
-            WriteableBitmap tempBitmapFragment = new WriteableBitmap(fragmentPixelWidth, fragmentPixelHeight,
-                mainBitmapImage.DpiX, mainBitmapImage.DpiY, mainBitmapImage.Format, mainBitmapImage.Palette);
-
-            //шаг и размер массива
-            int stride = (int)tempBitmapFragment.PixelWidth * tempBitmapFragment.Format.BitsPerPixel / 8;
-            byte[] fragmentPixels = new byte[tempBitmapFragment.PixelHeight * stride];
-
-            Int32Rect pixelsRect = new Int32Rect(currentWidthFragment < fragmentCountWidthMain ? currentWidthFragment * fragmentPixelWidth : 
-                fragmentCountWidthMain * fragmentWidthMain + (currentWidthFragment - fragmentCountWidthMain) * fragmentPixelWidth,
-                currentHeightFragment < fragmentCountHeightMain ? currentHeightFragment * fragmentPixelHeight :
-                fragmentCountHeightMain * fragmentHeightMain + (currentHeightFragment - fragmentCountHeightMain) * fragmentPixelHeight,
-                fragmentPixelWidth, fragmentPixelHeight);
-
-            //копировать пиксели прямоугольника-фрагмента в массив byte[]
-            mainBitmapImage.CopyPixels(pixelsRect, fragmentPixels, stride, 0);
-
-            //записать пиксели фрагмента в временный bitmap для фрагмента
-            tempBitmapFragment.WritePixels(new Int32Rect(0, 0, fragmentPixelWidth, fragmentPixelHeight), fragmentPixels, stride, 0);
-
-            //создать новый ImageFragment
-            imageFragments[currentWidthFragment, currentHeightFragment] = new ImageFragment(tempBitmapFragment);
-
-            Color resultColor = imageFragments[currentWidthFragment, currentHeightFragment].GetResultFragmentColor();
-            Color gridColor = keepMainImageRatio ? resultColor : Color.FromArgb(0, 0, 0, 0);
-
-            DrawFragmentOnSplittedImage(resultColor, gridColor, currentWidthFragment, currentHeightFragment, fragmentWidthMain, fragmentHeightMain);
         }
     }
 }
