@@ -8,6 +8,22 @@
              mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="1024"
              HorizontalAlignment="Center" VerticalAlignment="Center" AllowDrop="True">
+    <UserControl.Resources>
+        <Style TargetType="Button">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.3"/>
+                </Trigger>
+            </Style.Triggers>
+            <Setter Property="FontSize" Value="120"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="Opacity" Value="0.5"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="ToolTip" Value="{Binding ButtonImageSwitchingToolTip}"/>
+            <Setter Property="Command" Value="{Binding SwitchImageCommand}"/>
+        </Style>
+    </UserControl.Resources>
     <Grid x:Name="mainImageContainer">
         <Image x:Name="mainImage" Source="{Binding DisplayedImage, Mode=TwoWay}" Cursor="Hand" 
                AllowDrop="True" Stretch="Uniform">
@@ -29,16 +45,8 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="0.15*"/>
             </Grid.ColumnDefinitions>
-            <Button Content="Left" Background="Transparent" BorderBrush="Transparent" Command="{Binding SwitchImageCommand}">
-                <Button.ToolTip>
-                    <ToolTip Content="{Binding ButtonImageSwitchingToolTip}"/>
-                </Button.ToolTip>
-            </Button>
-            <Button Grid.Column="2" Content="Right" Background="Transparent" BorderBrush="Transparent" Command="{Binding SwitchImageCommand}">
-                <Button.ToolTip>
-                    <ToolTip Content="{Binding ButtonImageSwitchingToolTip}"/>
-                </Button.ToolTip>
-            </Button>
+            <Button Content="&lt;"/>
+            <Button Grid.Column="2" Content=">"/>
         </Grid>
     </Grid>
 </UserControl>
