@@ -70,6 +70,28 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private RelayCommand clickOnMainImageCommand;
+        public RelayCommand ClickOnMainImageCommand
+        {
+            get
+            {
+                return clickOnMainImageCommand ??
+                    (clickOnMainImageCommand = new RelayCommand(obj =>
+                    {
+                        if (imageProcessor.CurrentImageState == en_ImageStates.resultImageNotSaved)
+                        {
+                            imageProcessor.ImageSaver.SaveImage(imageProcessor.GridLinesVis.Value ? 
+                                imageProcessor.ImageSplitter.GridBitmapImage : imageProcessor.ImageSplitter.SplittedBitmapImage);
+                            imageProcessor.CurrentImageState = en_ImageStates.resultImageSaved;
+                        }
+                        else
+                        {
+                            LoadMainImageByClickCommand.Execute(obj);
+                        }
+                    }));
+            }
+        }
+
         private RelayCommand switchImageCommand;
         public RelayCommand SwitchImageCommand
         {

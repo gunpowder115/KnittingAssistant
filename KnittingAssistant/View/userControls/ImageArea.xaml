@@ -29,7 +29,7 @@
                AllowDrop="True" Stretch="Uniform">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                    <i:InvokeCommandAction Command="{Binding LoadMainImageByClickCommand}"/>
+                    <i:InvokeCommandAction Command="{Binding ClickOnMainImageCommand}"/>
                 </i:EventTrigger>
                 <i:EventTrigger EventName="PreviewDrop">
                     <i:CallMethodAction MethodName="LoadMainImageByDropCommand" TargetObject="{Binding}"/>
