@@ -3,6 +3,7 @@ using System.Windows.Media;
 
 namespace KnittingAssistant.Model
 {
+    //not used yet - RGB instead
     public class ColorHSL
     {
         public double H { get; private set; }
