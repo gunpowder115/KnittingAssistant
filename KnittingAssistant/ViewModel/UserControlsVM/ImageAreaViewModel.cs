@@ -50,8 +50,8 @@ namespace KnittingAssistant.ViewModel
                 OnPropertyChanged("ButtonImageSwitchingToolTip");
             }
         }
-		
-		private Visibility dropInfoVis;
+
+        private Visibility dropInfoVis;
         public Visibility DropInfoVis
         {
             get { return dropInfoVis; }
@@ -59,6 +59,17 @@ namespace KnittingAssistant.ViewModel
             {
                 dropInfoVis = value;
                 OnPropertyChanged("DropInfoVis");
+            }
+        }
+
+        private bool imageAreaIsEnabled;
+        public bool ImageAreaIsEnabled
+        {
+            get { return imageAreaIsEnabled; }
+            set
+            {
+                imageAreaIsEnabled = value;
+                OnPropertyChanged("ImageAreaIsEnabled");
             }
         }
 
@@ -91,7 +102,7 @@ namespace KnittingAssistant.ViewModel
                     {
                         if (imageProcessor.CurrentImageState == en_ImageStates.resultImageNotSaved)
                         {
-                            imageProcessor.ImageSaver.SaveImage(imageProcessor.GridLinesVis.Value ? 
+                            imageProcessor.ImageSaver.SaveImage(imageProcessor.GridLinesVis.Value ?
                                 imageProcessor.ImageSplitter.GridBitmapImage : imageProcessor.ImageSplitter.SplittedBitmapImage);
                             imageProcessor.CurrentImageState = en_ImageStates.resultImageSaved;
                         }
@@ -123,6 +134,7 @@ namespace KnittingAssistant.ViewModel
             this.propertyAreaViewModel = propertyAreaViewModel;
             this.imageProcessor = imageProcessor;
             imageProcessor.UpdateImageNotify += UpdateImage;
+            imageProcessor.UpdateSplittingStateNotify += UpdateSplittingState;
             displayedImageMode = DisplayedImageModes.splittedImage;
 
             buttonsToolTip = new Dictionary<DisplayedImageModes, string>();
@@ -131,7 +143,8 @@ namespace KnittingAssistant.ViewModel
 
             DisplayedImage = imageProcessor.UpdateMainImage(DefaultFilename, en_ImageStates.emptyImage);
             ImageSwitchingVisibility = Visibility.Hidden;
-			DropInfoVis = Visibility.Visible;
+            DropInfoVis = Visibility.Visible;
+            ImageAreaIsEnabled = true;
             ButtonImageSwitchingToolTip = buttonsToolTip[displayedImageMode];
         }
 
@@ -156,7 +169,7 @@ namespace KnittingAssistant.ViewModel
             else
             {
                 ImageSwitchingVisibility = Visibility.Hidden;
-				DropInfoVis = Visibility.Hidden;
+                DropInfoVis = Visibility.Hidden;
                 displayedImageMode = DisplayedImageModes.splittedImage;
                 sourceImageWb = wbImage;
             }
@@ -183,6 +196,11 @@ namespace KnittingAssistant.ViewModel
                 default: break;
             }
             ButtonImageSwitchingToolTip = buttonsToolTip[displayedImageMode];
+        }
+
+        private void UpdateSplittingState()
+        {
+            ImageAreaIsEnabled = !imageProcessor.IsSplitting;
         }
 
         private enum DisplayedImageModes

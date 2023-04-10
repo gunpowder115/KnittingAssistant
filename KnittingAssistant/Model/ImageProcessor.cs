@@ -17,8 +17,10 @@ namespace KnittingAssistant.Model
         public ImageSaver ImageSaver { get; set; }
         public ImageSplitter ImageSplitter { get; set; }
         public WriteableBitmap DisplayedImage { get; private set; }
+        public bool IsSplitting { get; set; }
 
         public event ImageHandler? UpdateImageNotify;
+        public Action UpdateSplittingStateNotify;
 
         public ImageProcessor()
         {
@@ -26,6 +28,7 @@ namespace KnittingAssistant.Model
             MainImageHeight = 1.0;
             GridLinesVis = null;
             CurrentImageState = en_ImageStates.emptyImage;
+            IsSplitting = false;
             ImageLoader = new ImageLoader();
             ImageSaver = new ImageSaver();
         }
@@ -66,6 +69,12 @@ namespace KnittingAssistant.Model
         {
             DisplayedImage = wbImage;
             UpdateImageNotify?.Invoke(wbImage, imageWasBroken);
+        }
+
+        public void CallUpdateSplittingStateNotify(bool isSplitting)
+        {
+            IsSplitting = isSplitting;
+            UpdateSplittingStateNotify?.Invoke();
         }
 
         public bool LoadMainImageByClick()

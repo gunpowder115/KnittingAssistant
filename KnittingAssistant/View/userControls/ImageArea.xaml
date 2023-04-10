@@ -24,7 +24,7 @@
             <Setter Property="Command" Value="{Binding SwitchImageCommand}"/>
         </Style>
     </UserControl.Resources>
-    <Grid x:Name="mainImageContainer">
+    <Grid x:Name="mainImageContainer" IsEnabled="{Binding ImageAreaIsEnabled}">
         <Image x:Name="mainImage" Source="{Binding DisplayedImage, Mode=TwoWay}" Cursor="Hand" 
                AllowDrop="True" Stretch="Uniform">
             <i:Interaction.Triggers>
@@ -39,7 +39,7 @@
                 <ToolTip Content="Загрузить изображение"/>
             </Image.ToolTip>
         </Image>
-		<TextBlock Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"
+        <TextBlock Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"
                    FontSize="60" Opacity="0.2" Visibility="{Binding DropInfoVis}" AllowDrop="True" Cursor="Hand"
                    ToolTip="Загрузить изображение">
                 <i:Interaction.Triggers>

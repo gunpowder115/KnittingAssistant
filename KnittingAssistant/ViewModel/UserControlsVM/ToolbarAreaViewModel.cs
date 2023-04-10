@@ -32,6 +32,17 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private bool toolbarAreaIsEnabled;
+        public bool ToolbarAreaIsEnabled
+        {
+            get { return toolbarAreaIsEnabled; }
+            set
+            {
+                toolbarAreaIsEnabled = value;
+                OnPropertyChanged("ToolbarAreaIsEnabled");
+            }
+        }
+
         #endregion
 
         #region Relay Commands
@@ -114,6 +125,13 @@ namespace KnittingAssistant.ViewModel
             this.propertyAreaViewModel = propertyAreaViewModel;
             this.imageProcessor = imageProcessor;
             SwitchGridIconFilename = "../resources/grid_off_icon_1.png";
+            imageProcessor.UpdateSplittingStateNotify += UpdateSplittingState;
+            ToolbarAreaIsEnabled = true;
+        }
+
+        private void UpdateSplittingState()
+        {
+            ToolbarAreaIsEnabled = !imageProcessor.IsSplitting;
         }
     }
 }
