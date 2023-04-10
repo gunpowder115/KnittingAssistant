@@ -50,6 +50,17 @@ namespace KnittingAssistant.ViewModel
                 OnPropertyChanged("ButtonImageSwitchingToolTip");
             }
         }
+		
+		private Visibility dropInfoVis;
+        public Visibility DropInfoVis
+        {
+            get { return dropInfoVis; }
+            set
+            {
+                dropInfoVis = value;
+                OnPropertyChanged("DropInfoVis");
+            }
+        }
 
         #endregion
 
@@ -120,6 +131,7 @@ namespace KnittingAssistant.ViewModel
 
             DisplayedImage = imageProcessor.UpdateMainImage(DefaultFilename, en_ImageStates.emptyImage);
             ImageSwitchingVisibility = Visibility.Hidden;
+			DropInfoVis = Visibility.Visible;
             ButtonImageSwitchingToolTip = buttonsToolTip[displayedImageMode];
         }
 
@@ -144,6 +156,7 @@ namespace KnittingAssistant.ViewModel
             else
             {
                 ImageSwitchingVisibility = Visibility.Hidden;
+				DropInfoVis = Visibility.Hidden;
                 displayedImageMode = DisplayedImageModes.splittedImage;
                 sourceImageWb = wbImage;
             }
