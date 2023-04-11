@@ -362,6 +362,7 @@ namespace KnittingAssistant.ViewModel
             imageProcessor.CallUpdateImageNotify(imageProcessor.ImageSplitter.GridBitmapImage, imageWasBroken: true);
             imageProcessor.GridLinesVis = true;
             imageProcessor.CurrentImageState = en_ImageStates.resultImageNotSaved;
+            imageProcessor.CallUpdateImageSaving();
 
             SplittingProcessName = "Готово!";
             SplittingProcessValue = 100;

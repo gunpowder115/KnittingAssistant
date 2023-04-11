@@ -72,6 +72,7 @@ namespace KnittingAssistant.ViewModel
                     {
                         imageProcessor.ImageSaver.SaveImage(imageProcessor.GridLinesVis.Value ? imageProcessor.ImageSplitter.GridBitmapImage : imageProcessor.ImageSplitter.SplittedBitmapImage);
                         imageProcessor.CurrentImageState = en_ImageStates.resultImageSaved;
+                        imageProcessor.CallUpdateImageSaving();
                     }));
             }
         }

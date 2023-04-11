@@ -21,6 +21,7 @@ namespace KnittingAssistant.Model
 
         public event ImageHandler? UpdateImageNotify;
         public Action UpdateSplittingStateNotify;
+        public Action UpdateImageSaving;
 
         public ImageProcessor()
         {
@@ -75,6 +76,11 @@ namespace KnittingAssistant.Model
         {
             IsSplitting = isSplitting;
             UpdateSplittingStateNotify?.Invoke();
+        }
+
+        public void CallUpdateImageSaving()
+        {
+            UpdateImageSaving?.Invoke();
         }
 
         public bool LoadMainImageByClick()
