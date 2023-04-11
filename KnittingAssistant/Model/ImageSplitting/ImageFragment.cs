@@ -7,14 +7,15 @@ namespace KnittingAssistant.Model
 {
     public class ImageFragment
     {
-        private Color averageColor; //среднее значение цвета фрагмента по 3 каналам R, G, B
         private Color nearestColor; //значение ближайшего к среднему цвета из хранилища
         private WriteableBitmap fragmentBitmap; //кусок исходного изображения, представленный в фрагменте
         private int fragmentWidthInPixels, fragmentHeightInPixels; //ширина, высота фрагмента в пикселях
         private ColorStorage colorStorage; //хранилище цветов
         private int[,] colorBytes;
         private int[] averageColorBytes;
-        public static bool isAverageColor;
+
+        public static bool IsAverageColor { get; private set; }
+        public Color AverageColor { get; private set; } //среднее значение цвета фрагмента по 3 каналам R, G, B
 
         public ImageFragment(WriteableBitmap fragmentBitmap)
         {
@@ -24,7 +25,7 @@ namespace KnittingAssistant.Model
 
             colorStorage = new ColorStorage();
             colorStorage.ReadColorsFromFile();
-            isAverageColor = colorStorage.ColorsCount == 0;
+            IsAverageColor = colorStorage.ColorsCount == 0;
             colorBytes = new int[colorStorage.ColorsCount, 3];
             averageColorBytes = new int[3];
             for (int i = 0; i < colorStorage.ColorsCount; i++)
@@ -57,7 +58,7 @@ namespace KnittingAssistant.Model
             averageColorBytes[1] = sumG / numPixels;
             averageColorBytes[0] = sumR / numPixels;
 
-            averageColor = Color.FromRgb((byte)averageColorBytes[0], (byte)averageColorBytes[1], (byte)averageColorBytes[2]);
+            AverageColor = Color.FromRgb((byte)averageColorBytes[0], (byte)averageColorBytes[1], (byte)averageColorBytes[2]);
         }
 
         //заполнить фрагмент найденным/выбранным цветом
@@ -80,9 +81,9 @@ namespace KnittingAssistant.Model
         //выбрать ближайший к среднему цвет из хранилища
         private void SelectNearestColor()
         {
-            if (isAverageColor)
+            if (IsAverageColor)
             {
-                nearestColor = averageColor;
+                nearestColor = AverageColor;
             }
             else
             {
@@ -116,31 +117,5 @@ namespace KnittingAssistant.Model
 
             return nearestColor;
         }
-    }
-
-    public class ColorRGB
-    {
-        public byte R { get; set; }
-        public byte G { get; set; }
-        public byte B { get; set; }
-
-        public ColorRGB(in Color color) : this(color.R, color.G, color.B) { }
-        public ColorRGB() : this(new Color()) { }
-        public ColorRGB(ColorRGB color) : this(color.R, color.G, color.B) { }
-        public ColorRGB(byte R, byte G, byte B)
-        {
-            this.R = R;
-            this.G = G;
-            this.B = B;
-        }
-
-        public void WriteColorRGB(Color color)
-        {
-            R = color.R;
-            G = color.G;
-            B = color.B;
-        }
-
-        public static explicit operator Color(ColorRGB param) => Color.FromRgb(param.R, param.G, param.B);
     }
 }

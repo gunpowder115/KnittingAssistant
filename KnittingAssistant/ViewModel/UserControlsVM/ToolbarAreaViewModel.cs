@@ -32,6 +32,17 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private bool toolbarAreaIsEnabled;
+        public bool ToolbarAreaIsEnabled
+        {
+            get { return toolbarAreaIsEnabled; }
+            set
+            {
+                toolbarAreaIsEnabled = value;
+                OnPropertyChanged("ToolbarAreaIsEnabled");
+            }
+        }
+
         #endregion
 
         #region Relay Commands
@@ -61,6 +72,7 @@ namespace KnittingAssistant.ViewModel
                     {
                         imageProcessor.ImageSaver.SaveImage(imageProcessor.GridLinesVis.Value ? imageProcessor.ImageSplitter.GridBitmapImage : imageProcessor.ImageSplitter.SplittedBitmapImage);
                         imageProcessor.CurrentImageState = en_ImageStates.resultImageSaved;
+                        imageProcessor.CallUpdateImageSaving();
                     }));
             }
         }
@@ -77,13 +89,13 @@ namespace KnittingAssistant.ViewModel
                         {
                             if ((bool)imageProcessor.GridLinesVis)
                             {
-                                imageProcessor.CallUpdateImageNotify(imageProcessor.ImageSplitter.SplittedBitmapImage);
+                                imageProcessor.CallUpdateImageNotify(imageProcessor.ImageSplitter.SplittedBitmapImage, imageWasBroken: true);
                                 SwitchGridIconFilename = "../resources/grid_on_icon_1.png";
                                 SwitchGridIconToolTip = "Показать сетку";
                             }
                             else
                             {
-                                imageProcessor.CallUpdateImageNotify(imageProcessor.ImageSplitter.GridBitmapImage);
+                                imageProcessor.CallUpdateImageNotify(imageProcessor.ImageSplitter.GridBitmapImage, imageWasBroken: true);
                                 SwitchGridIconFilename = "../resources/grid_off_icon_1.png";
                                 SwitchGridIconToolTip = "Скрыть сетку";
                             }
@@ -114,6 +126,13 @@ namespace KnittingAssistant.ViewModel
             this.propertyAreaViewModel = propertyAreaViewModel;
             this.imageProcessor = imageProcessor;
             SwitchGridIconFilename = "../resources/grid_off_icon_1.png";
+            imageProcessor.UpdateSplittingStateNotify += UpdateSplittingState;
+            ToolbarAreaIsEnabled = true;
+        }
+
+        private void UpdateSplittingState()
+        {
+            ToolbarAreaIsEnabled = !imageProcessor.IsSplitting;
         }
     }
 }

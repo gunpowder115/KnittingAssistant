@@ -17,8 +17,11 @@ namespace KnittingAssistant.Model
         public ImageSaver ImageSaver { get; set; }
         public ImageSplitter ImageSplitter { get; set; }
         public WriteableBitmap DisplayedImage { get; private set; }
+        public bool IsSplitting { get; set; }
 
         public event ImageHandler? UpdateImageNotify;
+        public Action UpdateSplittingStateNotify;
+        public Action UpdateImageSaving;
 
         public ImageProcessor()
         {
@@ -26,6 +29,7 @@ namespace KnittingAssistant.Model
             MainImageHeight = 1.0;
             GridLinesVis = null;
             CurrentImageState = en_ImageStates.emptyImage;
+            IsSplitting = false;
             ImageLoader = new ImageLoader();
             ImageSaver = new ImageSaver();
         }
@@ -45,7 +49,9 @@ namespace KnittingAssistant.Model
             bool loadNewImage = true;
             if (CurrentImageState == en_ImageStates.resultImageNotSaved)
             {
-                MessageBoxResult messageBoxResult = MessageBox.Show("Загрузить новое изображение?\nТекущее изображение не было сохранено!", "Внимание", MessageBoxButton.YesNo);
+                MessageBoxResult messageBoxResult = MessageBox.Show(
+                    "Загрузить новое изображение?\nТекущее изображение не было сохранено!", "Внимание", 
+                    MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.None, MessageBoxOptions.ServiceNotification);
                 if (messageBoxResult == MessageBoxResult.No)
                 {
                     loadNewImage = false;
@@ -55,29 +61,28 @@ namespace KnittingAssistant.Model
             if (loadNewImage)
             {
                 WriteableBitmap displayedImage = UpdateMainImage(imageFilename, en_ImageStates.mainImageLoaded);
-                CallUpdateImageNotify(displayedImage);
-                //DisplayedImage = UpdateMainImage(imageFilename, en_ImageStates.mainImageLoaded);
+                CallUpdateImageNotify(displayedImage, imageWasBroken: false);
                 MainImageWidth = displayedImage.PixelWidth;
                 MainImageHeight = displayedImage.PixelHeight;
                 GridLinesVis = null;
-
-                //old code
-                //MainImage.Source = new BitmapImage(new Uri(imageFilename));
-                //MainImageWidth = (MainImage.Source as BitmapSource).PixelWidth;
-                //MainImageHeight = (MainImage.Source as BitmapSource).PixelHeight;
-
-                //userControlParams.ImageArea.mainImageContainer.Children.Clear();
-                //Grid.SetColumn(MainImage, 0);
-                //Grid.SetRow(MainImage, 0);
-                //userControlParams.ImageArea.mainImageContainer.Children.Add(MainImage);
-                //end old code
             }
         }
 
-        public void CallUpdateImageNotify(WriteableBitmap wbImage)
+        public void CallUpdateImageNotify(WriteableBitmap wbImage, bool imageWasBroken)
         {
             DisplayedImage = wbImage;
-            UpdateImageNotify?.Invoke(wbImage);
+            UpdateImageNotify?.Invoke(wbImage, imageWasBroken);
+        }
+
+        public void CallUpdateSplittingStateNotify(bool isSplitting)
+        {
+            IsSplitting = isSplitting;
+            UpdateSplittingStateNotify?.Invoke();
+        }
+
+        public void CallUpdateImageSaving()
+        {
+            UpdateImageSaving?.Invoke();
         }
 
         public bool LoadMainImageByClick()
@@ -91,6 +96,6 @@ namespace KnittingAssistant.Model
             return false;
         }
 
-        public delegate void ImageHandler(WriteableBitmap wbImage);
+        public delegate void ImageHandler(WriteableBitmap wbImage, bool imageWasBroken);
     }
 }

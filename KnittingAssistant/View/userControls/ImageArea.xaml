@@ -8,20 +8,55 @@
              mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="1024"
              HorizontalAlignment="Center" VerticalAlignment="Center" AllowDrop="True">
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-            <i:InvokeCommandAction Command="{Binding LoadMainImageByClickCommand}"/>
-        </i:EventTrigger>
-        <i:EventTrigger EventName="PreviewDrop">
-            <i:CallMethodAction MethodName="LoadMainImageByDropCommand" TargetObject="{Binding}"/>
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
-    <Grid x:Name="mainImageContainer">
-        <Image x:Name="mainImage" Source="{Binding DisplayedImage, Mode=TwoWay}"  Cursor="Hand" 
-               AllowDrop="True" Stretch="Uniform">
-            <Image.ToolTip>
-                <ToolTip Content="Загрузить изображение"/>
-            </Image.ToolTip>
+    <UserControl.Resources>
+        <Style TargetType="Button">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.3"/>
+                </Trigger>
+            </Style.Triggers>
+            <Setter Property="FontSize" Value="120"/>
+            <Setter Property="Foreground" Value="Gray"/>
+            <Setter Property="Opacity" Value="0.5"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="ToolTip" Value="{Binding ButtonImageSwitchingToolTip}"/>
+            <Setter Property="Command" Value="{Binding SwitchImageCommand}"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid x:Name="mainImageContainer" IsEnabled="{Binding ImageAreaIsEnabled}">
+        <Image x:Name="mainImage" Source="{Binding DisplayedImage, Mode=TwoWay}" Cursor="Hand" 
+               AllowDrop="True" Stretch="Uniform" ToolTip="{Binding ImageToolTip}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                    <i:InvokeCommandAction Command="{Binding ClickOnMainImageCommand}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="PreviewDrop">
+                    <i:CallMethodAction MethodName="LoadMainImageByDropCommand" TargetObject="{Binding}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
         </Image>
+        <TextBlock Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"
+                   FontSize="60" Opacity="0.2" Visibility="{Binding DropInfoVis}" AllowDrop="True" Cursor="Hand"
+                   ToolTip="{Binding ImageToolTip}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                        <i:InvokeCommandAction Command="{Binding ClickOnMainImageCommand}"/>
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="PreviewDrop">
+                        <i:CallMethodAction MethodName="LoadMainImageByDropCommand" TargetObject="{Binding}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            Кликните<LineBreak />или<LineBreak />перетащите изображение
+        </TextBlock>
+        <Grid Visibility="{Binding ImageSwitchingVisibility}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.15*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="0.15*"/>
+            </Grid.ColumnDefinitions>
+            <Button Content="&lt;"/>
+            <Button Grid.Column="2" Content=">"/>
+        </Grid>
     </Grid>
 </UserControl>

@@ -163,6 +163,7 @@ namespace KnittingAssistant.ViewModel
                         imageProcessor.ImageSplitter = new ImageSplitter(imageProcessor.DisplayedImage, widthFragmentation, heightFragmentation);
 
                         imageProcessor.CurrentImageState = en_ImageStates.mainImageSplitting;
+                        imageProcessor.CallUpdateSplittingStateNotify(isSplitting: true);
 
                         BackgroundWorker worker = new BackgroundWorker();
                         worker.WorkerReportsProgress = true;
@@ -287,6 +288,7 @@ namespace KnittingAssistant.ViewModel
             KeepRatioOfMainImage = false;
             IsSquareFragment = true;
             SplittingProcessVisibility = Visibility.Hidden;
+            imageProcessor.UpdateSplittingStateNotify += UpdateSplittingState;
         }
 
         public void UpdateForNewImage(double mainImageRatio)
@@ -355,9 +357,12 @@ namespace KnittingAssistant.ViewModel
 
         private void worker_SplittingCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            imageProcessor.CallUpdateImageNotify(imageProcessor.ImageSplitter.GridBitmapImage);
+            imageProcessor.CallUpdateSplittingStateNotify(isSplitting: false);
+            imageProcessor.ImageSplitter.DrawSplittedImage();
+            imageProcessor.CallUpdateImageNotify(imageProcessor.ImageSplitter.GridBitmapImage, imageWasBroken: true);
             imageProcessor.GridLinesVis = true;
             imageProcessor.CurrentImageState = en_ImageStates.resultImageNotSaved;
+            imageProcessor.CallUpdateImageSaving();
 
             SplittingProcessName = "Готово!";
             SplittingProcessValue = 100;
@@ -366,6 +371,11 @@ namespace KnittingAssistant.ViewModel
             {
                 MessageBox.Show("Не добавлено ни одного цвета\nЦвета определены автоматически", "Внимание", MessageBoxButton.OK);
             }
+        }
+
+        private void UpdateSplittingState()
+        {
+            SettingsIsEnabled = !imageProcessor.IsSplitting;
         }
     }
 }
