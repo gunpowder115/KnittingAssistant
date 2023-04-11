@@ -49,7 +49,9 @@ namespace KnittingAssistant.Model
             bool loadNewImage = true;
             if (CurrentImageState == en_ImageStates.resultImageNotSaved)
             {
-                MessageBoxResult messageBoxResult = MessageBox.Show("Загрузить новое изображение?\nТекущее изображение не было сохранено!", "Внимание", MessageBoxButton.YesNo);
+                MessageBoxResult messageBoxResult = MessageBox.Show(
+                    "Загрузить новое изображение?\nТекущее изображение не было сохранено!", "Внимание", 
+                    MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.None, MessageBoxOptions.ServiceNotification);
                 if (messageBoxResult == MessageBoxResult.No)
                 {
                     loadNewImage = false;
