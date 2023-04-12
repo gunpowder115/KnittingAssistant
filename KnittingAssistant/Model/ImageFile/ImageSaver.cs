@@ -23,24 +23,26 @@ namespace KnittingAssistant.Model
             fileDialog = new SaveFileDialog();
             fileDialog.Filter = @"JPG|*.jpg;*.jpeg" +
                 "|PNG|*.png" +
-                "|TIFF|*.tif;*.tiff" + 
-                "|GIF|*gif" + 
+                "|TIFF|*.tif;*.tiff" +
+                "|GIF|*gif" +
                 "|BMP|*.bmp";
             fileDialog.FilterIndex = 1;
             fileDialog.DefaultExt = ".jpg";
             fileDialog.FileName = "Image";
         }
 
-        public void SaveImage(WriteableBitmap writeableBitmap)
+        public bool SaveImage(WriteableBitmap writeableBitmap)
         {
-            if (fileDialog.ShowDialog() == true)
+            if (fileDialog.ShowDialog().Value)
             {
                 string filename = fileDialog.FileName;
                 SelectBitmapEncoder();
                 bitmapEncoder.Frames.Add(BitmapFrame.Create(writeableBitmap));
                 using (FileStream fileStream = new FileStream(filename, FileMode.Create))
                     bitmapEncoder.Save(fileStream);
+                return true;
             }
+            return false;
         }
 
         private ImageFormat SelectImageFormat()
@@ -62,7 +64,7 @@ namespace KnittingAssistant.Model
 
         private void SelectBitmapEncoder()
         {
-            switch(SelectImageFormat())
+            switch (SelectImageFormat())
             {
                 case ImageFormat.Jpg:
                     bitmapEncoder = new JpegBitmapEncoder();

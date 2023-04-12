@@ -70,9 +70,12 @@ namespace KnittingAssistant.ViewModel
                 return saveImageToFileCommand ??
                     (saveImageToFileCommand = new RelayCommand(obj =>
                     {
-                        imageProcessor.ImageSaver.SaveImage(imageProcessor.GridLinesVis.Value ? imageProcessor.ImageSplitter.GridBitmapImage : imageProcessor.ImageSplitter.SplittedBitmapImage);
-                        imageProcessor.CurrentImageState = en_ImageStates.resultImageSaved;
-                        imageProcessor.CallUpdateImageSaving();
+                        if (imageProcessor.ImageSaver.SaveImage(imageProcessor.GridLinesVis.Value ?
+                            imageProcessor.ImageSplitter.GridBitmapImage : imageProcessor.ImageSplitter.SplittedBitmapImage))
+                        {
+                            imageProcessor.CurrentImageState = en_ImageStates.resultImageSaved;
+                            imageProcessor.CallUpdateImageSaving();
+                        }
                     }));
             }
         }

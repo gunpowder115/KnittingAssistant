@@ -113,10 +113,12 @@ namespace KnittingAssistant.ViewModel
                     {
                         if (imageProcessor.CurrentImageState == en_ImageStates.resultImageNotSaved)
                         {
-                            imageProcessor.ImageSaver.SaveImage(imageProcessor.GridLinesVis.Value ?
-                                imageProcessor.ImageSplitter.GridBitmapImage : imageProcessor.ImageSplitter.SplittedBitmapImage);
-                            imageProcessor.CurrentImageState = en_ImageStates.resultImageSaved;
-                            imageProcessor.CallUpdateImageSaving();
+                            if (imageProcessor.ImageSaver.SaveImage(imageProcessor.GridLinesVis.Value ?
+                                imageProcessor.ImageSplitter.GridBitmapImage : imageProcessor.ImageSplitter.SplittedBitmapImage))
+                            {
+                                imageProcessor.CurrentImageState = en_ImageStates.resultImageSaved;
+                                imageProcessor.CallUpdateImageSaving();
+                            }
                         }
                         else
                         {
@@ -169,6 +171,7 @@ namespace KnittingAssistant.ViewModel
             {
                 imageProcessor.LoadImageOnForm(imageFilename);
                 propertyAreaViewModel.UpdateForNewImage(imageProcessor.MainImageRatio);
+                imageProcessor.CallUpdateImageSaving();
             }
         }
 
