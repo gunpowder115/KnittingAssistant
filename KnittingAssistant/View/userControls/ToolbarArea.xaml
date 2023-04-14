@@ -8,7 +8,7 @@
              d:DesignHeight="100" d:DesignWidth="1024">
     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" FlowDirection="RightToLeft" Height="45"
 				IsEnabled="{Binding ToolbarAreaIsEnabled}">
-        <Button ToolTip="{Binding SwitchGridIconToolTip}" Command="{Binding ChangeGridLinesVisCommand}">
+        <Button ToolTip="Показать/скрыть сетку" Command="{Binding ChangeGridLinesVisCommand}">
             <Image Source="{Binding SwitchGridIconFilename}"/>
         </Button>
         <Button IsEnabled="True" Command="{Binding SaveImageToFileCommand}">
