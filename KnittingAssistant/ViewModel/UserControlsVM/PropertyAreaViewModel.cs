@@ -294,6 +294,7 @@ namespace KnittingAssistant.ViewModel
         public void UpdateForNewImage(double mainImageRatio)
         {
             SetSettingsIsEnabled(true);
+            DisplayImageFragmentWidth = DisplayImageFragmentHeight = 1;
             DisplayImageWidth = 100 * DisplayImageFragmentWidth;
             DisplayImageHeight = DisplayImageWidth / mainImageRatio;
             SplittingProcessVisibility = Visibility.Hidden;
