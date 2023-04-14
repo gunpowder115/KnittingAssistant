@@ -21,17 +21,6 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
-        private string switchGridIconToolTip;
-        public string SwitchGridIconToolTip
-        {
-            get { return switchGridIconToolTip; }
-            set
-            {
-                switchGridIconToolTip = value;
-                OnPropertyChanged("SwitchGridIconToolTip");
-            }
-        }
-
         private bool toolbarAreaIsEnabled;
         public bool ToolbarAreaIsEnabled
         {
@@ -70,11 +59,15 @@ namespace KnittingAssistant.ViewModel
                 return saveImageToFileCommand ??
                     (saveImageToFileCommand = new RelayCommand(obj =>
                     {
-                        if (imageProcessor.ImageSaver.SaveImage(imageProcessor.GridLinesVis.Value ?
-                            imageProcessor.ImageSplitter.GridBitmapImage : imageProcessor.ImageSplitter.SplittedBitmapImage))
+                        if (imageProcessor.CurrentImageState == en_ImageStates.resultImageNotSaved ||
+                            imageProcessor.CurrentImageState == en_ImageStates.resultImageSaved)
                         {
-                            imageProcessor.CurrentImageState = en_ImageStates.resultImageSaved;
-                            imageProcessor.CallUpdateImageSaving();
+                            if (imageProcessor.ImageSaver.SaveImage(imageProcessor.GridLinesVis.Value ?
+                                imageProcessor.ImageSplitter.GridBitmapImage : imageProcessor.ImageSplitter.SplittedBitmapImage))
+                            {
+                                imageProcessor.CurrentImageState = en_ImageStates.resultImageSaved;
+                                imageProcessor.CallUpdateImageSaving();
+                            }
                         }
                     }));
             }
@@ -88,19 +81,19 @@ namespace KnittingAssistant.ViewModel
                 return changeGridLinesVisCommand ??
                     (changeGridLinesVisCommand = new RelayCommand(obj =>
                     {
-                        if (imageProcessor.GridLinesVis != null)
+                        if (imageProcessor.GridLinesVis != null &&
+                            (imageProcessor.CurrentImageState == en_ImageStates.resultImageNotSaved ||
+                            imageProcessor.CurrentImageState == en_ImageStates.resultImageSaved))
                         {
                             if ((bool)imageProcessor.GridLinesVis)
                             {
                                 imageProcessor.CallUpdateImageNotify(imageProcessor.ImageSplitter.SplittedBitmapImage, imageWasBroken: true);
                                 SwitchGridIconFilename = "../resources/grid_on_icon_1.png";
-                                SwitchGridIconToolTip = "Показать сетку";
                             }
                             else
                             {
                                 imageProcessor.CallUpdateImageNotify(imageProcessor.ImageSplitter.GridBitmapImage, imageWasBroken: true);
                                 SwitchGridIconFilename = "../resources/grid_off_icon_1.png";
-                                SwitchGridIconToolTip = "Скрыть сетку";
                             }
                             imageProcessor.GridLinesVis = !imageProcessor.GridLinesVis;
                         }
@@ -130,12 +123,19 @@ namespace KnittingAssistant.ViewModel
             this.imageProcessor = imageProcessor;
             SwitchGridIconFilename = "../resources/grid_off_icon_1.png";
             imageProcessor.UpdateSplittingStateNotify += UpdateSplittingState;
+            imageProcessor.UpdateImageStateNotify += UpdateImageState;
             ToolbarAreaIsEnabled = true;
         }
 
         private void UpdateSplittingState()
         {
             ToolbarAreaIsEnabled = !imageProcessor.IsSplitting;
+        }
+
+        private void UpdateImageState()
+        {
+            if (imageProcessor.CurrentImageState == en_ImageStates.mainImageLoaded)
+                SwitchGridIconFilename = "../resources/grid_off_icon_1.png";
         }
     }
 }

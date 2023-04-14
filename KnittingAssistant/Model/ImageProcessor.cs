@@ -22,6 +22,7 @@ namespace KnittingAssistant.Model
         public event ImageHandler? UpdateImageNotify;
         public Action UpdateSplittingStateNotify;
         public Action UpdateImageSaving;
+        public Action UpdateImageStateNotify;
 
         public ImageProcessor()
         {
@@ -50,7 +51,7 @@ namespace KnittingAssistant.Model
             if (CurrentImageState == en_ImageStates.resultImageNotSaved)
             {
                 MessageBoxResult messageBoxResult = MessageBox.Show(
-                    "Загрузить новое изображение?\nТекущее изображение не было сохранено!", "Внимание", 
+                    "Загрузить новое изображение?\nТекущее изображение не было сохранено!", "Внимание",
                     MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.None, MessageBoxOptions.ServiceNotification);
                 if (messageBoxResult == MessageBoxResult.No)
                 {
@@ -72,6 +73,7 @@ namespace KnittingAssistant.Model
         {
             DisplayedImage = wbImage;
             UpdateImageNotify?.Invoke(wbImage, imageWasBroken);
+            UpdateImageStateNotify?.Invoke();
         }
 
         public void CallUpdateSplittingStateNotify(bool isSplitting)
