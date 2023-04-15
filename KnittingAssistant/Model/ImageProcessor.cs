@@ -19,10 +19,10 @@ namespace KnittingAssistant.Model
         public WriteableBitmap DisplayedImage { get; private set; }
         public bool IsSplitting { get; set; }
 
-        public event ImageHandler? UpdateImageNotify;
-        public Action UpdateSplittingStateNotify;
-        public Action UpdateImageSaving;
-        public Action UpdateImageStateNotify;
+        public Action<WriteableBitmap, bool> UpdateImageNotify { get; set; }
+        public Action UpdateSplittingStateNotify { get; set; }
+        public Action UpdateImageSaving { get; set; }
+        public Action UpdateImageStateNotify { get; set; }
 
         public ImageProcessor()
         {
@@ -88,7 +88,6 @@ namespace KnittingAssistant.Model
             if (CurrentImageState == en_ImageStates.resultImageSaved)
                 MessageBox.Show("Изображение успешно сохранено!", "Сохранение", MessageBoxButton.OK, 
                     MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.ServiceNotification);
-
         }
 
         public bool LoadMainImageByClick()
@@ -101,7 +100,14 @@ namespace KnittingAssistant.Model
             }
             return false;
         }
+    }
 
-        public delegate void ImageHandler(WriteableBitmap wbImage, bool imageWasBroken);
+    public enum en_ImageStates
+    {
+        emptyImage,
+        mainImageLoaded,
+        mainImageSplitting,
+        resultImageNotSaved,
+        resultImageSaved
     }
 }

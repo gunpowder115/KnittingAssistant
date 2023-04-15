@@ -28,15 +28,6 @@ namespace KnittingAssistant.ViewModel
         }
     }
 
-    public enum en_ImageStates
-    {
-        emptyImage,
-        mainImageLoaded,
-        mainImageSplitting,
-        resultImageNotSaved,
-        resultImageSaved
-    }
-
     public struct Fragmentation
     {
         public int mainCount;
