@@ -370,7 +370,8 @@ namespace KnittingAssistant.ViewModel
 
             if (imageProcessor.ImageSplitter.isAverageColor)
             {
-                MessageBox.Show("Не добавлено ни одного цвета\nЦвета определены автоматически", "Внимание", MessageBoxButton.OK);
+                MessageBox.Show("Не добавлено ни одного цвета\nЦвета определены автоматически", "Внимание", MessageBoxButton.OK,
+                    MessageBoxImage.Warning, MessageBoxResult.OK, MessageBoxOptions.None);
             }
         }
 

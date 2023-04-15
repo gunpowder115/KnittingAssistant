@@ -85,6 +85,10 @@ namespace KnittingAssistant.Model
         public void CallUpdateImageSaving()
         {
             UpdateImageSaving?.Invoke();
+            if (CurrentImageState == en_ImageStates.resultImageSaved)
+                MessageBox.Show("Изображение успешно сохранено!", "Сохранение", MessageBoxButton.OK, 
+                    MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.ServiceNotification);
+
         }
 
         public bool LoadMainImageByClick()
