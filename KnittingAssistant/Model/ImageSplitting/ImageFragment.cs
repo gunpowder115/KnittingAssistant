@@ -1,7 +1,7 @@
-﻿using System.Windows.Media.Imaging;
-using System.Windows.Media;
+﻿using System;
 using System.Windows;
-using System;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace KnittingAssistant.Model
 {
@@ -108,7 +108,7 @@ namespace KnittingAssistant.Model
                 nearestColor = Color.FromRgb((byte)colorBytes[currColorIndex, 0], (byte)colorBytes[currColorIndex, 1], (byte)colorBytes[currColorIndex, 2]);
             }
         }
-        
+
         //вернуть результирующий фрагмент выбранного цвета
         public Color GetResultFragmentColor()
         {

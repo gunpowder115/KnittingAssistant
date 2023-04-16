@@ -1,5 +1,4 @@
 ﻿using Microsoft.Win32;
-using System.Collections.Generic;
 
 namespace KnittingAssistant.Model
 {
@@ -10,8 +9,8 @@ namespace KnittingAssistant.Model
         public ImageLoader()
         {
             fileDialog = new OpenFileDialog();
-            fileDialog.Filter = @"JPG|*.jpg;*.jpeg" + 
-                "|PNG|*.png" + 
+            fileDialog.Filter = @"JPG|*.jpg;*.jpeg" +
+                "|PNG|*.png" +
                 "|TIFF|*.tif;*.tiff";
             fileDialog.FilterIndex = 1;
         }

@@ -1,9 +1,6 @@
-﻿using System.Windows.Controls;
-using System.Windows.Media.Imaging;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
-using KnittingAssistant.ViewModel;
-using System;
+using System.Windows.Media.Imaging;
 
 namespace KnittingAssistant.Model
 {
@@ -35,14 +32,14 @@ namespace KnittingAssistant.Model
             this.fragmentWidthSecondary = widthFragmentation.secondarySize;
             this.fragmentHeightSecondary = heightFragmentation.secondarySize;
 
-            imageFragments = new ImageFragment[fragmentCountWidthMain + fragmentCountWidthSecondary, 
+            imageFragments = new ImageFragment[fragmentCountWidthMain + fragmentCountWidthSecondary,
                 fragmentCountHeightMain + fragmentCountHeightSecondary]; //массив фрагментов изображения
 
             mainBitmapImage = mainImage; //главный bitmap
 
             int bitmapWidth = fragmentCountWidthMain * fragmentWidthMain + fragmentCountWidthSecondary * fragmentWidthSecondary;
             int bitmapHeight = fragmentCountHeightMain * fragmentHeightMain + fragmentCountHeightSecondary * fragmentHeightSecondary;
-            SplittedBitmapImage = new WriteableBitmap((fragmentCountWidthMain + fragmentCountWidthSecondary) * fragmentWidthMain, 
+            SplittedBitmapImage = new WriteableBitmap((fragmentCountWidthMain + fragmentCountWidthSecondary) * fragmentWidthMain,
                 (fragmentCountHeightMain + fragmentCountHeightSecondary) * fragmentHeightMain,
                 mainBitmapImage.DpiX, mainBitmapImage.DpiY, mainBitmapImage.Format, mainBitmapImage.Palette);
             GridBitmapImage = new WriteableBitmap((fragmentCountWidthMain + fragmentCountWidthSecondary) * fragmentWidthMain,
@@ -68,7 +65,7 @@ namespace KnittingAssistant.Model
             int stride = (int)tempBitmapFragment.PixelWidth * tempBitmapFragment.Format.BitsPerPixel / 8;
             byte[] fragmentPixels = new byte[tempBitmapFragment.PixelHeight * stride];
 
-            Int32Rect pixelsRect = new Int32Rect(currentWidthFragment < fragmentCountWidthMain ? currentWidthFragment * fragmentPixelWidth : 
+            Int32Rect pixelsRect = new Int32Rect(currentWidthFragment < fragmentCountWidthMain ? currentWidthFragment * fragmentPixelWidth :
                 fragmentCountWidthMain * fragmentWidthMain + (currentWidthFragment - fragmentCountWidthMain) * fragmentPixelWidth,
                 currentHeightFragment < fragmentCountHeightMain ? currentHeightFragment * fragmentPixelHeight :
                 fragmentCountHeightMain * fragmentHeightMain + (currentHeightFragment - fragmentCountHeightMain) * fragmentPixelHeight,
@@ -92,9 +89,9 @@ namespace KnittingAssistant.Model
         public void DrawSplittedImage()
         {
             Color gridColor = SelectGridColor();
-            for(int i = 0; i < fragmentCountWidthMain + fragmentCountWidthSecondary; i++)
+            for (int i = 0; i < fragmentCountWidthMain + fragmentCountWidthSecondary; i++)
             {
-                for(int j = 0; j < fragmentCountHeightMain + fragmentCountHeightSecondary; j++)
+                for (int j = 0; j < fragmentCountHeightMain + fragmentCountHeightSecondary; j++)
                 {
                     DrawFragmentOnSplittedImage(resultFragmentColors[i, j], gridColor, i, j, fragmentWidthMain, fragmentHeightMain);
                 }

@@ -448,7 +448,7 @@ namespace KnittingAssistant.ViewModel
                 for (int j = 0; j < columnCount; j++)
                 {
                     addedColorBorder = new Border();
-                    if (colorIndex == selectedColorIndex && 
+                    if (colorIndex == selectedColorIndex &&
                         selectedColorMode == SelectedColorModes.forRemoving)
                     {
                         addedColorBorder.Width = addedColorBorder.Height = BigBorderSize;

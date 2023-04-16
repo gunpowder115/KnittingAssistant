@@ -27,13 +27,4 @@ namespace KnittingAssistant.ViewModel
             ToolbarAreaViewModel = new ToolbarAreaViewModel(PropertyAreaViewModel, imageProcessor);
         }
     }
-
-    public struct Fragmentation
-    {
-        public int mainCount;
-        public int mainSize;
-        public int secondaryCount;
-        public int secondarySize;
-        public int SumCount => mainCount + secondaryCount;
-    }
 }

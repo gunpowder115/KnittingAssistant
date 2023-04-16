@@ -1,6 +1,4 @@
-﻿using KnittingAssistant.ViewModel;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace KnittingAssistant.View.userControls
 {

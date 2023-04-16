@@ -1,5 +1,4 @@
-﻿using KnittingAssistant.ViewModel;
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -86,7 +85,7 @@ namespace KnittingAssistant.Model
         {
             UpdateImageSaving?.Invoke();
             if (CurrentImageState == en_ImageStates.resultImageSaved)
-                MessageBox.Show("Изображение успешно сохранено!", "Сохранение", MessageBoxButton.OK, 
+                MessageBox.Show("Изображение успешно сохранено!", "Сохранение", MessageBoxButton.OK,
                     MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.ServiceNotification);
         }
 
@@ -100,6 +99,15 @@ namespace KnittingAssistant.Model
             }
             return false;
         }
+    }
+
+    public struct Fragmentation
+    {
+        public int mainCount;
+        public int mainSize;
+        public int secondaryCount;
+        public int secondarySize;
+        public int SumCount => mainCount + secondaryCount;
     }
 
     public enum en_ImageStates
