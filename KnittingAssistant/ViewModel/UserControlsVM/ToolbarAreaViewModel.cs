@@ -46,7 +46,10 @@ namespace KnittingAssistant.ViewModel
                     {
                         bool loadNewImage = imageProcessor.LoadMainImageByClick();
                         if (loadNewImage)
+                        {
                             propertyAreaViewModel.UpdateForNewImage(imageProcessor.MainImageRatio);
+                            imageProcessor.CallUpdateImageSaving();
+                        }
                     }));
             }
         }
