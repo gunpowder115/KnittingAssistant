@@ -122,17 +122,17 @@ namespace KnittingAssistant.ViewModel
             this.propertyAreaViewModel = propertyAreaViewModel;
             this.imageProcessor = imageProcessor;
             SwitchGridIconFilename = "../resources/grid_off_icon_1.png";
-            imageProcessor.UpdateSplittingStateNotify += UpdateSplittingState;
-            imageProcessor.UpdateImageStateNotify += UpdateImageState;
+            imageProcessor.SplittingStateUpdated += UpdateSplittingStateEventHandler;
+            imageProcessor.ImageStateUpdated += UpdateImageStateEventHandler;
             ToolbarAreaIsEnabled = true;
         }
 
-        private void UpdateSplittingState()
+        private void UpdateSplittingStateEventHandler()
         {
             ToolbarAreaIsEnabled = !imageProcessor.IsSplitting;
         }
 
-        private void UpdateImageState()
+        private void UpdateImageStateEventHandler()
         {
             if (imageProcessor.CurrentImageState == en_ImageStates.mainImageLoaded)
                 SwitchGridIconFilename = "../resources/grid_off_icon_1.png";

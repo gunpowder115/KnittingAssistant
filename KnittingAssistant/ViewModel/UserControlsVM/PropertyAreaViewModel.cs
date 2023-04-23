@@ -288,7 +288,7 @@ namespace KnittingAssistant.ViewModel
             KeepRatioOfMainImage = false;
             IsSquareFragment = true;
             SplittingProcessVisibility = Visibility.Hidden;
-            imageProcessor.UpdateSplittingStateNotify += UpdateSplittingState;
+            imageProcessor.SplittingStateUpdated += UpdateSplittingStateEventHandler;
         }
 
         public void UpdateForNewImage(double mainImageRatio)
@@ -375,7 +375,7 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
-        private void UpdateSplittingState()
+        private void UpdateSplittingStateEventHandler()
         {
             SettingsIsEnabled = !imageProcessor.IsSplitting;
         }

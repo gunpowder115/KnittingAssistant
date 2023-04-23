@@ -18,10 +18,10 @@ namespace KnittingAssistant.Model
         public WriteableBitmap DisplayedImage { get; private set; }
         public bool IsSplitting { get; set; }
 
-        public Action<WriteableBitmap, bool> UpdateImageNotify { get; set; }
-        public Action UpdateSplittingStateNotify { get; set; }
-        public Action UpdateImageSaving { get; set; }
-        public Action UpdateImageStateNotify { get; set; }
+        public event Action<WriteableBitmap, bool> ImageUpdated;
+        public event Action SplittingStateUpdated;
+        public event Action ImageSaved; 
+        public event Action ImageStateUpdated; 
 
         public ImageProcessor()
         {
@@ -71,19 +71,19 @@ namespace KnittingAssistant.Model
         public void CallUpdateImageNotify(WriteableBitmap wbImage, bool imageWasBroken)
         {
             DisplayedImage = wbImage;
-            UpdateImageNotify?.Invoke(wbImage, imageWasBroken);
-            UpdateImageStateNotify?.Invoke();
+            ImageUpdated?.Invoke(wbImage, imageWasBroken);
+            ImageStateUpdated?.Invoke();
         }
 
         public void CallUpdateSplittingStateNotify(bool isSplitting)
         {
             IsSplitting = isSplitting;
-            UpdateSplittingStateNotify?.Invoke();
+            SplittingStateUpdated?.Invoke();
         }
 
         public void CallUpdateImageSaving()
         {
-            UpdateImageSaving?.Invoke();
+            ImageSaved?.Invoke();
             if (CurrentImageState == en_ImageStates.resultImageSaved)
                 MessageBox.Show("Изображение успешно сохранено!", "Сохранение", MessageBoxButton.OK,
                     MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.ServiceNotification);

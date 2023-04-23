@@ -147,9 +147,9 @@ namespace KnittingAssistant.ViewModel
         {
             this.propertyAreaViewModel = propertyAreaViewModel;
             this.imageProcessor = imageProcessor;
-            imageProcessor.UpdateImageNotify += UpdateImage;
-            imageProcessor.UpdateSplittingStateNotify += UpdateSplittingState;
-            imageProcessor.UpdateImageSaving += UpdateImageToolTip;
+            imageProcessor.ImageUpdated += UpdateImageEventHandler;
+            imageProcessor.SplittingStateUpdated += UpdateSplittingStateEventHandler;
+            imageProcessor.ImageSaved += SavingImageEventHandler;
             displayedImageMode = DisplayedImageModes.splittedImage;
             ImageToolTip = "Загрузить изображение";
 
@@ -175,7 +175,7 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
-        private void UpdateImage(WriteableBitmap wbImage, bool imageWasBroken)
+        private void UpdateImageEventHandler(WriteableBitmap wbImage, bool imageWasBroken)
         {
             DisplayedImage = wbImage;
             if (imageWasBroken)
@@ -215,12 +215,12 @@ namespace KnittingAssistant.ViewModel
             ButtonImageSwitchingToolTip = buttonsToolTip[displayedImageMode];
         }
 
-        private void UpdateSplittingState()
+        private void UpdateSplittingStateEventHandler()
         {
             ImageAreaIsEnabled = !imageProcessor.IsSplitting;
         }
 
-        private void UpdateImageToolTip()
+        private void SavingImageEventHandler()
         {
             ImageToolTip = imageProcessor.CurrentImageState == en_ImageStates.resultImageNotSaved ?
                 "Сохранить изображение" : "Загрузить изображение";
