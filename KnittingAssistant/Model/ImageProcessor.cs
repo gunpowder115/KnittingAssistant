@@ -20,8 +20,8 @@ namespace KnittingAssistant.Model
 
         public event Action<WriteableBitmap, bool> ImageUpdated;
         public event Action SplittingStateUpdated;
-        public event Action ImageSaved; 
-        public event Action ImageStateUpdated; 
+        public event Action ImageSaved;
+        public event Action ImageStateUpdated;
 
         public ImageProcessor()
         {

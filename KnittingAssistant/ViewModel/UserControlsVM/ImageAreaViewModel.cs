@@ -147,9 +147,6 @@ namespace KnittingAssistant.ViewModel
         {
             this.propertyAreaViewModel = propertyAreaViewModel;
             this.imageProcessor = imageProcessor;
-            imageProcessor.ImageUpdated += UpdateImageEventHandler;
-            imageProcessor.SplittingStateUpdated += UpdateSplittingStateEventHandler;
-            imageProcessor.ImageSaved += SavingImageEventHandler;
             displayedImageMode = DisplayedImageModes.splittedImage;
             ImageToolTip = "Загрузить изображение";
 
@@ -162,6 +159,11 @@ namespace KnittingAssistant.ViewModel
             DropInfoVis = Visibility.Visible;
             ImageAreaIsEnabled = true;
             ButtonImageSwitchingToolTip = buttonsToolTip[displayedImageMode];
+
+            imageProcessor.ImageUpdated += UpdateImageEventHandler;
+            imageProcessor.SplittingStateUpdated += () => ImageAreaIsEnabled = !imageProcessor.IsSplitting;
+            imageProcessor.ImageSaved += () => ImageToolTip = imageProcessor.CurrentImageState == en_ImageStates.resultImageNotSaved ?
+                                                "Сохранить изображение" : "Загрузить изображение";
         }
 
         public void LoadMainImageByDropCommand(object sender, DragEventArgs e)
@@ -213,17 +215,6 @@ namespace KnittingAssistant.ViewModel
                 default: break;
             }
             ButtonImageSwitchingToolTip = buttonsToolTip[displayedImageMode];
-        }
-
-        private void UpdateSplittingStateEventHandler()
-        {
-            ImageAreaIsEnabled = !imageProcessor.IsSplitting;
-        }
-
-        private void SavingImageEventHandler()
-        {
-            ImageToolTip = imageProcessor.CurrentImageState == en_ImageStates.resultImageNotSaved ?
-                "Сохранить изображение" : "Загрузить изображение";
         }
 
         private enum DisplayedImageModes

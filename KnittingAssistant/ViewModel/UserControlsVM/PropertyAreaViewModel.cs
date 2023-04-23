@@ -288,7 +288,7 @@ namespace KnittingAssistant.ViewModel
             KeepRatioOfMainImage = false;
             IsSquareFragment = true;
             SplittingProcessVisibility = Visibility.Hidden;
-            imageProcessor.SplittingStateUpdated += UpdateSplittingStateEventHandler;
+            imageProcessor.SplittingStateUpdated += () => SettingsIsEnabled = !imageProcessor.IsSplitting;
         }
 
         public void UpdateForNewImage(double mainImageRatio)
@@ -373,11 +373,6 @@ namespace KnittingAssistant.ViewModel
                 MessageBox.Show("Не добавлено ни одного цвета\nЦвета определены автоматически", "Внимание", MessageBoxButton.OK,
                     MessageBoxImage.Warning, MessageBoxResult.OK, MessageBoxOptions.None);
             }
-        }
-
-        private void UpdateSplittingStateEventHandler()
-        {
-            SettingsIsEnabled = !imageProcessor.IsSplitting;
         }
     }
 }
