@@ -16,6 +16,7 @@ namespace KnittingAssistant.Model
         public ImageSaver ImageSaver { get; set; }
         public ImageSplitter ImageSplitter { get; set; }
         public WriteableBitmap DisplayedImage { get; private set; }
+        public WriteableBitmap SourceImage { get; private set; }
         public bool IsSplitting { get; set; }
 
         public event Action<WriteableBitmap, bool> ImageUpdated;
@@ -61,6 +62,7 @@ namespace KnittingAssistant.Model
             if (loadNewImage)
             {
                 WriteableBitmap displayedImage = UpdateMainImage(imageFilename, en_ImageStates.mainImageLoaded);
+                SourceImage = displayedImage;
                 CallUpdateImageNotify(displayedImage, imageWasBroken: false);
                 MainImageWidth = displayedImage.PixelWidth;
                 MainImageHeight = displayedImage.PixelHeight;

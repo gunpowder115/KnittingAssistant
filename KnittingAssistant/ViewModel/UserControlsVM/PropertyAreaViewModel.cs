@@ -33,7 +33,7 @@ namespace KnittingAssistant.ViewModel
             get { return displayImageWidth; }
             set
             {
-                displayImageWidth = value;
+                CorrectDisplaySize(ref displayImageWidth, value);
                 OnPropertyChanged("DisplayImageWidth");
             }
         }
@@ -44,7 +44,7 @@ namespace KnittingAssistant.ViewModel
             get { return displayImageHeight; }
             set
             {
-                displayImageHeight = value;
+                CorrectDisplaySize(ref displayImageHeight, value);
                 OnPropertyChanged("DisplayImageHeight");
             }
         }
@@ -55,7 +55,7 @@ namespace KnittingAssistant.ViewModel
             get { return displayImageFragmentWidth; }
             set
             {
-                displayImageFragmentWidth = value;
+                CorrectDisplaySize(ref displayImageFragmentWidth, value);
                 OnPropertyChanged("DisplayImageFragmentWidth");
             }
         }
@@ -66,7 +66,7 @@ namespace KnittingAssistant.ViewModel
             get { return displayImageFragmentHeight; }
             set
             {
-                displayImageFragmentHeight = value;
+                CorrectDisplaySize(ref displayImageFragmentHeight, value);
                 OnPropertyChanged("DisplayImageFragmentHeight");
             }
         }
@@ -160,7 +160,7 @@ namespace KnittingAssistant.ViewModel
                         FragmentCountHeight = heightFragmentation.SumCount;
                         DisplayImageHeight = SetDisplayImageSize(FragmentCountHeight, DisplayImageFragmentHeight);
 
-                        imageProcessor.ImageSplitter = new ImageSplitter(imageProcessor.DisplayedImage, widthFragmentation, heightFragmentation);
+                        imageProcessor.ImageSplitter = new ImageSplitter(imageProcessor.SourceImage, widthFragmentation, heightFragmentation);
 
                         imageProcessor.CurrentImageState = en_ImageStates.mainImageSplitting;
                         imageProcessor.CallUpdateSplittingStateNotify(isSplitting: true);
@@ -283,8 +283,8 @@ namespace KnittingAssistant.ViewModel
             SettingsIsEnabled = false;
             DisplayImageFragmentWidth = 1.0;
             DisplayImageFragmentHeight = 1.0;
-            DisplayImageWidth = 100.0;
-            DisplayImageHeight = 100.0;
+            DisplayImageWidth = 99.0;
+            DisplayImageHeight = 99.0;
             KeepRatioOfMainImage = false;
             IsSquareFragment = true;
             SplittingProcessVisibility = Visibility.Hidden;
@@ -325,6 +325,14 @@ namespace KnittingAssistant.ViewModel
             fragmentation.secondarySize = fragmentSizePxInt - Math.Sign(deltaCount);
 
             return fragmentation;
+        }
+
+        private void CorrectDisplaySize(ref double size, double value)
+        {
+            if (size == 0.0 && value % 10.0 == 0.0)
+                size = value / 10.0;
+            else
+                size = value;
         }
 
         private void worker_Splitting(object sender, DoWorkEventArgs e)
