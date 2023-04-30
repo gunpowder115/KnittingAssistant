@@ -9,7 +9,6 @@ namespace KnittingAssistant.Model
         Jpg,
         Png,
         Tiff,
-        Gif,
         Bmp
     }
 
@@ -24,7 +23,6 @@ namespace KnittingAssistant.Model
             fileDialog.Filter = @"JPG|*.jpg;*.jpeg" +
                 "|PNG|*.png" +
                 "|TIFF|*.tif;*.tiff" +
-                "|GIF|*gif" +
                 "|BMP|*.bmp";
             fileDialog.FilterIndex = 1;
             fileDialog.DefaultExt = ".jpg";
@@ -52,8 +50,6 @@ namespace KnittingAssistant.Model
                 return ImageFormat.Jpg;
             else if (lowerFilename.Contains(".png"))
                 return ImageFormat.Png;
-            else if (lowerFilename.Contains(".gif"))
-                return ImageFormat.Gif;
             else if (lowerFilename.Contains(".tif") || lowerFilename.Contains(".tiff"))
                 return ImageFormat.Tiff;
             else if (lowerFilename.Contains(".bmp"))
@@ -74,9 +70,6 @@ namespace KnittingAssistant.Model
                     break;
                 case ImageFormat.Tiff:
                     bitmapEncoder = new TiffBitmapEncoder();
-                    break;
-                case ImageFormat.Gif:
-                    bitmapEncoder = new GifBitmapEncoder();
                     break;
                 case ImageFormat.Bmp:
                     bitmapEncoder = new BmpBitmapEncoder();
