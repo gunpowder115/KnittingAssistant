@@ -8,6 +8,12 @@
              d:DesignHeight="100" d:DesignWidth="1024">
     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" FlowDirection="RightToLeft" Height="45"
 				IsEnabled="{Binding ToolbarAreaIsEnabled}">
+        <Button ToolTip="О программе" Command="{Binding OpenInfoWindowCommand}">
+            <Image Source="../resources/info_icon.png"/>
+        </Button>
+        <Button ToolTip="Палитра цветов" Command="{Binding OpenColorsManagementWindowCommand}">
+            <Image Source="../resources/palette_icon_1.png"></Image>
+        </Button>
         <Button ToolTip="Показать/скрыть сетку" Command="{Binding ChangeGridLinesVisCommand}">
             <Image Source="{Binding SwitchGridIconFilename}"/>
         </Button>
@@ -19,9 +25,6 @@
         </Button>
         <Button ToolTip="Загрузить изображение" Command="{Binding LoadMainImageByClickCommand}">
             <Image Source="../resources/load_image_icon_2.jpg"></Image>
-        </Button>
-        <Button ToolTip="Палитра цветов" Command="{Binding OpenColorsManagementWindowCommand}">
-            <Image Source="../resources/palette_icon_1.png"></Image>
         </Button>
     </StackPanel>
 </UserControl>

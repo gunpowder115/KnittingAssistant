@@ -118,6 +118,20 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private RelayCommand openInfoWindowCommand;
+        public RelayCommand OpenInfoWindowCommand
+        {
+            get
+            {
+                return openInfoWindowCommand ??
+                    (openInfoWindowCommand = new RelayCommand(obj =>
+                    {
+                        InfoWindow infoWindow = new InfoWindow();
+                        infoWindow.ShowDialog();
+                    }));
+            }
+        }
+
         #endregion
 
         public ToolbarAreaViewModel(PropertyAreaViewModel propertyAreaViewModel, ImageProcessor imageProcessor)
