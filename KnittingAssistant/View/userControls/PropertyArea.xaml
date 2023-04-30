@@ -83,8 +83,13 @@
             </TextBox.Text>
         </TextBox>
         <CheckBox IsEnabled="True" IsChecked="{Binding IsSquareFragment, FallbackValue=True}" Command="{Binding FragmentProportionChanged}" Content="Квадратный фрагмент"/>
-        <Button Content="Разбить" Width="80" Margin="0 15 0 25" HorizontalAlignment="Center" 
-                VerticalAlignment="Bottom" Command="{Binding BreakImageCommand}" IsEnabled="{Binding SizeValidForSplit}"/>
+        <Button Width="80" Margin="0 15 0 25" HorizontalAlignment="Center" ToolTipService.ShowOnDisabled="True"
+                VerticalAlignment="Bottom" Command="{Binding BreakImageCommand}" IsEnabled="{Binding SizeValidForSplit}">
+            <Button.ToolTip>
+                <ToolTip Content="Проверьте введённые размеры!" Visibility="{Binding SplitButtonToolTipVisibility}"/>
+            </Button.ToolTip>
+            Разбить
+        </Button>
         <StackPanel Visibility="{Binding SplittingProcessVisibility, FallbackValue=Visible}">
             <TextBlock Text="{Binding SplittingProcessName, FallbackValue=Разбиение изображения...}"/>
             <Grid>

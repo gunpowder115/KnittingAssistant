@@ -152,6 +152,17 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private Visibility splitButtonToolTipVisibility;
+        public Visibility SplitButtonToolTipVisibility
+        {
+            get { return splitButtonToolTipVisibility; }
+            set
+            {
+                splitButtonToolTipVisibility = value;
+                OnPropertyChanged("SplitButtonToolTipVisibility");
+            }
+        }
+
         #endregion
 
         #region Relay Commands
@@ -303,6 +314,7 @@ namespace KnittingAssistant.ViewModel
             KeepRatioOfMainImage = false;
             IsSquareFragment = true;
             SizeValidForSplit = true;
+            SplitButtonToolTipVisibility = Visibility.Collapsed;
             SplittingProcessVisibility = Visibility.Hidden;
             imageProcessor.SplittingStateUpdated += () => SettingsIsEnabled = !imageProcessor.IsSplitting;
         }
@@ -368,10 +380,12 @@ namespace KnittingAssistant.ViewModel
                 displayImageHeight < displayImageFragmentHeight || equalsZero)
             {
                 SizeValidForSplit = false;
+                SplitButtonToolTipVisibility = Visibility.Visible;
             }
             else
             {
                 SizeValidForSplit = true;
+                SplitButtonToolTipVisibility = Visibility.Collapsed;
             }
         }
 
