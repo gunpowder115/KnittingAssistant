@@ -84,7 +84,7 @@
         </TextBox>
         <CheckBox IsEnabled="True" IsChecked="{Binding IsSquareFragment, FallbackValue=True}" Command="{Binding FragmentProportionChanged}" Content="Квадратный фрагмент"/>
         <Button Content="Разбить" Width="80" Margin="0 15 0 25" HorizontalAlignment="Center" 
-                VerticalAlignment="Bottom" Command="{Binding BreakImageCommand}"/>
+                VerticalAlignment="Bottom" Command="{Binding BreakImageCommand}" IsEnabled="{Binding SizeValidForSplit}"/>
         <StackPanel Visibility="{Binding SplittingProcessVisibility, FallbackValue=Visible}">
             <TextBlock Text="{Binding SplittingProcessName, FallbackValue=Разбиение изображения...}"/>
             <Grid>

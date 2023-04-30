@@ -34,6 +34,7 @@ namespace KnittingAssistant.ViewModel
             set
             {
                 CorrectDisplaySize(ref displayImageWidth, value);
+                CheckSizeValidity();
                 OnPropertyChanged("DisplayImageWidth");
             }
         }
@@ -45,6 +46,7 @@ namespace KnittingAssistant.ViewModel
             set
             {
                 CorrectDisplaySize(ref displayImageHeight, value);
+                CheckSizeValidity();
                 OnPropertyChanged("DisplayImageHeight");
             }
         }
@@ -56,6 +58,7 @@ namespace KnittingAssistant.ViewModel
             set
             {
                 CorrectDisplaySize(ref displayImageFragmentWidth, value);
+                CheckSizeValidity();
                 OnPropertyChanged("DisplayImageFragmentWidth");
             }
         }
@@ -67,6 +70,7 @@ namespace KnittingAssistant.ViewModel
             set
             {
                 CorrectDisplaySize(ref displayImageFragmentHeight, value);
+                CheckSizeValidity();
                 OnPropertyChanged("DisplayImageFragmentHeight");
             }
         }
@@ -134,6 +138,17 @@ namespace KnittingAssistant.ViewModel
             {
                 keepValue = value;
                 OnPropertyChanged("KeepValue");
+            }
+        }
+
+        private bool sizeValidForSplit;
+        public bool SizeValidForSplit
+        {
+            get { return sizeValidForSplit; }
+            set
+            {
+                sizeValidForSplit = value;
+                OnPropertyChanged("SizeValidForSplit");
             }
         }
 
@@ -287,6 +302,7 @@ namespace KnittingAssistant.ViewModel
             DisplayImageHeight = 99.0;
             KeepRatioOfMainImage = false;
             IsSquareFragment = true;
+            SizeValidForSplit = true;
             SplittingProcessVisibility = Visibility.Hidden;
             imageProcessor.SplittingStateUpdated += () => SettingsIsEnabled = !imageProcessor.IsSplitting;
         }
@@ -333,6 +349,22 @@ namespace KnittingAssistant.ViewModel
                 size = value / 10.0;
             else
                 size = value;
+        }
+
+        private void CheckSizeValidity()
+        {
+            bool equalsZero = displayImageWidth == 0.0 || displayImageHeight == 0.0 ||
+                displayImageFragmentWidth == 0.0 || displayImageFragmentHeight == 0.0;
+
+            if (displayImageWidth < displayImageFragmentWidth ||
+                displayImageHeight < displayImageFragmentHeight || equalsZero)
+            {
+                SizeValidForSplit = false;
+            }
+            else
+            {
+                SizeValidForSplit = true;
+            }
         }
 
         private void worker_Splitting(object sender, DoWorkEventArgs e)
