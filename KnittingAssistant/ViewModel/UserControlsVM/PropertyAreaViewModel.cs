@@ -331,9 +331,17 @@ namespace KnittingAssistant.ViewModel
         private Fragmentation SetFragmentCount(double imageSizeInput, double fragmentSizeInput, double fragmentSizePx, double imageSizePx, double mainImageRatio = 1.0)
         {
             Fragmentation fragmentation = new Fragmentation();
-            int fragmentCount = (int)Math.Round(imageSizeInput * mainImageRatio / fragmentSizeInput);
-            int fragmentSizePxInt = (int)Math.Round(fragmentSizePx);
+
+            int fragmentCount = (int)Math.Round(imageSizeInput * mainImageRatio / fragmentSizeInput); //общее целое число фрагментов
+            int fragmentSizePxInt = (int)Math.Round(fragmentSizePx); //целое число пикселей в фрагменте
+            //кол-во доп. фрагментов равно кол-ву "лишних" пикселей, возникших из-за округления вверх размеров фрагмента в пикселях
             int deltaCount = (int)(fragmentCount * fragmentSizePxInt - imageSizePx);
+            //если такое происходит, нужно уменьшать размер фрагмента
+            while (fragmentCount - Math.Abs(deltaCount) < 0)
+            {
+                fragmentSizePxInt--;
+                deltaCount = (int)(fragmentCount * fragmentSizePxInt - imageSizePx);
+            }
 
             fragmentation.mainCount = fragmentCount - Math.Abs(deltaCount);
             fragmentation.secondaryCount = Math.Abs(deltaCount);
