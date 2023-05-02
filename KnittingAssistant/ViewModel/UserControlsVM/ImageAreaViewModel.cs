@@ -141,6 +141,44 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
+        private RelayCommand copyMainImageCommand;
+        public RelayCommand CopyMainImageCommand
+        {
+            get
+            {
+                return copyMainImageCommand ??
+                    (copyMainImageCommand = new RelayCommand(obj =>
+                    {
+                        Clipboard.SetImage(DisplayedImage);
+                    }));
+            }
+        }
+
+        private RelayCommand pasteMainImageCommand;
+        public RelayCommand PasteMainImageCommand
+        {
+            get
+            {
+                return pasteMainImageCommand ??
+                    (pasteMainImageCommand = new RelayCommand(obj =>
+                    {
+                        if (Clipboard.ContainsImage())
+                        {
+                            UpdateImageByDrop(Clipboard.GetImage());
+                            return;
+                        }
+                        foreach (var filename in Clipboard.GetFileDropList())
+                        {
+                            if (imageProcessor.ImageLoader.IsSupportedFormat(filename))
+                            {
+                                UpdateImageByDrop(filename);
+                                return;
+                            }
+                        }
+                    }));
+            }
+        }
+
         #endregion
 
         public ImageAreaViewModel(PropertyAreaViewModel propertyAreaViewModel, ImageProcessor imageProcessor)
@@ -171,9 +209,7 @@ namespace KnittingAssistant.ViewModel
             string imageFilename = ((string[])e.Data.GetData(DataFormats.FileDrop))[0];
             if (imageProcessor.ImageLoader.IsSupportedFormat(imageFilename))
             {
-                imageProcessor.LoadImageOnForm(imageFilename);
-                propertyAreaViewModel.UpdateForNewImage(imageProcessor.MainImageRatio);
-                imageProcessor.CallUpdateImageSaving();
+                UpdateImageByDrop(imageFilename);
             }
         }
 
@@ -215,6 +251,13 @@ namespace KnittingAssistant.ViewModel
                 default: break;
             }
             ButtonImageSwitchingToolTip = buttonsToolTip[displayedImageMode];
+        }
+
+        private void UpdateImageByDrop(object newImage)
+        {
+            imageProcessor.LoadImageOnForm(newImage);
+            propertyAreaViewModel.UpdateForNewImage(imageProcessor.MainImageRatio);
+            imageProcessor.CallUpdateImageSaving();
         }
 
         private enum DisplayedImageModes

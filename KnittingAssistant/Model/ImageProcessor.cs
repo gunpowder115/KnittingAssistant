@@ -35,17 +35,27 @@ namespace KnittingAssistant.Model
             ImageSaver = new ImageSaver();
         }
 
-        public WriteableBitmap UpdateMainImage(string imageFilename, en_ImageStates newImageState)
+        public WriteableBitmap UpdateMainImage(object newImage, en_ImageStates newImageState)
         {
             CurrentImageState = newImageState;
-            Image image = new Image();
-            image.Source = new BitmapImage(new Uri(imageFilename));
-            WriteableBitmap wbImage = new WriteableBitmap((BitmapSource)image.Source);
+            WriteableBitmap wbImage;
+            if (newImage is string imageFilename)
+            {
+                Image image = new Image();
+                image.Source = new BitmapImage(new Uri(imageFilename));
+                wbImage = new WriteableBitmap((BitmapSource)image.Source);
+            }
+            else if (newImage is BitmapSource bitmapSource)
+            {
+                wbImage = new WriteableBitmap(bitmapSource);
+            }
+            else
+                throw new Exception();
 
             return wbImage;
         }
 
-        public void LoadImageOnForm(string imageFilename)
+        public void LoadImageOnForm(object newImage)
         {
             bool loadNewImage = true;
             if (CurrentImageState == en_ImageStates.resultImageNotSaved)
@@ -61,7 +71,7 @@ namespace KnittingAssistant.Model
 
             if (loadNewImage)
             {
-                WriteableBitmap displayedImage = UpdateMainImage(imageFilename, en_ImageStates.mainImageLoaded);
+                WriteableBitmap displayedImage = UpdateMainImage(newImage, en_ImageStates.mainImageLoaded);
                 SourceImage = displayedImage;
                 CallUpdateImageNotify(displayedImage, imageWasBroken: false);
                 MainImageWidth = displayedImage.PixelWidth;

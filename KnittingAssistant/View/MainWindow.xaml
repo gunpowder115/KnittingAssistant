@@ -8,6 +8,10 @@
         xmlns:usercontrols="clr-namespace:KnittingAssistant.View.userControls"
         mc:Ignorable="d"
         Title="KnittingAsstistant" Height="768" Width="1024" >
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding PasteMainImageGestureCommand}" Key="V" Modifiers="Ctrl"/>
+        <KeyBinding Command="{Binding CopyMainImageGestureCommand}" Key="C" Modifiers="Ctrl"/>
+    </Window.InputBindings>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" MinWidth="160" MaxWidth="750"/>

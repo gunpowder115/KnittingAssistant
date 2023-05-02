@@ -27,6 +27,12 @@
     <Grid x:Name="mainImageContainer" IsEnabled="{Binding ImageAreaIsEnabled}">
         <Image x:Name="mainImage" Source="{Binding DisplayedImage, Mode=TwoWay}" Cursor="Hand" 
                AllowDrop="True" Stretch="Uniform" ToolTip="{Binding ImageToolTip}">
+            <Image.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Копировать" Command="{Binding CopyMainImageCommand}" InputGestureText="Ctrl+C"/>
+                    <MenuItem Header="Вставить" Command="{Binding PasteMainImageCommand}" InputGestureText="Ctrl+V"/>
+                </ContextMenu>
+            </Image.ContextMenu>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
                     <i:InvokeCommandAction Command="{Binding ClickOnMainImageCommand}"/>

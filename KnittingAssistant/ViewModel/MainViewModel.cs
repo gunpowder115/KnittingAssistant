@@ -10,6 +10,28 @@ namespace KnittingAssistant.ViewModel
 
         #region Relay Commands
 
+        private RelayCommand pasteMainImageGestureCommand;
+        public RelayCommand PasteMainImageGestureCommand
+        {
+            get
+            {
+                return pasteMainImageGestureCommand ??
+                    (pasteMainImageGestureCommand = new RelayCommand(obj =>
+                        ImageAreaViewModel.PasteMainImageCommand.Execute(obj)));
+            }
+        }
+
+        private RelayCommand copyMainImageGestureCommand;
+        public RelayCommand CopyMainImageGestureCommand
+        {
+            get
+            {
+                return copyMainImageGestureCommand ??
+                    (copyMainImageGestureCommand = new RelayCommand(obj =>
+                        ImageAreaViewModel.CopyMainImageCommand.Execute(obj)));
+            }
+        }
+
         #endregion
 
         private double FragmentRatio = 1.0;
