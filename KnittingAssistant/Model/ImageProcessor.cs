@@ -39,18 +39,28 @@ namespace KnittingAssistant.Model
         {
             CurrentImageState = newImageState;
             WriteableBitmap wbImage;
-            if (newImage is string imageFilename)
+            try
             {
-                Image image = new Image();
-                image.Source = new BitmapImage(new Uri(imageFilename));
-                wbImage = new WriteableBitmap((BitmapSource)image.Source);
+                if (newImage is string imageFilename)
+                {
+                    Image image = new Image();
+                    image.Source = new BitmapImage(new Uri(imageFilename));
+                    wbImage = new WriteableBitmap((BitmapSource)image.Source);
+                }
+                else if (newImage is BitmapSource bitmapSource)
+                {
+                    wbImage = new WriteableBitmap(bitmapSource);
+                }
+                else
+                {
+                    throw new Exception("Тип newImage не определён!");
+                }
             }
-            else if (newImage is BitmapSource bitmapSource)
+            catch (Exception ex)
             {
-                wbImage = new WriteableBitmap(bitmapSource);
+                MessageBox.Show(ex.Message);
+                wbImage = null;
             }
-            else
-                throw new Exception();
 
             return wbImage;
         }

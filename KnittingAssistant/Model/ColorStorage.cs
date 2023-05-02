@@ -23,17 +23,20 @@ namespace KnittingAssistant.Model
         public void ReadColorsFromFile()
         {
             ClearColors();
-            string[] storageContent = File.ReadAllLines(filename);
-            byte[,] colorBytes = new byte[storageContent.Length, 3];
-
-            for (int i = 0; i < storageContent.Length; i++)
+            if (File.Exists(filename))
             {
-                var colorString = storageContent[i].Split(" ");
-                colorBytes[i, 0] = byte.Parse(colorString[0]);
-                colorBytes[i, 1] = byte.Parse(colorString[1]);
-                colorBytes[i, 2] = byte.Parse(colorString[2]);
+                string[] storageContent = File.ReadAllLines(filename);
+                byte[,] colorBytes = new byte[storageContent.Length, 3];
 
-                ColorList.AddLast(Color.FromRgb(colorBytes[i, 0], colorBytes[i, 1], colorBytes[i, 2]));
+                for (int i = 0; i < storageContent.Length; i++)
+                {
+                    var colorString = storageContent[i].Split(" ");
+                    colorBytes[i, 0] = byte.Parse(colorString[0]);
+                    colorBytes[i, 1] = byte.Parse(colorString[1]);
+                    colorBytes[i, 2] = byte.Parse(colorString[2]);
+
+                    ColorList.AddLast(Color.FromRgb(colorBytes[i, 0], colorBytes[i, 1], colorBytes[i, 2]));
+                }
             }
         }
 

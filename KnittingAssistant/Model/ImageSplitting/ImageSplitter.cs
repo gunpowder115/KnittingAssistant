@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -54,36 +55,43 @@ namespace KnittingAssistant.Model
 
         public void SplitImage(int currentWidthFragment, int currentHeightFragment)
         {
-            int fragmentPixelWidth = currentWidthFragment < fragmentCountWidthMain ? fragmentWidthMain : fragmentWidthSecondary;
-            int fragmentPixelHeight = currentHeightFragment < fragmentCountHeightMain ? fragmentHeightMain : fragmentHeightSecondary;
+            try
+            {
+                int fragmentPixelWidth = currentWidthFragment < fragmentCountWidthMain ? fragmentWidthMain : fragmentWidthSecondary;
+                int fragmentPixelHeight = currentHeightFragment < fragmentCountHeightMain ? fragmentHeightMain : fragmentHeightSecondary;
 
-            //временный bitmap для фрагмента
-            WriteableBitmap tempBitmapFragment = new WriteableBitmap(fragmentPixelWidth, fragmentPixelHeight,
-                mainBitmapImage.DpiX, mainBitmapImage.DpiY, mainBitmapImage.Format, mainBitmapImage.Palette);
+                //временный bitmap для фрагмента
+                WriteableBitmap tempBitmapFragment = new WriteableBitmap(fragmentPixelWidth, fragmentPixelHeight,
+                    mainBitmapImage.DpiX, mainBitmapImage.DpiY, mainBitmapImage.Format, mainBitmapImage.Palette);
 
-            //шаг и размер массива
-            int stride = (int)tempBitmapFragment.PixelWidth * tempBitmapFragment.Format.BitsPerPixel / 8;
-            byte[] fragmentPixels = new byte[tempBitmapFragment.PixelHeight * stride];
+                //шаг и размер массива
+                int stride = (int)tempBitmapFragment.PixelWidth * tempBitmapFragment.Format.BitsPerPixel / 8;
+                byte[] fragmentPixels = new byte[tempBitmapFragment.PixelHeight * stride];
 
-            Int32Rect pixelsRect = new Int32Rect(currentWidthFragment < fragmentCountWidthMain ? currentWidthFragment * fragmentPixelWidth :
-                fragmentCountWidthMain * fragmentWidthMain + (currentWidthFragment - fragmentCountWidthMain) * fragmentPixelWidth,
-                currentHeightFragment < fragmentCountHeightMain ? currentHeightFragment * fragmentPixelHeight :
-                fragmentCountHeightMain * fragmentHeightMain + (currentHeightFragment - fragmentCountHeightMain) * fragmentPixelHeight,
-                fragmentPixelWidth, fragmentPixelHeight);
+                Int32Rect pixelsRect = new Int32Rect(currentWidthFragment < fragmentCountWidthMain ? currentWidthFragment * fragmentPixelWidth :
+                    fragmentCountWidthMain * fragmentWidthMain + (currentWidthFragment - fragmentCountWidthMain) * fragmentPixelWidth,
+                    currentHeightFragment < fragmentCountHeightMain ? currentHeightFragment * fragmentPixelHeight :
+                    fragmentCountHeightMain * fragmentHeightMain + (currentHeightFragment - fragmentCountHeightMain) * fragmentPixelHeight,
+                    fragmentPixelWidth, fragmentPixelHeight);
 
-            //копировать пиксели прямоугольника-фрагмента в массив byte[]
-            mainBitmapImage.CopyPixels(pixelsRect, fragmentPixels, stride, 0);
+                //копировать пиксели прямоугольника-фрагмента в массив byte[]
+                mainBitmapImage.CopyPixels(pixelsRect, fragmentPixels, stride, 0);
 
-            //записать пиксели фрагмента в временный bitmap для фрагмента
-            tempBitmapFragment.WritePixels(new Int32Rect(0, 0, fragmentPixelWidth, fragmentPixelHeight), fragmentPixels, stride, 0);
+                //записать пиксели фрагмента в временный bitmap для фрагмента
+                tempBitmapFragment.WritePixels(new Int32Rect(0, 0, fragmentPixelWidth, fragmentPixelHeight), fragmentPixels, stride, 0);
 
-            //создать новый ImageFragment
-            imageFragments[currentWidthFragment, currentHeightFragment] = new ImageFragment(tempBitmapFragment);
+                //создать новый ImageFragment
+                imageFragments[currentWidthFragment, currentHeightFragment] = new ImageFragment(tempBitmapFragment);
 
-            resultFragmentColors[currentWidthFragment, currentHeightFragment] = imageFragments[currentWidthFragment, currentHeightFragment].GetResultFragmentColor();
-            sumR += imageFragments[currentWidthFragment, currentHeightFragment].AverageColor.R;
-            sumG += imageFragments[currentWidthFragment, currentHeightFragment].AverageColor.G;
-            sumB += imageFragments[currentWidthFragment, currentHeightFragment].AverageColor.B;
+                resultFragmentColors[currentWidthFragment, currentHeightFragment] = imageFragments[currentWidthFragment, currentHeightFragment].GetResultFragmentColor();
+                sumR += imageFragments[currentWidthFragment, currentHeightFragment].AverageColor.R;
+                sumG += imageFragments[currentWidthFragment, currentHeightFragment].AverageColor.G;
+                sumB += imageFragments[currentWidthFragment, currentHeightFragment].AverageColor.B;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
+            }
         }
 
         public void DrawSplittedImage()
