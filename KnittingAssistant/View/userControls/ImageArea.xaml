@@ -42,19 +42,6 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Image>
-        <TextBlock Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"
-                   FontSize="60" Opacity="0.2" Visibility="{Binding DropInfoVis}" AllowDrop="True" Cursor="Hand"
-                   ToolTip="{Binding ImageToolTip}">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                        <i:InvokeCommandAction Command="{Binding ClickOnMainImageCommand}"/>
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="PreviewDrop">
-                        <i:CallMethodAction MethodName="LoadMainImageByDropCommand" TargetObject="{Binding}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            Кликните<LineBreak />или<LineBreak />перетащите изображение
-        </TextBlock>
         <Grid Visibility="{Binding ImageSwitchingVisibility}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.15*"/>
