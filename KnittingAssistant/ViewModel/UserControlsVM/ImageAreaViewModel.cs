@@ -14,7 +14,7 @@ namespace KnittingAssistant.ViewModel
         private WriteableBitmap splittedImageWb;
         private Dictionary<DisplayedImageModes, string> buttonsToolTip;
 
-        private const string DefaultFilename = "D:/Development/KnittingAssistant/KnittingAssistant/View/resources/default_image.png";
+        private const string DEFAULT_FILENAME = "pack://application:,,,/View/resources/default_image.png";
 
         #region Dependency Property
 
@@ -192,7 +192,7 @@ namespace KnittingAssistant.ViewModel
             buttonsToolTip.Add(DisplayedImageModes.splittedImage, "Исходное изображение");
             buttonsToolTip.Add(DisplayedImageModes.sourceImage, "Разбитое изображение");
 
-            DisplayedImage = imageProcessor.UpdateMainImage(DefaultFilename, en_ImageStates.emptyImage);
+            DisplayedImage = imageProcessor.UpdateMainImage(DEFAULT_FILENAME, en_ImageStates.emptyImage);
             ImageSwitchingVisibility = Visibility.Hidden;
             DropInfoVis = Visibility.Visible;
             ImageAreaIsEnabled = true;

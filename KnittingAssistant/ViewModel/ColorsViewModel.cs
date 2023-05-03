@@ -14,12 +14,12 @@ namespace KnittingAssistant.ViewModel
     {
         public EventHandler CloseHandler;
 
-        private const int addedColorsGridWidth = 11;
-        private const int addedColorsGridHeight = 3;
-        private const string DefaultPaletteFilename = "D:/Development/KnittingAssistant/KnittingAssistant/View/resources/square_palette_image_full.png";
-        private const string EmptySelectedColorFilename = "D:/Development/KnittingAssistant/KnittingAssistant/View/resources/large_empty_image.png";
-        private const double BigBorderSize = 30;
-        private const double NormalBorderSize = 20;
+        private const int ADDED_COLORS_GRID_WIDTH = 11;
+        private const int ADDED_COLORS_GRID_HEIGHT = 3;
+        private const string PALETTE_FILENAME = "pack://application:,,,/View/resources/square_palette_image_full.png";
+        private const string EMPTY_SELECTED_COLOR_FILENAME = "pack://application:,,,/View/resources/large_empty_image.png";
+        private const double BIG_BORDER_SIZE = 30;
+        private const double NORMAL_BORDER_SIZE = 20;
 
         private ColorStorage colorStorage;
         private Color selectedColorForAdding;
@@ -301,7 +301,7 @@ namespace KnittingAssistant.ViewModel
                             DisablePaletteCircle();
                             SetButtonsEnabling();
 
-                            lastSelectedColorBorder.Width = lastSelectedColorBorder.Height = NormalBorderSize;
+                            lastSelectedColorBorder.Width = lastSelectedColorBorder.Height = NORMAL_BORDER_SIZE;
                             //if (!ignoreRgbChanged)
                             //{
                             //    lastSelectedColorBorder.Width = lastSelectedColorBorder.Height = NormalBorderSize;
@@ -315,8 +315,8 @@ namespace KnittingAssistant.ViewModel
 
         public ColorsViewModel()
         {
-            PaletteAreaImage = SetWriteableBitmap(DefaultPaletteFilename);
-            SelectedColorImage = SetWriteableBitmap(EmptySelectedColorFilename);
+            PaletteAreaImage = SetWriteableBitmap(PALETTE_FILENAME);
+            SelectedColorImage = SetWriteableBitmap(EMPTY_SELECTED_COLOR_FILENAME);
             CircleVisibility = Visibility.Collapsed;
             CircleCenterPoint = new Point();
             CircleFillColor = new SolidColorBrush();
@@ -327,7 +327,7 @@ namespace KnittingAssistant.ViewModel
 
             selectedColorIndex = -1;
             lastSelectedColorBorder = new Border();
-            arrayToGridIndexConverter = new ArrayToGridIndexConverter(addedColorsGridWidth, addedColorsGridHeight);
+            arrayToGridIndexConverter = new ArrayToGridIndexConverter(ADDED_COLORS_GRID_WIDTH, ADDED_COLORS_GRID_HEIGHT);
             colorStorage = new ColorStorage();
             colorStorage.ReadColorsFromFile();
             AddedColors = CreateColorGrid(colorStorage.ColorList);
@@ -375,8 +375,8 @@ namespace KnittingAssistant.ViewModel
             selectedColorIndex = (selectedColorBorder.Parent as Grid).Children.IndexOf(selectedColorBorder);
             selectedLinkedListNode = colorStorage.GetNodeByIndex(selectedColorIndex);
 
-            lastSelectedColorBorder.Width = lastSelectedColorBorder.Height = NormalBorderSize;
-            selectedColorBorder.Width = selectedColorBorder.Height = BigBorderSize;
+            lastSelectedColorBorder.Width = lastSelectedColorBorder.Height = NORMAL_BORDER_SIZE;
+            selectedColorBorder.Width = selectedColorBorder.Height = BIG_BORDER_SIZE;
             lastSelectedColorBorder = selectedColorBorder;
 
             selectedColorMode = SelectedColorModes.forRemoving;
@@ -404,7 +404,7 @@ namespace KnittingAssistant.ViewModel
                 ShowSelectedColor(selectedColorNode.Value);
             else
             {
-                SelectedColorImage = SetWriteableBitmap(EmptySelectedColorFilename);
+                SelectedColorImage = SetWriteableBitmap(EMPTY_SELECTED_COLOR_FILENAME);
                 BlueSelectedColorValue = GreenSelectedColorValue = RedSelectedColorValue = 0;
             }
         }
@@ -451,12 +451,12 @@ namespace KnittingAssistant.ViewModel
                     if (colorIndex == selectedColorIndex &&
                         selectedColorMode == SelectedColorModes.forRemoving)
                     {
-                        addedColorBorder.Width = addedColorBorder.Height = BigBorderSize;
+                        addedColorBorder.Width = addedColorBorder.Height = BIG_BORDER_SIZE;
                         lastSelectedColorBorder = addedColorBorder;
                     }
                     else
                     {
-                        addedColorBorder.Width = addedColorBorder.Height = NormalBorderSize;
+                        addedColorBorder.Width = addedColorBorder.Height = NORMAL_BORDER_SIZE;
                     }
 
                     if (colorIndex < colorList.Count)

@@ -91,12 +91,12 @@ namespace KnittingAssistant.ViewModel
                             if ((bool)imageProcessor.GridLinesVis)
                             {
                                 imageProcessor.CallUpdateImageNotify(imageProcessor.ImageSplitter.SplittedBitmapImage, imageWasBroken: true);
-                                SwitchGridIconFilename = "../resources/grid_on_icon_1.png";
+                                SwitchGridIconFilename = "pack://application:,,,/View/resources/grid_on_icon.png";
                             }
                             else
                             {
                                 imageProcessor.CallUpdateImageNotify(imageProcessor.ImageSplitter.GridBitmapImage, imageWasBroken: true);
-                                SwitchGridIconFilename = "../resources/grid_off_icon_1.png";
+                                SwitchGridIconFilename = "pack://application:,,,/View/resources/grid_off_icon.png";
                             }
                             imageProcessor.GridLinesVis = !imageProcessor.GridLinesVis;
                         }
@@ -138,14 +138,14 @@ namespace KnittingAssistant.ViewModel
         {
             this.propertyAreaViewModel = propertyAreaViewModel;
             this.imageProcessor = imageProcessor;
-            SwitchGridIconFilename = "../resources/grid_off_icon_1.png";
+            SwitchGridIconFilename = "pack://application:,,,/View/resources/grid_off_icon.png";
             ToolbarAreaIsEnabled = true;
 
             imageProcessor.SplittingStateUpdated += () => ToolbarAreaIsEnabled = !imageProcessor.IsSplitting;
             imageProcessor.ImageStateUpdated += () =>
             {
                 if (imageProcessor.CurrentImageState == en_ImageStates.mainImageLoaded)
-                    SwitchGridIconFilename = "../resources/grid_off_icon_1.png";
+                    SwitchGridIconFilename = "pack://application:,,,/View/resources/grid_off_icon.png";
             };
         }
     }
