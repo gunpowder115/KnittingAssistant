@@ -7,17 +7,17 @@ namespace KnittingAssistant.Model
 {
     public class ImageProcessor
     {
-        public double MainImageWidth { get; set; }
-        public double MainImageHeight { get; set; }
+        public double MainImageWidth { get; private set; }
+        public double MainImageHeight { get; private set; }
         public double MainImageRatio => MainImageWidth / MainImageHeight;
         public bool? GridLinesVis { get; set; }
         public en_ImageStates CurrentImageState { get; set; }
-        public ImageLoader ImageLoader { get; set; }
-        public ImageSaver ImageSaver { get; set; }
+        public ImageLoader ImageLoader { get; private set; }
+        public ImageSaver ImageSaver { get; private set; }
         public ImageSplitter ImageSplitter { get; set; }
         public WriteableBitmap DisplayedImage { get; private set; }
         public WriteableBitmap SourceImage { get; private set; }
-        public bool IsSplitting { get; set; }
+        public bool IsSplitting { get; private set; }
 
         public event Action<WriteableBitmap, bool> ImageUpdated;
         public event Action SplittingStateUpdated;

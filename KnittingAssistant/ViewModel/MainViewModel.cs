@@ -37,9 +37,9 @@ namespace KnittingAssistant.ViewModel
         private double FragmentRatio = 1.0;
         private ImageProcessor imageProcessor;
 
-        public PropertyAreaViewModel PropertyAreaViewModel { get; set; }
-        public ImageAreaViewModel ImageAreaViewModel { get; set; }
-        public ToolbarAreaViewModel ToolbarAreaViewModel { get; set; }
+        public PropertyAreaViewModel PropertyAreaViewModel { get; }
+        public ImageAreaViewModel ImageAreaViewModel { get; }
+        public ToolbarAreaViewModel ToolbarAreaViewModel { get; }
 
         public MainViewModel()
         {
