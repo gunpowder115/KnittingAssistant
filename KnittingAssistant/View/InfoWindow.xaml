@@ -5,8 +5,54 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KnittingAssistant.View"
         mc:Ignorable="d"
-        Title="О программе" Height="500" Width="800" WindowStartupLocation="CenterScreen">
+        Title="О программе" Height="500" Width="800" WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="1.6*"/>
+        </Grid.ColumnDefinitions>
+        <Image Source="pack://application:,,,/View/resources/large_app_icon.png" Margin="15"/>
+        <RichTextBox IsReadOnly="True" IsDocumentEnabled="True" Block.LineHeight="5" FontSize="15"
+                     Grid.Column="1" Margin="20" BorderThickness="0">
+            <FlowDocument>
+                <Paragraph TextAlignment="Center" FontSize="20">
+                    <Bold>C2C Knitting Assistant</Bold>
+                </Paragraph>
+                <Paragraph TextAlignment="Center">программа для подготовки изображений к вязанию в технике C2C</Paragraph>
+                <Paragraph>
+                    <Bold>Разработчик:</Bold> Порохин Владислав</Paragraph>
+                <Paragraph/>
+                <Paragraph TextAlignment="Center">
+                    <Bold>Прошу присылать замечания и предложения по работе программы:</Bold>
+                </Paragraph>
+                <Paragraph>
+                    - в личные сообщения ВК:
+                    <Hyperlink Command="{Binding VkLinkClickCommand}">
+                        <Bold>
+                            <Run Foreground="Blue">vk.com/vlad_poroh</Run>
+                        </Bold>
+                    </Hyperlink>
+                </Paragraph>
+                <Paragraph>- или на эл. почту: vk.poroh.alex@bk.ru</Paragraph>
+                <Paragraph/>
+                <Paragraph TextAlignment="Center">
+                    <Bold>Для разработчиков:</Bold>
+                </Paragraph>
+                <Paragraph>
+                    Вы можете поучаствовать в разработке проекта. Исходный код на GitHub:
+                    <Hyperlink Command="{Binding GithubLinkClickCommand}">
+                        <Bold>
+                            <Run Foreground="Blue">github.com/gunpowder115/KnittingAssistant</Run>
+                        </Bold>
+                    </Hyperlink>
+                </Paragraph>
+                <Paragraph/>
+                <Paragraph TextAlignment="Center">
+                    <Bold>Вы можете поблагодарить автора:</Bold>
+                </Paragraph>
+                <Paragraph>Перевод на карту: 2202 2002 2510 2068 (Сбербанк)</Paragraph>
+            </FlowDocument>
+        </RichTextBox>
     </Grid>
 </Window>
