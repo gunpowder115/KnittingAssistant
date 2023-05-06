@@ -18,6 +18,7 @@
     <None Remove="Resources\Images\default_image.png" />
     <None Remove="Resources\Images\grid_off_icon.png" />
     <None Remove="Resources\Images\grid_on_icon.png" />
+    <None Remove="Resources\Images\info_icon.png" />
     <None Remove="Resources\Images\large_app_icon.png" />
     <None Remove="Resources\Images\large_empty_image.png" />
     <None Remove="Resources\Images\load_image_icon.jpg" />
@@ -37,6 +38,7 @@
     <Resource Include="Resources\Images\default_image.png" />
     <Resource Include="Resources\Images\grid_off_icon.png" />
     <Resource Include="Resources\Images\grid_on_icon.png" />
+    <Resource Include="Resources\Images\info_icon.png" />
     <Resource Include="Resources\Images\large_app_icon.png" />
     <Resource Include="Resources\Images\large_empty_image.png" />
     <Resource Include="Resources\Images\load_image_icon.jpg" />
