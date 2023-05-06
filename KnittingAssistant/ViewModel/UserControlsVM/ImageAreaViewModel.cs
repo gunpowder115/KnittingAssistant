@@ -14,7 +14,7 @@ namespace KnittingAssistant.ViewModel
         private WriteableBitmap splittedImageWb;
         private Dictionary<DisplayedImageModes, string> buttonsToolTip;
 
-        private const string DEFAULT_FILENAME = "pack://application:,,,/View/resources/default_image.png";
+        private const string DEFAULT_FILENAME = "pack://application:,,,/Resources/Images/default_image.png";
 
         #region Dependency Property
 

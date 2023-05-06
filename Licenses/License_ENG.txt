@@ -1,0 +1,39 @@
+OPEN SOURCE SOFTWARE LICENSE AGREEMENT
+
+1. GENERAL CONDITIONS
+
+1.1. This license agreement (hereinafter referred to as the "Agreement") regulates the relationship between the copyright holder (hereinafter referred to as the "Copyright Holder") and the user of open source software (hereinafter referred to as the "Software").
+
+1.2. The user undertakes to familiarize himself/herself with the terms of this Agreement and comply with its provisions in full.
+
+2. SUBJECT OF THE AGREEMENT
+
+2.1. The Copyright Holder grants the User a non-exclusive license to use the Software in accordance with the terms of this Agreement.
+
+2.2. The User has the right to distribute, copy, modify, translate, adapt or create derivative works based on the Software, provided that all derivative works must be accompanied by a reference to the Software.
+
+3. RESTRICTIONS
+
+3.1. The User is not allowed to use the Software for illegal purposes.
+
+3.2. The User is not allowed to delete, modify or hide copyright and other intellectual property notices contained in the Software.
+
+3.3. The Copyright Holder is not responsible for any direct or indirect losses associated with the use of the Software.
+
+4. LIABILITY
+
+4.1. The User is responsible for any violations of the terms of this Agreement.
+
+4.2. The Copyright Holder is not responsible for any direct or indirect losses associated with the use of the Software.
+
+5. FINAL PROVISIONS
+
+5.1. This Agreement is a complete agreement between the Copyright Holder and the User and supersedes all previous oral or written agreements and arrangements between the parties.
+
+5.2. This Agreement is governed by the laws of the Russian Federation.
+
+5.3. All disputes arising between the Copyright Holder and the User in connection with the performance of this Agreement shall be resolved through negotiations between the parties.
+
+5.4. If any provision of this Agreement is found to be invalid or unenforceable, this will not affect the validity or enforceability of the remaining provisions of the Agreement.
+
+5.5. This Agreement comes into force from the moment of its acceptance by the User and is valid until it is terminated by one of the parties.

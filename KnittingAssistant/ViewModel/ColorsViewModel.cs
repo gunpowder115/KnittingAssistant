@@ -16,8 +16,8 @@ namespace KnittingAssistant.ViewModel
 
         private const int ADDED_COLORS_GRID_WIDTH = 11;
         private const int ADDED_COLORS_GRID_HEIGHT = 3;
-        private const string PALETTE_FILENAME = "pack://application:,,,/View/resources/square_palette_image_full.png";
-        private const string EMPTY_SELECTED_COLOR_FILENAME = "pack://application:,,,/View/resources/large_empty_image.png";
+        private const string PALETTE_FILENAME = "pack://application:,,,/Resources/Images/square_palette_image_full.png";
+        private const string EMPTY_SELECTED_COLOR_FILENAME = "pack://application:,,,/Resources/Images/large_empty_image.png";
         private const double BIG_BORDER_SIZE = 30;
         private const double NORMAL_BORDER_SIZE = 20;
 

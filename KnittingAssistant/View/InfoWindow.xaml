@@ -12,7 +12,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="1.6*"/>
         </Grid.ColumnDefinitions>
-        <Image Source="pack://application:,,,/View/resources/large_app_icon.png" Margin="15"/>
+        <Image Source="pack://application:,,,/Resources/Images/large_app_icon.png" Margin="15"/>
         <RichTextBox IsReadOnly="True" IsDocumentEnabled="True" Block.LineHeight="5" FontSize="15"
                      Grid.Column="1" Margin="20" BorderThickness="0">
             <FlowDocument>

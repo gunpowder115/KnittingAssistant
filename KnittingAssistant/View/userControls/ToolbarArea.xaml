@@ -9,10 +9,10 @@
     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" FlowDirection="RightToLeft" Height="45"
 				IsEnabled="{Binding ToolbarAreaIsEnabled}">
         <Button ToolTip="О программе" Command="{Binding OpenInfoWindowCommand}">
-            <Image Source="pack://application:,,,/View/resources/info_icon.png"/>
+            <Image Source="pack://application:,,,/Resources/Images/info_icon.png"/>
         </Button>
         <Button ToolTip="Палитра цветов" Command="{Binding OpenColorsManagementWindowCommand}">
-            <Image Source="pack://application:,,,/View/resources/palette_icon.png"/>
+            <Image Source="pack://application:,,,/Resources/Images/palette_icon.png"/>
         </Button>
         <Button ToolTip="Показать/скрыть сетку" Command="{Binding ChangeGridLinesVisCommand}">
             <Image Source="{Binding SwitchGridIconFilename}"/>
@@ -21,10 +21,10 @@
             <Button.ToolTip>
                 <ToolTip Content="Сохранить изображение" ToolTipService.ShowOnDisabled="True"/>
             </Button.ToolTip>
-            <Image Source="pack://application:,,,/View/resources/save_image_icon.jpg"/>
+            <Image Source="pack://application:,,,/Resources/Images/save_image_icon.jpg"/>
         </Button>
         <Button ToolTip="Загрузить изображение" Command="{Binding LoadMainImageByClickCommand}">
-            <Image Source="pack://application:,,,/View/resources/load_image_icon.jpg"/>
+            <Image Source="pack://application:,,,/Resources/Images/load_image_icon.jpg"/>
         </Button>
     </StackPanel>
 </UserControl>
