@@ -1,45 +1,72 @@
 //---------------------------------------------------------------------
+// ѕроверка наличи€ .NET
+//---------------------------------------------------------------------
+function HasDotNet() : boolean;
+var
+  runtimes: TArrayOfString;
+  registryKey: string;
+begin
+  registryKey := 'SOFTWARE\WOW6432Node\dotnet\Setup\InstalledVersions\x64\sharedfx\Microsoft.NETCore.App';
+  if (not IsWin64) then
+    registryKey := 'SOFTWARE\dotnet\Setup\InstalledVersions\x86\sharedfx\Microsoft.NETCore.App';
+
+  if not RegGetValueNames(HKLM, registryKey, runtimes) then
+  begin
+    Result := False;
+  end
+  else
+  begin
+    Result := True;
+  end;
+end;
+
+//---------------------------------------------------------------------
 // ѕроверка наличи€ нужной версии .NET
 //---------------------------------------------------------------------
 function IsDotNetDetected(dotNetName: string): boolean;
-
 var
 	cmd, args: string; //cmd и еЄ аргументы
 	filename: string; //временный файл дл€ хранени€ результата команды
 	output: AnsiString; //строка дл€ содержимого файла
 	command: string; //команда дл€ получени€ списка установленных версий .NET
-	resultCode: Integer; //результат выполнени€ команды
-	
+	resultCode: Integer; //результат выполнени€ команды	
 begin
 	filename := ExpandConstant('{tmp}\dotnet.txt');
 	cmd := ExpandConstant('{cmd}');
 	command := 'dotnet --list-runtimes';
 	args := '/C ' + command + ' > "' + filename + '" 2>&1';
-	if Exec(cmd, args, '', SW_HIDE, ewWaitUntilTerminated, resultCode) and
-		(resultCode = 0) then //выполнить команду в cmd
-	begin
-		if LoadStringFromFile(filename, output) then //прочитать файл в строку output
-		begin
-			if Pos(dotNetName, output) > 0 then //нужна€ верси€ .NET найдена
-			begin
-				result := True;
-			end
-			else //нужна€ верси€ .NET не найдена
-			begin
-				result := False;
-			end;
-		end
-		else //чтение файла не удалось
-		begin
-			MsgBox('Failed to read output of "' + command + '"', mbError, MB_OK);
-		end;
-	end
-    else //выполнение команды не удалось
-	begin
-		MsgBox('Failed to execute "' + command + '"', mbError, MB_OK);
-		result := False;
-	end;
-	DeleteFile(filename);
+  if HasDotNet() then //в системе установлен .NET
+  begin
+    if Exec(cmd, args, '', SW_HIDE, ewWaitUntilTerminated, resultCode) and
+      (resultCode = 0) then //выполнить команду в cmd
+    begin
+      if LoadStringFromFile(filename, output) then //прочитать файл в строку output
+      begin
+        if Pos(dotNetName, output) > 0 then //нужна€ верси€ .NET найдена
+        begin
+          Result := True;
+        end
+        else //нужна€ верси€ .NET не найдена
+        begin
+          Result := False;
+        end;
+      end
+      else //чтение файла не удалось
+      begin
+        MsgBox('Failed to read output of "' + command + '"', mbError, MB_OK);
+      end;
+    end
+      else //выполнение команды не удалось
+    begin
+      MsgBox('Failed to execute "' + command + '"', mbError, MB_OK);
+      Result := False;
+    end;    
+  end
+    else //.NET в системе отсутствует
+  begin
+    Result := False;
+  end;
+  DeleteFile(filename);
 end;
 
 //---------------------------------------------------------------------
@@ -47,7 +74,23 @@ end;
 //---------------------------------------------------------------------
 function IsRequiredDotNetDetected(): boolean;
 begin
-	result := IsDotNetDetected('Microsoft.NETCore.App 5.0.');
+	Result := IsDotNetDetected('Microsoft.NETCore.App 5.0.');
+end;
+
+//---------------------------------------------------------------------
+// ‘ункци€-обертка дл€ детектировани€ версии x64
+//---------------------------------------------------------------------
+function IsRequiredDotNetDetected_x64(): boolean;
+begin
+	Result := IsDotNetDetected('Microsoft.NETCore.App 5.0.') and IsWin64;
+end;
+
+//---------------------------------------------------------------------
+// ‘ункци€-обертка дл€ детектировани€ версии x86
+//---------------------------------------------------------------------
+function IsRequiredDotNetDetected_x86(): boolean;
+begin
+	Result := IsDotNetDetected('Microsoft.NETCore.App 5.0.') and (not IsWin64);
 end;
 
 //---------------------------------------------------------------------
@@ -63,5 +106,5 @@ begin
              'The installer will attempt to install it', mbInformation, MB_OK);
 	end;
 	
-	result := true;
+	Result := True;
 end;

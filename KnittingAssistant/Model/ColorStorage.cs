@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Media;
 
 namespace KnittingAssistant.Model
@@ -42,15 +44,26 @@ namespace KnittingAssistant.Model
 
         public void WriteColorsToFile()
         {
-            StreamWriter sw = new StreamWriter(filename);
-
-            foreach (Color color in ColorList)
+            StreamWriter sw = null;
+            try
             {
-                string writeableColor = color.R.ToString() + " " + color.G.ToString() + " " + color.B.ToString();
-                sw.WriteLine(writeableColor);
-            }
+                sw = new StreamWriter(filename);
 
-            sw.Close();
+                foreach (Color color in ColorList)
+                {
+                    string writeableColor = color.R.ToString() + " " + color.G.ToString() + " " + color.B.ToString();
+                    sw.WriteLine(writeableColor);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                if (sw != null)
+                    sw.Close();
+            }
         }
 
         public void AddColor(Color color)

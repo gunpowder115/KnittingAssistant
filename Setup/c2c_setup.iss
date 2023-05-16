@@ -73,8 +73,10 @@
  Source: "D:\Development\KnittingAssistant\KnittingAssistant\bin\Release\net5.0-windows\KnittingAssistant.exe"; DestDir: "{app}"; Flags: ignoreversion
  ; Прилагающиеся ресурсы
  Source: "D:\Development\KnittingAssistant\KnittingAssistant\bin\Release\net5.0-windows\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
- ; .NET 5.0
- Source: "D:\Installers\.NET\windowsdesktop-runtime-5.0.16-win-x64.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Check: not IsRequiredDotNetDetected
+ ; .NET 5.0 x64
+ Source: "D:\Installers\.NET\windowsdesktop-runtime-5.0.16-win-x64.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Check: not IsRequiredDotNetDetected_x64
+ ; .NET 5.0 x86
+ Source: "D:\Installers\.NET\windowsdesktop-runtime-5.0.16-win-x86.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall; Check: not IsRequiredDotNetDetected_x86
 
  ;---------------------------------------------------------------------------
  ; Указываем установщику, где он должен взять иконки
@@ -94,4 +96,5 @@
  ;---------------------------------------------------------------------------
  ; Секция запуска после инсталляции
  ;---------------------------------------------------------------------------
- Filename: {tmp}\windowsdesktop-runtime-5.0.16-win-x64.exe; Parameters: "/q:a /c:""install /l /q"""; Check: not IsRequiredDotNetDetected; StatusMsg: Microsoft .NET 5.0 is installed. Please wait... 
+ Filename: {tmp}\windowsdesktop-runtime-5.0.16-win-x64.exe; Parameters: "/q:a /c:""install /l /q"""; Check: not IsRequiredDotNetDetected_x64; StatusMsg: Microsoft .NET 5.0 x64 is installed. Please wait... 
+ Filename: {tmp}\windowsdesktop-runtime-5.0.16-win-x86.exe; Parameters: "/q:a /c:""install /l /q"""; Check: not IsRequiredDotNetDetected_x86; StatusMsg: Microsoft .NET 5.0 x86 is installed. Please wait... 
