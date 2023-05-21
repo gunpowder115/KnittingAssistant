@@ -23,6 +23,7 @@ namespace KnittingAssistant.Model
         public event Action SplittingStateUpdated;
         public event Action ImageSaved;
         public event Action ImageStateUpdated;
+        public event Action<double> PropertiesUpdated;
 
         public ImageProcessor()
         {
@@ -87,6 +88,7 @@ namespace KnittingAssistant.Model
                 MainImageWidth = displayedImage.PixelWidth;
                 MainImageHeight = displayedImage.PixelHeight;
                 GridLinesVis = null;
+                PropertiesUpdated?.Invoke(MainImageRatio);
             }
         }
 

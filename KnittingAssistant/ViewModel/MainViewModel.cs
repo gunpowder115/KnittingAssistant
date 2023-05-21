@@ -45,8 +45,8 @@ namespace KnittingAssistant.ViewModel
         {
             imageProcessor = new ImageProcessor();
             PropertyAreaViewModel = new PropertyAreaViewModel(imageProcessor);
-            ImageAreaViewModel = new ImageAreaViewModel(PropertyAreaViewModel, imageProcessor);
-            ToolbarAreaViewModel = new ToolbarAreaViewModel(PropertyAreaViewModel, imageProcessor);
+            ImageAreaViewModel = new ImageAreaViewModel(imageProcessor);
+            ToolbarAreaViewModel = new ToolbarAreaViewModel(imageProcessor);
         }
     }
 }

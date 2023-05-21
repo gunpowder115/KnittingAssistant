@@ -7,7 +7,6 @@ namespace KnittingAssistant.ViewModel
 {
     public class ImageAreaViewModel : ViewModelBase
     {
-        private readonly PropertyAreaViewModel propertyAreaViewModel;
         private ImageProcessor imageProcessor;
         private DisplayedImageModes displayedImageMode;
         private WriteableBitmap sourceImageWb;
@@ -96,9 +95,7 @@ namespace KnittingAssistant.ViewModel
                 return loadMainImageByClickCommand ??
                     (loadMainImageByClickCommand = new RelayCommand(obj =>
                     {
-                        bool loadNewImage = imageProcessor.LoadMainImageByClick();
-                        if (loadNewImage)
-                            propertyAreaViewModel.UpdateForNewImage(imageProcessor.MainImageRatio);
+                        imageProcessor.LoadMainImageByClick();
                     }));
             }
         }
@@ -181,9 +178,8 @@ namespace KnittingAssistant.ViewModel
 
         #endregion
 
-        public ImageAreaViewModel(PropertyAreaViewModel propertyAreaViewModel, ImageProcessor imageProcessor)
+        public ImageAreaViewModel(ImageProcessor imageProcessor)
         {
-            this.propertyAreaViewModel = propertyAreaViewModel;
             this.imageProcessor = imageProcessor;
             displayedImageMode = DisplayedImageModes.splittedImage;
             ImageToolTip = "Загрузить изображение";
@@ -256,7 +252,6 @@ namespace KnittingAssistant.ViewModel
         private void UpdateImageByDrop(object newImage)
         {
             imageProcessor.LoadImageOnForm(newImage);
-            propertyAreaViewModel.UpdateForNewImage(imageProcessor.MainImageRatio);
             imageProcessor.CallUpdateImageSaving();
         }
 

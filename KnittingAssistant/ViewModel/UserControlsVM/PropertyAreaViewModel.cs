@@ -317,6 +317,7 @@ namespace KnittingAssistant.ViewModel
             SplitButtonToolTipVisibility = Visibility.Collapsed;
             SplittingProcessVisibility = Visibility.Hidden;
             imageProcessor.SplittingStateUpdated += () => SettingsIsEnabled = !imageProcessor.IsSplitting;
+            imageProcessor.PropertiesUpdated += UpdateForNewImage;
         }
 
         public void UpdateForNewImage(double mainImageRatio)

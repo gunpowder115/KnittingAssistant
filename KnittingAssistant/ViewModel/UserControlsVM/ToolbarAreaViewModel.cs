@@ -5,7 +5,6 @@ namespace KnittingAssistant.ViewModel
 {
     public class ToolbarAreaViewModel : ViewModelBase
     {
-        private readonly PropertyAreaViewModel propertyAreaViewModel;
         private ImageProcessor imageProcessor;
 
         #region Dependency Property
@@ -47,7 +46,6 @@ namespace KnittingAssistant.ViewModel
                         bool loadNewImage = imageProcessor.LoadMainImageByClick();
                         if (loadNewImage)
                         {
-                            propertyAreaViewModel.UpdateForNewImage(imageProcessor.MainImageRatio);
                             imageProcessor.CallUpdateImageSaving();
                         }
                     }));
@@ -134,9 +132,8 @@ namespace KnittingAssistant.ViewModel
 
         #endregion
 
-        public ToolbarAreaViewModel(PropertyAreaViewModel propertyAreaViewModel, ImageProcessor imageProcessor)
+        public ToolbarAreaViewModel(ImageProcessor imageProcessor)
         {
-            this.propertyAreaViewModel = propertyAreaViewModel;
             this.imageProcessor = imageProcessor;
             SwitchGridIconFilename = "pack://application:,,,/Resources/Images/grid_off_icon.png";
             ToolbarAreaIsEnabled = true;
