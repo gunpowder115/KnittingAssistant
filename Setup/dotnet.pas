@@ -7,8 +7,6 @@ var
   registryKey: string;
 begin
   registryKey := 'SOFTWARE\WOW6432Node\dotnet\Setup\InstalledVersions\x64\sharedfx\Microsoft.NETCore.App';
-  if (not IsWin64) then
-    registryKey := 'SOFTWARE\dotnet\Setup\InstalledVersions\x86\sharedfx\Microsoft.NETCore.App';
 
   if not RegGetValueNames(HKLM, registryKey, runtimes) then
   begin
@@ -78,22 +76,6 @@ begin
 end;
 
 //---------------------------------------------------------------------
-// Функция-обертка для детектирования версии x64
-//---------------------------------------------------------------------
-function IsRequiredDotNetDetected_x64(): boolean;
-begin
-	Result := IsDotNetDetected('Microsoft.NETCore.App 5.0.') and IsWin64;
-end;
-
-//---------------------------------------------------------------------
-// Функция-обертка для детектирования версии x86
-//---------------------------------------------------------------------
-function IsRequiredDotNetDetected_x86(): boolean;
-begin
-	Result := IsDotNetDetected('Microsoft.NETCore.App 5.0.') and (not IsWin64);
-end;
-
-//---------------------------------------------------------------------
 // Callback-функция, вызываемая при инициализации установки
 //---------------------------------------------------------------------
 function InitializeSetup(): boolean;
@@ -102,8 +84,10 @@ begin
 	// попытается установить её на данный компьютер
 	if not IsDotNetDetected('Microsoft.NETCore.App 5.0.') then
 	begin
-		MsgBox('{#Name} requires Microsoft .NET 5.0.'#13#13
-             'The installer will attempt to install it', mbInformation, MB_OK);
+		MsgBox('{#Name} requires Microsoft .NET 5.0.'#13
+             'The installer will attempt to install it'#13#13
+             'Для работы {#Name} требуется Microsoft .NET 5.0.'#13
+             'Он будет установлен далее', mbInformation, MB_OK);
 	end;
 	
 	Result := True;
