@@ -1,5 +1,7 @@
 ﻿using Microsoft.Win32;
+using System;
 using System.IO;
+using System.Windows;
 using System.Windows.Media.Imaging;
 
 namespace KnittingAssistant.Model
@@ -31,14 +33,21 @@ namespace KnittingAssistant.Model
 
         public bool SaveImage(WriteableBitmap writeableBitmap)
         {
-            if (fileDialog.ShowDialog().Value)
+            try
             {
-                string filename = fileDialog.FileName;
-                SelectBitmapEncoder();
-                bitmapEncoder.Frames.Add(BitmapFrame.Create(writeableBitmap));
-                using (FileStream fileStream = new FileStream(filename, FileMode.Create))
-                    bitmapEncoder.Save(fileStream);
-                return true;
+                if (fileDialog.ShowDialog().Value)
+                {
+                    string filename = fileDialog.FileName;
+                    SelectBitmapEncoder();
+                    bitmapEncoder.Frames.Add(BitmapFrame.Create(writeableBitmap));
+                    using (FileStream fileStream = new FileStream(filename, FileMode.Create))
+                        bitmapEncoder.Save(fileStream);
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
             return false;
         }
