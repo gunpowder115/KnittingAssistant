@@ -90,8 +90,14 @@
  [Code]
  #include "dotnet.pas"
 
- [Run]
+ [Registry]
+ ;---------------------------------------------------------------------------
+ ; Секция для установки ключей реестра
+ ;---------------------------------------------------------------------------
+ Root: HKCU; Subkey: "SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"; ValueType: string; ValueName: "{app}\{#ExeName}"; ValueData: "RUNASADMIN"; Flags: uninsdeletevalue         
+
  ;---------------------------------------------------------------------------
  ; Секция запуска после инсталляции
  ;---------------------------------------------------------------------------
+ [Run]
  Filename: {tmp}\windowsdesktop-runtime-5.0.16-win-x64.exe; Parameters: "/q:a /c:""install /l /q"""; Check: not IsRequiredDotNetDetected; StatusMsg: Microsoft .NET 5.0 x64 is installed. Please wait... 
