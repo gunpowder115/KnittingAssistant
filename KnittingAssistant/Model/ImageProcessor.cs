@@ -21,7 +21,6 @@ namespace KnittingAssistant.Model
 
         public event Action<WriteableBitmap, bool> ImageUpdated;
         public event Action SplittingStateUpdated;
-        public event Action ImageSaved;
         public event Action ImageStateUpdated;
         public event Action<double> PropertiesUpdated;
 
@@ -107,7 +106,6 @@ namespace KnittingAssistant.Model
 
         public void CallUpdateImageSaving()
         {
-            ImageSaved?.Invoke();
             if (CurrentImageState == en_ImageStates.resultImageSaved)
                 MessageBox.Show("Изображение успешно сохранено!", "Сохранение", MessageBoxButton.OK,
                     MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.ServiceNotification);

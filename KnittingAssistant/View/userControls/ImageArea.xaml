@@ -26,7 +26,7 @@
     </UserControl.Resources>
     <Grid x:Name="mainImageContainer" IsEnabled="{Binding ImageAreaIsEnabled}">
         <Image x:Name="mainImage" Source="{Binding DisplayedImage, Mode=TwoWay}" Cursor="Hand" 
-               AllowDrop="True" Stretch="Uniform" ToolTip="{Binding ImageToolTip}">
+               AllowDrop="True" Stretch="Uniform" ToolTip="Загрузить изображение">
             <Image.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Копировать" Command="{Binding CopyMainImageCommand}" InputGestureText="Ctrl+C"/>
@@ -35,7 +35,7 @@
             </Image.ContextMenu>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                    <i:InvokeCommandAction Command="{Binding ClickOnMainImageCommand}"/>
+                    <i:InvokeCommandAction Command="{Binding LoadMainImageByClickCommand}"/>
                 </i:EventTrigger>
                 <i:EventTrigger EventName="PreviewDrop">
                     <i:CallMethodAction MethodName="LoadMainImageByDropCommand" TargetObject="{Binding}"/>

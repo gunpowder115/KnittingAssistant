@@ -72,17 +72,6 @@ namespace KnittingAssistant.ViewModel
             }
         }
 
-        private string imageToolTip;
-        public string ImageToolTip
-        {
-            get { return imageToolTip; }
-            set
-            {
-                imageToolTip = value;
-                OnPropertyChanged("ImageToolTip");
-            }
-        }
-
         #endregion
 
         #region Relay Commands
@@ -96,31 +85,6 @@ namespace KnittingAssistant.ViewModel
                     (loadMainImageByClickCommand = new RelayCommand(obj =>
                     {
                         imageProcessor.LoadMainImageByClick();
-                    }));
-            }
-        }
-
-        private RelayCommand clickOnMainImageCommand;
-        public RelayCommand ClickOnMainImageCommand
-        {
-            get
-            {
-                return clickOnMainImageCommand ??
-                    (clickOnMainImageCommand = new RelayCommand(obj =>
-                    {
-                        if (imageProcessor.CurrentImageState == en_ImageStates.resultImageNotSaved)
-                        {
-                            if (imageProcessor.ImageSaver.SaveImage(imageProcessor.GridLinesVis.Value ?
-                                imageProcessor.ImageSplitter.GridBitmapImage : imageProcessor.ImageSplitter.SplittedBitmapImage))
-                            {
-                                imageProcessor.CurrentImageState = en_ImageStates.resultImageSaved;
-                                imageProcessor.CallUpdateImageSaving();
-                            }
-                        }
-                        else
-                        {
-                            LoadMainImageByClickCommand.Execute(obj);
-                        }
                     }));
             }
         }
@@ -182,7 +146,6 @@ namespace KnittingAssistant.ViewModel
         {
             this.imageProcessor = imageProcessor;
             displayedImageMode = DisplayedImageModes.splittedImage;
-            ImageToolTip = "Загрузить изображение";
 
             buttonsToolTip = new Dictionary<DisplayedImageModes, string>();
             buttonsToolTip.Add(DisplayedImageModes.splittedImage, "Исходное изображение");
@@ -196,8 +159,6 @@ namespace KnittingAssistant.ViewModel
 
             imageProcessor.ImageUpdated += UpdateImageEventHandler;
             imageProcessor.SplittingStateUpdated += () => ImageAreaIsEnabled = !imageProcessor.IsSplitting;
-            imageProcessor.ImageSaved += () => ImageToolTip = imageProcessor.CurrentImageState == en_ImageStates.resultImageNotSaved ?
-                                                "Сохранить изображение" : "Загрузить изображение";
         }
 
         public void LoadMainImageByDropCommand(object sender, DragEventArgs e)
