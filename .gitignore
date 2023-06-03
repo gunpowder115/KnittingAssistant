@@ -397,3 +397,6 @@ FodyWeavers.xsd
 /KnittingAssistant/View/resources_
 /resources/images/development/Безымянный.png
 *.exe
+/draft/images/development
+/Instruction/Инструкция.docx
+/Testing
