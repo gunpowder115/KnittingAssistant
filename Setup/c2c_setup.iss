@@ -62,7 +62,7 @@
  ;---------------------------------------------------------------------------
  [Tasks]
  ; создание иконки на рабочем столе
- Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: checked
 
  ;---------------------------------------------------------------------------
  ; Файлы, которые надо включить в пакет установщика
