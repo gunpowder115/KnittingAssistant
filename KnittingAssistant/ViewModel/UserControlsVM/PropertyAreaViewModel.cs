@@ -349,10 +349,11 @@ namespace KnittingAssistant.ViewModel
             int fragmentSizePxInt = (int)Math.Round(fragmentSizePx); //целое число пикселей в фрагменте
             //кол-во доп. фрагментов равно кол-ву "лишних" пикселей, возникших из-за округления вверх размеров фрагмента в пикселях
             int deltaCount = (int)(fragmentCount * fragmentSizePxInt - imageSizePx);
-            //если такое происходит, нужно уменьшать размер фрагмента
+            //если такое происходит, нужно уменьшать (step = 1) или увеличивать (step = -1) размер фрагмента
+            int step = deltaCount < 0 ? -1 : 1;
             while (fragmentCount - Math.Abs(deltaCount) < 0)
             {
-                fragmentSizePxInt--;
+                fragmentSizePxInt -= step;
                 deltaCount = (int)(fragmentCount * fragmentSizePxInt - imageSizePx);
             }
 
