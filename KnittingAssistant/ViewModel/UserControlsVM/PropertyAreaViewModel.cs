@@ -437,6 +437,21 @@ namespace KnittingAssistant.ViewModel
                 MessageBox.Show("Не добавлено ни одного цвета\nЦвета определены автоматически", "Внимание", MessageBoxButton.OK,
                     MessageBoxImage.Warning, MessageBoxResult.OK, MessageBoxOptions.None);
             }
+
+#if TEST //Set TEST to keep splitting the image in a loop
+            SplitImageAgain();
+#endif
+        }
+
+        private void SplitImageAgain()
+        {
+            if (DisplayImageWidth - DisplayImageFragmentWidth >= DisplayImageFragmentWidth &&
+                DisplayImageHeight - DisplayImageFragmentHeight >= DisplayImageFragmentHeight)
+            {
+                DisplayImageWidth -= DisplayImageFragmentWidth;
+                mainImageWidthChanged.Execute(null);
+                breakImageCommand.Execute(null);
+            }
         }
     }
 }

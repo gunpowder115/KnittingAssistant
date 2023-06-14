@@ -7,6 +7,10 @@
     <ApplicationIcon>large_app_icon.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="default_image.png" />
     <None Remove="grid_off_icon_1.png" />
