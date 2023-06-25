@@ -15,7 +15,7 @@
  ; Фирма-разработчик
  #define Publisher "Владислав Порохин"
  ; Сайт фирмы-разработчика
- #define URL "https://vk.com/vlad_poroh"
+ #define URL "https://vk.com/c2c_inspiration"
  ; Имя исполняемого модуля
  #define ExeName "KnittingAssistant.exe"
 
@@ -62,7 +62,7 @@
  ;---------------------------------------------------------------------------
  [Tasks]
  ; создание иконки на рабочем столе
- Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: checked
+ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
 
  ;---------------------------------------------------------------------------
  ; Файлы, которые надо включить в пакет установщика

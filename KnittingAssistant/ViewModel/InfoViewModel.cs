@@ -7,7 +7,7 @@ namespace KnittingAssistant.ViewModel
 {
     public class InfoViewModel : ViewModelBase
     {
-        private const string VK_LINK = "https://vk.com/vlad_poroh";
+        private const string VK_LINK = "https://vk.com/c2c_inspiration";
         private const string GITHUB_LINK = "https://github.com/gunpowder115/KnittingAssistant";
 
         #region Dependency Properties

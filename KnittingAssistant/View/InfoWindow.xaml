@@ -27,10 +27,10 @@
                     <Bold>Прошу присылать замечания и предложения по работе программы:</Bold>
                 </Paragraph>
                 <Paragraph>
-                    - в личные сообщения ВК:
+                    - в сообщения сообщества ВК:
                     <Hyperlink Command="{Binding VkLinkClickCommand}">
                         <Bold>
-                            <Run Foreground="Blue">vk.com/vlad_poroh</Run>
+                            <Run Foreground="Blue">vk.com/c2c_inspiration</Run>
                         </Bold>
                     </Hyperlink>
                 </Paragraph>
@@ -51,7 +51,20 @@
                 <Paragraph TextAlignment="Center">
                     <Bold>Вы можете поблагодарить автора:</Bold>
                 </Paragraph>
-                <Paragraph>Перевод на карту: 2202 2002 2510 2068 (Сбербанк)</Paragraph>
+                <Paragraph>
+                    Перевод на карту: 
+                    <Bold>
+                        2202 2002 2510 2068
+                    </Bold>
+                    (Сбербанк)
+                </Paragraph>
+                <Paragraph>Подпишитесь на нас ВКонтакте:
+                    <Hyperlink Command="{Binding VkLinkClickCommand}">
+                        <Bold>
+                            <Run Foreground="Blue">vk.com/c2c_inspiration</Run>
+                        </Bold>
+                    </Hyperlink>
+                </Paragraph>
             </FlowDocument>
         </RichTextBox>
     </Grid>
