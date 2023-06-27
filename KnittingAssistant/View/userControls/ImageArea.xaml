@@ -25,7 +25,7 @@
         </Style>
     </UserControl.Resources>
     <Grid x:Name="mainImageContainer" IsEnabled="{Binding ImageAreaIsEnabled}">
-        <Image x:Name="mainImage" Source="{Binding DisplayedImage, Mode=TwoWay}" Cursor="Hand" 
+        <Image x:Name="mainImage" Source="{Binding DisplayedImage}" Cursor="Hand" 
                AllowDrop="True" Stretch="Uniform" ToolTip="Загрузить изображение">
             <Image.ContextMenu>
                 <ContextMenu>

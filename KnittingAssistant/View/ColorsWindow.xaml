@@ -39,7 +39,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition MaxHeight="{Binding ActualHeight, ElementName=paletteAreaImage}"/>
                     </Grid.RowDefinitions>
-                    <Image x:Name="paletteAreaImage" Source="{Binding PaletteAreaImage, Mode=TwoWay}">
+                    <Image x:Name="paletteAreaImage" Source="{Binding PaletteAreaImage}">
                         <Image.InputBindings>
                             <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding AddColorCommand}"/>
                         </Image.InputBindings>
@@ -73,7 +73,7 @@
                 <Border.ToolTip>
                     <ToolTip Content="Выбранный цвет"/>
                 </Border.ToolTip>
-                <Image Source="{Binding SelectedColorImage, Mode=TwoWay}" />
+                <Image Source="{Binding SelectedColorImage}" />
             </Border>
             <StackPanel Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <StackPanel Orientation="Horizontal" Margin="5">
