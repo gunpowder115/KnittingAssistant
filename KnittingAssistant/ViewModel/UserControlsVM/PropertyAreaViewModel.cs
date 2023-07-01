@@ -10,6 +10,7 @@ namespace KnittingAssistant.ViewModel
         private int FragmentCountWidth;
         private int FragmentCountHeight;
         private ImageProcessor imageProcessor;
+        private double progressPercentage;
 
         public double FragmentWidthInPixels => imageProcessor.MainImageWidth * DisplayImageFragmentWidth / DisplayImageWidth;
         public double FragmentHeightInPixels => imageProcessor.MainImageHeight * DisplayImageFragmentHeight / DisplayImageHeight;
@@ -402,7 +403,6 @@ namespace KnittingAssistant.ViewModel
         {
             imageProcessor.ImageSplitter = (ImageSplitter)e.Argument;
 
-            int progressPercentage = 0;
             for (int i = 0; i < FragmentCountWidth; i++)
             {
                 for (int j = 0; j < FragmentCountHeight; j++)
@@ -412,18 +412,18 @@ namespace KnittingAssistant.ViewModel
                         imageProcessor.ImageSplitter.SplitImage(i, j);
                     }));
 
-                    progressPercentage = Convert.ToInt32((double)(i * FragmentCountHeight + j) / (FragmentCountWidth * FragmentCountHeight) * 100);
-                    if (progressPercentage >= 100)
-                        progressPercentage = 99;
-                    (sender as BackgroundWorker).ReportProgress(progressPercentage);
+                    progressPercentage = (double)(i * FragmentCountHeight + j) / (double)(FragmentCountWidth * FragmentCountHeight) * 100.0;
+                    if (progressPercentage >= 100.0)
+                        progressPercentage = 99.0;
+                    (sender as BackgroundWorker).ReportProgress((int)progressPercentage);
                 }
             }
         }
 
         private void worker_SplittingProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            SplittingProcessValue = e.ProgressPercentage;
-            if (SplittingProcessValue == 99)
+            SplittingProcessValue = progressPercentage;
+            if (SplittingProcessValue >= 99.0)
                 SplittingProcessName = "Подготовка изображения...";
         }
 
@@ -437,7 +437,7 @@ namespace KnittingAssistant.ViewModel
             imageProcessor.CallUpdateImageSaving();
 
             SplittingProcessName = "Готово!";
-            SplittingProcessValue = 100;
+            SplittingProcessValue = 100.0;
 
             if (imageProcessor.ImageSplitter.isAverageColor)
             {

@@ -10,29 +10,29 @@ namespace KnittingAssistant.Model
         private Color nearestColor; //значение ближайшего к среднему цвета из хранилища
         private WriteableBitmap fragmentBitmap; //кусок исходного изображения, представленный в фрагменте
         private int fragmentWidthInPixels, fragmentHeightInPixels; //ширина, высота фрагмента в пикселях
-        private ColorStorage colorStorage; //хранилище цветов
+        private ColorStorage colorStorage;
         private int[,] colorBytes;
         private int[] averageColorBytes;
 
         public static bool IsAverageColor { get; private set; }
         public Color AverageColor { get; private set; } //среднее значение цвета фрагмента по 3 каналам R, G, B
 
-        public ImageFragment(WriteableBitmap fragmentBitmap)
+        public ImageFragment(WriteableBitmap fragmentBitmap, ColorStorage colorStorage)
         {
             this.fragmentBitmap = fragmentBitmap;
-            this.fragmentWidthInPixels = fragmentBitmap.PixelWidth;
-            this.fragmentHeightInPixels = fragmentBitmap.PixelHeight;
-
-            colorStorage = new ColorStorage();
-            colorStorage.ReadColorsFromFile();
+            fragmentWidthInPixels = fragmentBitmap.PixelWidth;
+            fragmentHeightInPixels = fragmentBitmap.PixelHeight;
+            this.colorStorage = colorStorage;
             IsAverageColor = colorStorage.ColorsCount == 0;
             colorBytes = new int[colorStorage.ColorsCount, 3];
             averageColorBytes = new int[3];
             for (int i = 0; i < colorStorage.ColorsCount; i++)
             {
-                colorBytes[i, 0] = colorStorage.GetNodeByIndex(i).Value.R;
-                colorBytes[i, 1] = colorStorage.GetNodeByIndex(i).Value.G;
-                colorBytes[i, 2] = colorStorage.GetNodeByIndex(i).Value.B;
+                Color color = colorStorage.GetNodeByIndex(i).Value;
+
+                colorBytes[i, 0] = color.R;
+                colorBytes[i, 1] = color.G;
+                colorBytes[i, 2] = color.B;
             }
         }
 
@@ -105,7 +105,9 @@ namespace KnittingAssistant.Model
                     }
                 }
 
-                nearestColor = Color.FromRgb((byte)colorBytes[currColorIndex, 0], (byte)colorBytes[currColorIndex, 1], (byte)colorBytes[currColorIndex, 2]);
+                nearestColor = Color.FromRgb((byte)colorBytes[currColorIndex, 0],
+                    (byte)colorBytes[currColorIndex, 1],
+                    (byte)colorBytes[currColorIndex, 2]);
             }
         }
 

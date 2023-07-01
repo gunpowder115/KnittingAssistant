@@ -7,17 +7,19 @@ using System.Windows.Media;
 
 namespace KnittingAssistant.Model
 {
-    class ColorStorage
+    public class ColorStorage
     {
         private string filename;
 
         public LinkedList<Color> ColorList { get; }
         public int ColorsCount { get => ColorList.Count; }
+        public Dictionary<Color, int> ColorsCounting { get; }
 
         public ColorStorage(string filename)
         {
             this.filename = filename;
             ColorList = new LinkedList<Color>();
+            ColorsCounting = new Dictionary<Color, int>();
         }
 
         public ColorStorage() : this("colors.txt") { }
@@ -71,9 +73,18 @@ namespace KnittingAssistant.Model
             if (!ColorList.Contains(color))
                 ColorList.AddLast(color);
         }
+
+        public void RefreshColorsCounting()
+        {
+            ClearColorsCounting();
+            foreach (var color in ColorList)
+                ColorsCounting.Add(color, 0);
+        }
+
         public void RemoveColor(int index) => ColorList.Remove(ColorList.ElementAt(index));
         public void RemoveColor(LinkedListNode<Color> colorNode) => ColorList.Remove(colorNode);
         public void ClearColors() => ColorList.Clear();
+        public void ClearColorsCounting() => ColorsCounting.Clear();
         public LinkedListNode<Color> GetNodeByIndex(int index) => ColorList.Find(ColorList.ElementAt(index));
     }
 }
