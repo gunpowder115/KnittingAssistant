@@ -1,4 +1,5 @@
 ﻿using KnittingAssistant.Model;
+using KnittingAssistant.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -280,6 +281,20 @@ namespace KnittingAssistant.ViewModel
                     (notSaveColorsCommand = new RelayCommand(obj =>
                     {
                         CloseColorsWindow();
+                    }));
+            }
+        }
+
+        private RelayCommand openYarnCountingWindowCommand;
+        public RelayCommand OpenYarnCountingWindowCommand
+        {
+            get
+            {
+                return openYarnCountingWindowCommand ??
+                    (openYarnCountingWindowCommand = new RelayCommand(obj =>
+                    {
+                        YarnCountingWindow yarnCountingWindow = new YarnCountingWindow(colorStorage);
+                        yarnCountingWindow.ShowDialog();
                     }));
             }
         }
