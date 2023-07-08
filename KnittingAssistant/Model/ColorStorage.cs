@@ -10,10 +10,12 @@ namespace KnittingAssistant.Model
     public class ColorStorage
     {
         private string filename;
+        private static ColorStorage instance;
 
         public LinkedList<Color> ColorList { get; }
-        public int ColorsCount { get => ColorList.Count; }
+        public int ColorsCount { get => ColorList.Count; }        
         public Dictionary<Color, int> ColorsCounting { get; }
+        public int CountingColorsCount { get => ColorsCounting.Count; }
 
         public ColorStorage(string filename)
         {
@@ -23,6 +25,13 @@ namespace KnittingAssistant.Model
         }
 
         public ColorStorage() : this("colors.txt") { }
+
+        public static ColorStorage GetInstance()
+        {
+            if (instance == null)
+                instance = new ColorStorage();
+            return instance;
+        }
 
         public void ReadColorsFromFile()
         {
@@ -83,7 +92,10 @@ namespace KnittingAssistant.Model
 
         public void RemoveColor(int index) => ColorList.Remove(ColorList.ElementAt(index));
         public void RemoveColor(LinkedListNode<Color> colorNode) => ColorList.Remove(colorNode);
-        public void ClearColors() => ColorList.Clear();
+        public void ClearColors()
+        {
+            ColorList.Clear();
+        }
         public void ClearColorsCounting() => ColorsCounting.Clear();
         public LinkedListNode<Color> GetNodeByIndex(int index) => ColorList.Find(ColorList.ElementAt(index));
     }

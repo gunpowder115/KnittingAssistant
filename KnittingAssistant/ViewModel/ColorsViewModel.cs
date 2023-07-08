@@ -343,7 +343,7 @@ namespace KnittingAssistant.ViewModel
             selectedColorIndex = -1;
             lastSelectedColorBorder = new Border();
             arrayToGridIndexConverter = new ArrayToGridIndexConverter(ADDED_COLORS_GRID_WIDTH, ADDED_COLORS_GRID_HEIGHT);
-            colorStorage = new ColorStorage();
+            colorStorage = ColorStorage.GetInstance();
             colorStorage.ReadColorsFromFile();
             AddedColors = CreateColorGrid(colorStorage.ColorList);
             ClearingColorsIsEnabled = !(colorStorage.ColorsCount == 0);

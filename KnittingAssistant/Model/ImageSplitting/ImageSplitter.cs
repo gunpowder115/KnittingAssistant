@@ -53,9 +53,11 @@ namespace KnittingAssistant.Model
                 fragmentCountHeightMain + fragmentCountHeightSecondary];
             sumR = sumG = sumB = 0;
 
-            colorStorage = new ColorStorage();
+            colorStorage = ColorStorage.GetInstance();
             colorStorage.ReadColorsFromFile();
-            colorStorage.RefreshColorsCounting();
+            colorStorage.ClearColorsCounting();
+            if (colorStorage.ColorsCount != 0)
+                colorStorage.RefreshColorsCounting();
         }
 
         public void SplitImage(int currentWidthFragment, int currentHeightFragment)
@@ -89,7 +91,11 @@ namespace KnittingAssistant.Model
                 imageFragments[currentWidthFragment, currentHeightFragment] = new ImageFragment(tempBitmapFragment, colorStorage);
 
                 resultFragmentColors[currentWidthFragment, currentHeightFragment] = imageFragments[currentWidthFragment, currentHeightFragment].GetResultFragmentColor();
+
+                if (!colorStorage.ColorsCounting.ContainsKey(resultFragmentColors[currentWidthFragment, currentHeightFragment]))
+                    colorStorage.ColorsCounting[resultFragmentColors[currentWidthFragment, currentHeightFragment]] = 0;
                 colorStorage.ColorsCounting[resultFragmentColors[currentWidthFragment, currentHeightFragment]]++;
+
                 sumR += imageFragments[currentWidthFragment, currentHeightFragment].AverageColor.R;
                 sumG += imageFragments[currentWidthFragment, currentHeightFragment].AverageColor.G;
                 sumB += imageFragments[currentWidthFragment, currentHeightFragment].AverageColor.B;
